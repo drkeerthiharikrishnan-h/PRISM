@@ -1,5 +1,6 @@
 """PubChem connector — scaffold / SMILES / molecular properties. Medicinal chemist."""
 import httpx
+from connectors.utils import retryable_get
 
 BASE = "https://pubchem.ncbi.nlm.nih.gov/rest/pug"
 
@@ -22,8 +23,8 @@ async def fetch(entity_ids: dict, params: dict) -> dict:
 
     try:
         async with httpx.AsyncClient(follow_redirects=True) as client:
-            r = await client.get(
-                f"{BASE}/compound/cid/{cid}/property/"
+            r = await retryable_get(
+                client, f"{BASE}/compound/cid/{cid}/property/"
                 "SMILES,MolecularFormula,MolecularWeight,IUPACName/JSON",
                 timeout=8,
             )
@@ -32,10 +33,10 @@ async def fetch(entity_ids: dict, params: dict) -> dict:
             smiles = props.get("SMILES") or props.get("CanonicalSMILES", "")
             return {
                 "cid": cid,
-                "canonical_smiles": smiles,
+                "canonical_smiles": smiles[:200],
                 "molecular_formula": props.get("MolecularFormula", ""),
                 "molecular_weight": props.get("MolecularWeight"),
-                "iupac_name": props.get("IUPACName", ""),
+                "iupac_name": props.get("IUPACName", "")[:150],
             }
     except Exception as e:
         return {"cid": cid, "error": str(e)}
@@ -44,8 +45,8 @@ async def fetch(entity_ids: dict, params: dict) -> dict:
 async def _lookup_cid(name: str) -> str | None:
     try:
         async with httpx.AsyncClient(follow_redirects=True) as client:
-            r = await client.get(
-                f"{BASE}/compound/name/{name}/cids/JSON",
+            r = await retryable_get(
+                client, f"{BASE}/compound/name/{name}/cids/JSON",
                 timeout=8,
             )
             cids = r.json().get("IdentifierList", {}).get("CID", [])

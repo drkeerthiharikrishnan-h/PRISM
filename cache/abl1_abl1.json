@@ -56,6 +56,16 @@
             "abstract": "Abl1 tyrosine kinase is a validated target for the treatment of chronic myeloid leukemia. It is a form of cancer that is difficult to treat and much research is being done to identify new molecular entities and to tackle drug resistance issues. In recent years, drug resistance of Abl1 tyrosine kinase has become a major healthcare concern. Second and third-generation TKI reported better responses against the resistant forms; still they had no impact on long-term survival prolongation. New compounds derived from natural products and organic small molecule inhibitors can lay the foundation for be"
           },
           {
+            "pmid": "39440695",
+            "title": "New ABL1 Kinase Domain Mutations in BCR::ABL1-Positive Acute Lymphoblastic Leukemia.",
+            "abstract": "Since the development of the first-generation Tyrosine Kinase Inhibitor (TKI), it has played a crucial role in the treatment of BCR::ABL1-positive acute lymphoblastic leukemia (ALL) and chronic myeloid leukemia (CML). However, ABL1 kinase domain (ABL1 KD) mutations confer resistance to several TKIs. These mutations have been extensively studied in chronic myeloid leukemia (CML) but less so in BCR::ABL1-positive acute lymphoblastic leukemia (ALL)."
+          },
+          {
+            "pmid": "39311765",
+            "title": "Computationally Driven Discovery of a BCR-ABL1 Kinase Inhibitor with Activity in Multidrug-Resistant Chronic Myeloid Leukemia.",
+            "abstract": "The permeability glycoprotein, encoded by the ABCB1 gene, is widely implicated in multidrug resistance (MDR), as it has been shown to reduce the intracellular concentration of most small molecule therapeutics, including the majority of the breakpoint cluster region Abelson proto-oncogene 1 (BCR-ABL1) kinase inhibitors used in the treatment of Philadelphia chromosome positive (Ph+) leukemias. With this in mind, we describe an integrated theoretical and experimental approach to shed light on substituent effects in the pendant anilino moiety of 4-anilinoquinazolines and 4-anilinoquinoline-3-carbo"
+          },
+          {
             "pmid": "31602720",
             "title": "Discovery and structure-activity relationship of plastoquinone analogs as anticancer agents against chronic myelogenous leukemia cells.",
             "abstract": "Two series of amino-1,4-benzoquinones (AQ1-18) based on the structural analogs of plastoquinones were synthesized and the structure-activity relationship against chronic myelogenous leukemia activity was examined. All of the synthesized compounds were tested for their cytotoxic effects on different leukemic cell lines. Of interest, AQ15 exhibited a better selectivity than the reference drug imatinib on cancer cells. Owing to this, AQ15 was selected for a further apoptosis/necrosis evaluation where AQ15-treated K562 cells demonstrated similar apoptotic effects like imatinib-treated cells at the"
@@ -64,16 +74,6 @@
             "pmid": "34301758",
             "title": "Lentiviral-Driven Discovery of Cancer Drug Resistance Mutations.",
             "abstract": "Identifying resistance mutations in a drug target provides crucial information. Lentiviral transduction creates multiple types of mutations due to the error-prone nature of the HIV-1 reverse transcriptase (RT). Here we optimized and leveraged this property to identify drug resistance mutations, developing a technique we term LentiMutate. This technique was validated by identifying clinically relevant EGFR resistance mutations, then applied to two additional clinical anticancer drugs: imatinib, a BCR-ABL inhibitor, and AMG 510, a KRAS G12C inhibitor. Novel deletions in BCR-ABL1 conferred resist"
-          },
-          {
-            "pmid": "39509464",
-            "title": "Beyond IC50-A computational dynamic model of drug resistance in enzyme inhibition treatment.",
-            "abstract": "Resistance to therapy is a major clinical obstacle to treatment of cancer and communicable diseases. Drug selection in treatment of patients where the disease is showing resistance to therapy is often guided by IC50 or fold-IC50 values. In this work, through a model of the treatment of chronic myeloid leukaemia (CML), we contest using fold-IC50 values as a guide for treatment selection. CML is a blood cancer that is treated with Abl1 inhibitors, and is often seen as a model for targeted therapy and drug resistance. Resistance to the first-line treatment occurs in approximately one in four pati"
-          },
-          {
-            "pmid": "37937766",
-            "title": "Derivates of 1,6-dihyadroazaazulenes as inhibitors of tyrosine kinases BCR-ABL1 wild type and mutant T315I: a molecular dynamics approach.",
-            "abstract": "The protein tyrosine kinase (PTK) produced by the BCR-ABL1 gene has generated significant interest in the development of inhibitors since the presence of punctual mutations causes resistance to currently approved drugs, mainly the T315I mutation has been the most difficult to address. In this work, derivatives of 1,6-dihydroazaazulenes are studied as possible inhibitors of this PTK in its wild form and the mutant T315I. The recognition of the ligands was explored through molecular docking, and the stability of the complexes and their evolution over time was studied using molecular dynamics (MD"
           }
         ]
       }

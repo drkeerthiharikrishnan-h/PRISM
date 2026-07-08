@@ -1,6 +1,7 @@
 """ClinVar connector — resistance variants + clinical significance. Pathologist."""
 import os
 import httpx
+from connectors.utils import retryable_get
 
 NCBI_KEY = os.getenv("NCBI_API_KEY", "")
 BASE = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
@@ -32,14 +33,14 @@ async def fetch(entity_ids: dict, params: dict) -> dict:
     try:
         async with httpx.AsyncClient(follow_redirects=True) as client:
             # Search
-            r = await client.get(f"{BASE}/esearch.fcgi", params=base_params, timeout=10)
+            r = await retryable_get(client, f"{BASE}/esearch.fcgi", params=base_params, timeout=10)
             ids = r.json().get("esearchresult", {}).get("idlist", [])
             if not ids:
                 return {"variants": [], "gene": target}
 
             # Summary
-            r2 = await client.get(
-                f"{BASE}/esummary.fcgi",
+            r2 = await retryable_get(
+                client, f"{BASE}/esummary.fcgi",
                 params={
                     "db": "clinvar",
                     "id": ",".join(ids[:8]),
@@ -58,7 +59,7 @@ async def fetch(entity_ids: dict, params: dict) -> dict:
                 germline = v.get("germline_classification", {})
                 variants.append({
                     "variant_id": vid,
-                    "title": v.get("title", ""),
+                    "title": v.get("title", "")[:150],
                     "clinical_significance": germline.get("description", ""),
                     "condition": _extract_condition(v),
                     "review_status": germline.get("review_status", ""),

@@ -1,5 +1,6 @@
 """UniProt connector — protein function, sequence, GO terms. Cell biologist + comp biologist."""
 import httpx
+from connectors.utils import retryable_get
 
 BASE = "https://rest.uniprot.org/uniprotkb"
 
@@ -26,8 +27,8 @@ async def fetch(entity_ids: dict, params: dict) -> dict:
 
     try:
         async with httpx.AsyncClient(follow_redirects=True) as client:
-            r = await client.get(
-                f"{BASE}/{accession}.json",
+            r = await retryable_get(
+                client, f"{BASE}/{accession}.json",
                 params={"fields": field_str},
                 timeout=10,
             )
@@ -40,8 +41,8 @@ async def fetch(entity_ids: dict, params: dict) -> dict:
 async def _lookup_accession(gene: str) -> str | None:
     try:
         async with httpx.AsyncClient(follow_redirects=True) as client:
-            r = await client.get(
-                f"{BASE}/search",
+            r = await retryable_get(
+                client, f"{BASE}/search",
                 params={
                     "query": f"gene:{gene} AND organism_id:9606 AND reviewed:true",
                     "fields": "accession",
@@ -76,7 +77,7 @@ def _parse_uniprot(d: dict, accession: str) -> dict:
     for ref in d.get("uniProtKBCrossReferences", []):
         if ref.get("database") == "GO":
             props = {p["key"]: p["value"] for p in ref.get("properties", [])}
-            go_terms.append({"id": ref.get("id"), "term": props.get("GoTerm", "")})
+            go_terms.append({"id": ref.get("id"), "term": props.get("GoTerm", "")[:80]})
     result["go_terms"] = go_terms[:8]
 
     # Sequence length

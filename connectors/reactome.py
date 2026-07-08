@@ -1,5 +1,6 @@
 """Reactome connector — biological pathways + signaling. Cell / molecular biologist."""
 import httpx
+from connectors.utils import retryable_get
 
 BASE = "https://reactome.org/ContentService"
 
@@ -36,8 +37,8 @@ async def fetch(entity_ids: dict, params: dict) -> dict:
 async def _fetch_pathways(client: httpx.AsyncClient, uniprot_id: str) -> list[dict]:
     """Map UniProt ID → pathways via Reactome mapping service."""
     try:
-        r = await client.get(
-            f"{BASE}/data/mapping/UniProt/{uniprot_id}/pathways",
+        r = await retryable_get(
+            client, f"{BASE}/data/mapping/UniProt/{uniprot_id}/pathways",
             timeout=10,
         )
         if r.status_code != 200:
@@ -58,8 +59,8 @@ async def _fetch_pathways(client: httpx.AsyncClient, uniprot_id: str) -> list[di
 async def _search_pathways(client: httpx.AsyncClient, query: str) -> list[dict]:
     """Full-text search for pathways by gene/drug name."""
     try:
-        r = await client.get(
-            f"{BASE}/search/query",
+        r = await retryable_get(
+            client, f"{BASE}/search/query",
             params={"query": query, "types": "Pathway", "species": "Homo sapiens"},
             timeout=10,
         )

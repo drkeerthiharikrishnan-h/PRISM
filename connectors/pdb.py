@@ -1,5 +1,6 @@
 """PDB/RCSB connector — 3D structures. Used by chemist + comp biologist."""
 import httpx
+from connectors.utils import retryable_get, retryable_post
 
 SEARCH_URL = "https://search.rcsb.org/rcsbsearch/v2/query"
 ENTRY_URL = "https://data.rcsb.org/rest/v1/core/entry"
@@ -60,7 +61,7 @@ async def _search_structures(client: httpx.AsyncClient, entity: str, uniprot_id:
             "request_options": {"paginate": {"start": 0, "rows": 8}},
         }
 
-    r = await client.post(SEARCH_URL, json=query, timeout=12)
+    r = await retryable_post(client, SEARCH_URL, json=query, timeout=12)
     if r.status_code != 200:
         # Fallback to text search
         fallback = {
@@ -72,7 +73,7 @@ async def _search_structures(client: httpx.AsyncClient, entity: str, uniprot_id:
             "return_type": "entry",
             "request_options": {"paginate": {"start": 0, "rows": 8}},
         }
-        r = await client.post(SEARCH_URL, json=fallback, timeout=12)
+        r = await retryable_post(client, SEARCH_URL, json=fallback, timeout=12)
 
     data = r.json()
     return [hit["identifier"] for hit in data.get("result_set", [])]
@@ -81,7 +82,7 @@ async def _search_structures(client: httpx.AsyncClient, entity: str, uniprot_id:
 async def _fetch_entry(client: httpx.AsyncClient, pdb_id: str) -> dict | None:
     """Fetch title, resolution, and experimental method for a PDB entry."""
     try:
-        r = await client.get(f"{ENTRY_URL}/{pdb_id}", timeout=8)
+        r = await retryable_get(client, f"{ENTRY_URL}/{pdb_id}", timeout=8)
         d = r.json()
         struct = d.get("struct", {})
         refine = d.get("refine", [{}])

@@ -1,5 +1,6 @@
 """ChEMBL connector — potency data (chemist) + bioactivity dataset (comp biologist)."""
 import httpx
+from connectors.utils import retryable_get
 
 BASE = "https://www.ebi.ac.uk/chembl/api/data"
 
@@ -43,7 +44,7 @@ async def _fetch_activity(client, drug_chembl, target_chembl, params) -> dict:
     if target_chembl:
         req_params["target_chembl_id"] = target_chembl
 
-    r = await client.get(f"{BASE}/activity.json", params=req_params, timeout=10)
+    r = await retryable_get(client, f"{BASE}/activity.json", params=req_params, timeout=10)
     data = r.json()
     activities = data.get("activities", [])
 
@@ -64,9 +65,9 @@ async def _fetch_activity(client, drug_chembl, target_chembl, params) -> dict:
 async def _fetch_dataset(client, target_chembl, params) -> dict:
     if not target_chembl:
         return {}
-    limit = params.get("limit", 20)
-    r = await client.get(
-        f"{BASE}/activity.json",
+    limit = min(params.get("limit", 10), 10)
+    r = await retryable_get(
+        client, f"{BASE}/activity.json",
         params={"target_chembl_id": target_chembl, "format": "json", "limit": limit},
         timeout=10,
     )

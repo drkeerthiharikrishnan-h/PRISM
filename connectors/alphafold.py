@@ -1,5 +1,6 @@
 """AlphaFold DB connector — AI-predicted protein structures. Computational biologist."""
 import httpx
+from connectors.utils import retryable_get
 
 BASE = "https://alphafold.ebi.ac.uk/api"
 
@@ -18,7 +19,7 @@ async def fetch(entity_ids: dict, params: dict) -> dict:
 
     try:
         async with httpx.AsyncClient(follow_redirects=True) as client:
-            r = await client.get(f"{BASE}/prediction/{accession}", timeout=10)
+            r = await retryable_get(client, f"{BASE}/prediction/{accession}", timeout=10)
             if r.status_code == 404:
                 return {"accession": accession, "available": False}
 
