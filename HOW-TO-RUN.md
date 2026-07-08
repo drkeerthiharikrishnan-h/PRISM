@@ -36,10 +36,12 @@ Inside the PRISM folder, find the file called **`.env`**
 > ```
 > Or ask Balaji to set this up for you — it only needs to be done once.
 
-The `.env` file should look like this (Balaji fills in the actual keys):
+The `.env` file needs two API keys — **Balaji will share these with you directly.**
+
+Once you receive them, the file should look like:
 ```
-ANTHROPIC_API_KEY=sk-ant-api03-...
-NCBI_API_KEY=...
+ANTHROPIC_API_KEY=<key Balaji will send>
+NCBI_API_KEY=<key Balaji will send>
 ```
 
 ---

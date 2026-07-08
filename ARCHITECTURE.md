@@ -840,7 +840,7 @@ uv sync
 # 3. Configure API keys
 cp .env.example .env
 # Edit .env:
-#   ANTHROPIC_API_KEY=sk-ant-api03-...
+#   ANTHROPIC_API_KEY=<your Anthropic API key>
 #   NCBI_API_KEY=<your free NCBI key from ncbi.nlm.nih.gov/account>
 
 # 4. Start the server
