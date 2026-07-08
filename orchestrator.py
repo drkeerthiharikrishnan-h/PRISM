@@ -10,9 +10,13 @@ run_pipeline():     Non-streaming version for cache pre-fetch.
 """
 import asyncio
 import json
+import logging
 import os
+import re
 from pathlib import Path
 from typing import AsyncIterator, Optional
+
+logger = logging.getLogger(__name__)
 
 import yaml
 from anthropic import AsyncAnthropic
@@ -68,8 +72,8 @@ async def retrieve_for_persona(persona_id: str, persona_cfg: dict, entity_ids: d
 
 # ── Step 5: Synthesize (streaming) ───────────────────────────────────────────
 
-def _build_synthesis_prompt(persona_cfg: dict, entity_ids: dict, evidence: dict) -> tuple[str, str]:
-    """Build system + user messages for synthesis LLM call."""
+def _build_synthesis_prompt(persona_cfg: dict, entity_ids: dict, evidence: dict) -> tuple[str, str, int]:
+    """Build system + user messages for synthesis LLM call. Returns (system, user, max_citation_idx)."""
     system = persona_cfg["synthesis_prompt"].strip()
 
     # Number evidence pieces as [E1], [E2], ...
@@ -89,11 +93,54 @@ def _build_synthesis_prompt(persona_cfg: dict, entity_ids: dict, evidence: dict)
         evidence_lines.append(f"[E{idx}] PUBMED PMID:{abstract.get('pmid', '')}: {title}. {text[:400]}")
         idx += 1
 
+    max_idx = idx - 1
+    if max_idx > 0:
+        system += (
+            f"\n\nCITATION RULES: You have exactly {max_idx} evidence item(s), "
+            f"[E1] through [E{max_idx}]. Never cite beyond [E{max_idx}]. "
+            "Write each citation as a standalone marker like [E1], never combined like [E1,E2]."
+        )
+
     user_payload = {
         "question": f"What do I need to know about {entity_ids['entity']} and its target {entity_ids['target']}?",
         "structured_evidence": "\n\n".join(evidence_lines) if evidence_lines else "No evidence retrieved.",
     }
-    return system, json.dumps(user_payload)
+    return system, json.dumps(user_payload), max_idx
+
+
+async def _validated_citation_stream(
+    token_stream: AsyncIterator[str],
+    max_idx: int,
+) -> AsyncIterator[str]:
+    """Pass-through stream that strips invalid [E#] citation markers.
+
+    Buffers only while inside a [...] block; normal text is yielded immediately
+    so streaming UX is preserved.
+    """
+    buf = ""
+    async for chunk in token_stream:
+        buf += chunk
+        while True:
+            open_pos = buf.find("[")
+            if open_pos == -1:
+                yield buf
+                buf = ""
+                break
+            if open_pos > 0:
+                yield buf[:open_pos]
+                buf = buf[open_pos:]
+            # buf now starts with "["
+            close_pos = buf.find("]")
+            if close_pos == -1:
+                break  # incomplete marker — wait for more tokens
+            candidate = buf[: close_pos + 1]
+            buf = buf[close_pos + 1 :]
+            if re.fullmatch(r"\[E([1-9]\d*)\]", candidate) and 1 <= int(candidate[2:-1]) <= max_idx:
+                yield candidate
+            else:
+                logger.warning("PRISM: stripped invalid citation %r (valid E1–E%d)", candidate, max_idx)
+    if buf:
+        yield buf
 
 
 async def synthesize_stream(
@@ -103,7 +150,7 @@ async def synthesize_stream(
     evidence: dict,
 ) -> AsyncIterator[str]:
     """Yield markdown text tokens for one persona via Claude streaming."""
-    system, user = _build_synthesis_prompt(persona_cfg, entity_ids, evidence)
+    system, user, max_idx = _build_synthesis_prompt(persona_cfg, entity_ids, evidence)
 
     async with _client.messages.stream(
         model="claude-sonnet-4-6",
@@ -111,8 +158,8 @@ async def synthesize_stream(
         system=system,
         messages=[{"role": "user", "content": user}],
     ) as stream:
-        async for text in stream.text_stream:
-            yield text
+        async for token in _validated_citation_stream(stream.text_stream, max_idx):
+            yield token
 
 
 # ── Cache helpers ─────────────────────────────────────────────────────────────
