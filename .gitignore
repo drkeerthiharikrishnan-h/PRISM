@@ -1,0 +1,20 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Env — never commit secrets
+.env
+
+# Cache files (pre-generated, include in repo for demo)
+# cache/*.json  ← intentionally NOT ignored — demo cache committed
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/

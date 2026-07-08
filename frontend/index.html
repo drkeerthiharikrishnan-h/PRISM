@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PRISM — Persona-Driven Research Intelligence System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .panel-content { min-height: 280px; }
+    .cursor::after { content: '▋'; animation: blink 0.8s step-end infinite; opacity: 0; }
+    .cursor.active::after { opacity: 1; }
+    @keyframes blink { 50% { opacity: 0; } 0%, 100% { opacity: 1; } }
+    .gradient-text {
+      background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #34d399 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .persona-card { transition: all 0.2s ease; border: 2px solid transparent; }
+    .persona-card:hover { transform: translateY(-2px); border-color: var(--card-color); }
+    .persona-card.selected { border-color: var(--card-color); background: color-mix(in srgb, var(--card-color) 10%, #1e293b); }
+    .panel { border-top: 3px solid var(--panel-color); }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+    .status-dot.running { animation: pulse 1s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .prose-custom h2 { font-size: 0.9rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin: 1rem 0 0.5rem; }
+    .prose-custom p { font-size: 0.875rem; line-height: 1.6; color: #cbd5e1; margin-bottom: 0.5rem; }
+    .prose-custom ul { font-size: 0.875rem; color: #cbd5e1; padding-left: 1rem; }
+    .prose-custom li { margin-bottom: 0.25rem; }
+    .prose-custom strong { color: #f1f5f9; }
+    .fade-in { animation: fadeIn 0.3s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     LANDING VIEW
+════════════════════════════════════════════════════════════════════════════ -->
+<div id="landing" class="min-h-screen flex flex-col items-center justify-center px-4 py-16">
+  <div class="text-center mb-12 fade-in">
+    <div class="mono text-blue-400 text-sm tracking-widest mb-4 uppercase">Persona-Driven Research Intelligence</div>
+    <h1 class="text-5xl font-bold mb-4"><span class="gradient-text">PRISM</span></h1>
+    <p class="text-slate-400 text-lg max-w-xl mx-auto">
+      One biomedical query. Four expert lenses. Tell PRISM who you are —
+      and get answers built exactly for your role.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4 max-w-2xl w-full mb-8 fade-in">
+    <button onclick="selectPersona('medicinal_chemist')"
+      class="persona-card bg-slate-900 rounded-xl p-6 text-left cursor-pointer"
+      style="--card-color: #0ea5e9" id="card-medicinal_chemist">
+      <div class="text-3xl mb-3">🧪</div>
+      <div class="font-semibold text-slate-100 mb-1">Medicinal Chemist</div>
+      <div class="text-xs text-slate-400">Potency · SAR · 3D structures · Scaffold chemistry</div>
+    </button>
+
+    <button onclick="selectPersona('pathologist')"
+      class="persona-card bg-slate-900 rounded-xl p-6 text-left cursor-pointer"
+      style="--card-color: #f59e0b" id="card-pathologist">
+      <div class="text-3xl mb-3">🔬</div>
+      <div class="font-semibold text-slate-100 mb-1">Pathologist</div>
+      <div class="text-xs text-slate-400">Resistance variants · Clinical significance · Diagnostics</div>
+    </button>
+
+    <button onclick="selectPersona('cell_biologist')"
+      class="persona-card bg-slate-900 rounded-xl p-6 text-left cursor-pointer"
+      style="--card-color: #10b981" id="card-cell_biologist">
+      <div class="text-3xl mb-3">🧬</div>
+      <div class="font-semibold text-slate-100 mb-1">Cell / Molecular Biologist</div>
+      <div class="text-xs text-slate-400">Pathways · Signaling · Mechanism of action</div>
+    </button>
+
+    <button onclick="selectPersona('comp_biologist')"
+      class="persona-card bg-slate-900 rounded-xl p-6 text-left cursor-pointer"
+      style="--card-color: #8b5cf6" id="card-comp_biologist">
+      <div class="text-3xl mb-3">💻</div>
+      <div class="font-semibold text-slate-100 mb-1">Computational Biologist</div>
+      <div class="text-xs text-slate-400">Structures · Sequences · ML datasets · Docking</div>
+    </button>
+  </div>
+
+  <button onclick="goCompare()"
+    class="text-slate-400 hover:text-slate-200 text-sm border border-slate-700 hover:border-slate-500 px-6 py-3 rounded-lg transition-all fade-in">
+    Or see all 4 expert views side-by-side →
+  </button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     QUERY VIEW (single persona or compare)
+════════════════════════════════════════════════════════════════════════════ -->
+<div id="query-view" class="hidden min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="border-b border-slate-800 px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="text-xl font-bold gradient-text">PRISM</span>
+      <span class="text-slate-500 text-sm">|</span>
+      <span id="view-label" class="text-slate-400 text-sm"></span>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="showLanding()" class="text-slate-500 hover:text-slate-300 text-sm transition-colors">
+        ← Change role
+      </button>
+      <button id="compare-toggle" onclick="toggleCompare()"
+        class="text-slate-400 hover:text-slate-200 text-sm border border-slate-700 hover:border-slate-500 px-4 py-1.5 rounded-lg transition-all hidden">
+        Compare all 4 →
+      </button>
+    </div>
+  </header>
+
+  <!-- Query bar -->
+  <div class="px-6 py-4 border-b border-slate-800 bg-slate-900/50">
+    <!-- Auto-detect banner -->
+    <div id="detect-banner" class="hidden mb-3 flex items-center gap-2 bg-blue-950 border border-blue-800 rounded-lg px-4 py-2 text-sm">
+      <span class="text-blue-400">🤖 Detected role:</span>
+      <span id="detect-persona-label" class="text-blue-200 font-medium"></span>
+      <span class="text-blue-500 mx-1">·</span>
+      <button onclick="showLanding()" class="text-blue-400 hover:text-blue-200 underline transition-colors">Change</button>
+    </div>
+
+    <div class="flex gap-3">
+      <input id="query-input"
+        class="flex-1 bg-slate-800 border border-slate-700 focus:border-blue-500 rounded-lg px-4 py-3 text-slate-100 placeholder-slate-500 outline-none transition-colors text-sm"
+        placeholder="e.g. What do I need to know about imatinib and its target ABL1?"
+        onkeydown="if(event.key==='Enter')runQuery()" />
+      <button onclick="runQuery()"
+        class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-lg font-medium text-sm transition-colors whitespace-nowrap">
+        ▶ Run
+      </button>
+      <button onclick="runDemo()"
+        class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 py-3 rounded-lg text-sm transition-colors whitespace-nowrap">
+        Demo
+      </button>
+    </div>
+  </div>
+
+  <!-- Status bar -->
+  <div id="status-bar" class="hidden px-6 py-2 bg-slate-900/30 border-b border-slate-800 flex items-center gap-3 text-xs mono">
+    <span id="status-dot" class="status-dot bg-blue-400 running"></span>
+    <span id="status-text" class="text-slate-400"></span>
+  </div>
+
+  <!-- Panels -->
+  <div id="panels-container" class="flex-1 overflow-auto p-4">
+
+    <!-- Single persona view -->
+    <div id="single-panel" class="hidden max-w-3xl mx-auto">
+      <div id="single-panel-inner" class="bg-slate-900 rounded-xl p-6 panel"
+        style="--panel-color: #64748b">
+        <div class="flex items-center gap-2 mb-4">
+          <span id="single-emoji" class="text-2xl"></span>
+          <span id="single-name" class="font-semibold text-slate-200"></span>
+          <span id="single-cursor" class="cursor ml-1 text-blue-400"></span>
+        </div>
+        <div id="single-content" class="prose-custom panel-content text-slate-300 leading-relaxed"></div>
+      </div>
+    </div>
+
+    <!-- 4-panel compare view -->
+    <div id="compare-panels" class="hidden grid grid-cols-2 gap-4">
+      <!-- Medicinal Chemist -->
+      <div class="bg-slate-900 rounded-xl p-5 panel" style="--panel-color: #0ea5e9">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-xl">🧪</span>
+          <span class="font-semibold text-slate-200 text-sm">Medicinal Chemist</span>
+          <span id="cursor-medicinal_chemist" class="cursor ml-auto text-sky-400 text-xs"></span>
+        </div>
+        <div class="text-xs mono text-slate-500 mb-3">ChEMBL · PDB · PubChem · PubMed</div>
+        <div id="panel-medicinal_chemist" class="prose-custom panel-content text-slate-300 text-sm leading-relaxed"></div>
+      </div>
+
+      <!-- Pathologist -->
+      <div class="bg-slate-900 rounded-xl p-5 panel" style="--panel-color: #f59e0b">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-xl">🔬</span>
+          <span class="font-semibold text-slate-200 text-sm">Pathologist</span>
+          <span id="cursor-pathologist" class="cursor ml-auto text-amber-400 text-xs"></span>
+        </div>
+        <div class="text-xs mono text-slate-500 mb-3">ClinVar · PubMed</div>
+        <div id="panel-pathologist" class="prose-custom panel-content text-slate-300 text-sm leading-relaxed"></div>
+      </div>
+
+      <!-- Cell Biologist -->
+      <div class="bg-slate-900 rounded-xl p-5 panel" style="--panel-color: #10b981">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-xl">🧬</span>
+          <span class="font-semibold text-slate-200 text-sm">Cell / Molecular Biologist</span>
+          <span id="cursor-cell_biologist" class="cursor ml-auto text-emerald-400 text-xs"></span>
+        </div>
+        <div class="text-xs mono text-slate-500 mb-3">Reactome · UniProt · PubMed</div>
+        <div id="panel-cell_biologist" class="prose-custom panel-content text-slate-300 text-sm leading-relaxed"></div>
+      </div>
+
+      <!-- Computational Biologist -->
+      <div class="bg-slate-900 rounded-xl p-5 panel" style="--panel-color: #8b5cf6">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-xl">💻</span>
+          <span class="font-semibold text-slate-200 text-sm">Computational Biologist</span>
+          <span id="cursor-comp_biologist" class="cursor ml-auto text-violet-400 text-xs"></span>
+        </div>
+        <div class="text-xs mono text-slate-500 mb-3">PDB · AlphaFold · UniProt · ChEMBL</div>
+        <div id="panel-comp_biologist" class="prose-custom panel-content text-slate-300 text-sm leading-relaxed"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer metadata -->
+  <div id="footer-meta" class="hidden px-6 py-3 border-t border-slate-800 flex items-center gap-4 text-xs mono text-slate-500">
+    <span id="meta-entity"></span>
+    <span>·</span>
+    <span id="meta-dbs"></span>
+    <span>·</span>
+    <span id="meta-calls"></span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════════════════════════════════ -->
+<script>
+const PERSONAS = {
+  medicinal_chemist: { name: 'Medicinal Chemist',        emoji: '🧪', color: '#0ea5e9' },
+  pathologist:       { name: 'Pathologist',               emoji: '🔬', color: '#f59e0b' },
+  cell_biologist:    { name: 'Cell / Molecular Biologist', emoji: '🧬', color: '#10b981' },
+  comp_biologist:    { name: 'Computational Biologist',   emoji: '💻', color: '#8b5cf6' },
+};
+
+let currentPersona = null;   // null = compare all
+let isCompareMode = false;
+let activeSSE = null;
+let rawTokens = {};           // persona_id → accumulated raw markdown
+
+// ── Navigation ──────────────────────────────────────────────────────────────
+
+function showLanding() {
+  document.getElementById('landing').classList.remove('hidden');
+  document.getElementById('query-view').classList.add('hidden');
+  if (activeSSE) { activeSSE.close(); activeSSE = null; }
+}
+
+function selectPersona(personaId) {
+  currentPersona = personaId;
+  isCompareMode = false;
+  document.getElementById('landing').classList.add('hidden');
+  document.getElementById('query-view').classList.remove('hidden');
+  setupQueryView();
+}
+
+function goCompare() {
+  currentPersona = null;
+  isCompareMode = true;
+  document.getElementById('landing').classList.add('hidden');
+  document.getElementById('query-view').classList.remove('hidden');
+  setupQueryView();
+}
+
+function toggleCompare() {
+  if (!isCompareMode) goCompare();
+}
+
+function setupQueryView() {
+  const lbl = document.getElementById('view-label');
+  const compareToggle = document.getElementById('compare-toggle');
+  const singlePanel = document.getElementById('single-panel');
+  const comparePanel = document.getElementById('compare-panels');
+
+  if (isCompareMode || !currentPersona) {
+    lbl.textContent = '4-Expert Compare';
+    compareToggle.classList.add('hidden');
+    singlePanel.classList.add('hidden');
+    comparePanel.classList.remove('hidden');
+  } else {
+    const p = PERSONAS[currentPersona];
+    lbl.innerHTML = `${p.emoji} ${p.name}`;
+    compareToggle.classList.remove('hidden');
+    singlePanel.classList.remove('hidden');
+    comparePanel.classList.add('hidden');
+
+    // Style single panel
+    const inner = document.getElementById('single-panel-inner');
+    inner.style.setProperty('--panel-color', p.color);
+    document.getElementById('single-emoji').textContent = p.emoji;
+    document.getElementById('single-name').textContent = p.name;
+  }
+
+  resetPanels();
+}
+
+// ── Panel helpers ────────────────────────────────────────────────────────────
+
+function resetPanels() {
+  rawTokens = {};
+  document.getElementById('detect-banner').classList.add('hidden');
+  document.getElementById('status-bar').classList.add('hidden');
+  document.getElementById('footer-meta').classList.add('hidden');
+
+  // Clear all panel content
+  ['medicinal_chemist','pathologist','cell_biologist','comp_biologist'].forEach(p => {
+    const el = document.getElementById(`panel-${p}`);
+    if (el) el.innerHTML = '';
+    const cursor = document.getElementById(`cursor-${p}`);
+    if (cursor) cursor.classList.remove('active');
+  });
+
+  const single = document.getElementById('single-content');
+  if (single) single.innerHTML = '';
+  const singleCursor = document.getElementById('single-cursor');
+  if (singleCursor) singleCursor.classList.remove('active');
+}
+
+function setStatus(message, running = true) {
+  const bar = document.getElementById('status-bar');
+  bar.classList.remove('hidden');
+  document.getElementById('status-text').textContent = message;
+  const dot = document.getElementById('status-dot');
+  if (running) {
+    dot.classList.add('running');
+    dot.className = 'status-dot bg-blue-400 running';
+  } else {
+    dot.className = 'status-dot bg-green-400';
+  }
+}
+
+function appendToken(personaId, text) {
+  rawTokens[personaId] = (rawTokens[personaId] || '') + text;
+  const html = marked.parse(rawTokens[personaId]);
+
+  if (isCompareMode || !currentPersona) {
+    const el = document.getElementById(`panel-${personaId}`);
+    if (el) el.innerHTML = html;
+  } else if (currentPersona === personaId) {
+    const el = document.getElementById('single-content');
+    if (el) el.innerHTML = html;
+  }
+}
+
+function setCursorActive(personaId, active) {
+  if (isCompareMode || !currentPersona) {
+    const c = document.getElementById(`cursor-${personaId}`);
+    if (c) c.classList.toggle('active', active);
+  } else if (currentPersona === personaId) {
+    const c = document.getElementById('single-cursor');
+    if (c) c.classList.toggle('active', active);
+  }
+}
+
+// ── Query execution ──────────────────────────────────────────────────────────
+
+async function runQuery(demoMode = false) {
+  const query = document.getElementById('query-input').value.trim();
+  if (!query) return;
+
+  if (activeSSE) { activeSSE.close(); activeSSE = null; }
+  resetPanels();
+  setStatus('Starting…');
+
+  // Auto-detect persona if no role selected and not compare mode
+  if (!currentPersona && !isCompareMode) {
+    setStatus('Detecting your role from query…');
+    try {
+      const res = await fetch('/api/detect-persona', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query }),
+      });
+      const data = await res.json();
+      if (data.persona_id && data.confidence > 0.6) {
+        currentPersona = data.persona_id;
+        const p = PERSONAS[data.persona_id];
+        document.getElementById('detect-banner').classList.remove('hidden');
+        document.getElementById('detect-persona-label').textContent = `${p.emoji} ${p.name}`;
+        setupQueryView();
+      } else {
+        isCompareMode = true;
+        setupQueryView();
+      }
+    } catch (e) {
+      isCompareMode = true;
+      setupQueryView();
+    }
+  }
+
+  const body = {
+    query,
+    persona: isCompareMode ? null : currentPersona,
+    demo_mode: demoMode,
+  };
+
+  const response = await fetch('/api/query', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+
+  const activePersonas = new Set();
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop() || '';
+
+    for (const line of lines) {
+      if (!line.startsWith('data: ')) continue;
+      try {
+        const event = JSON.parse(line.slice(6));
+        handleSSEEvent(event, activePersonas);
+      } catch (e) { /* skip malformed */ }
+    }
+  }
+
+  // Deactivate all cursors
+  activePersonas.forEach(p => setCursorActive(p, false));
+  setStatus('Complete', false);
+}
+
+function handleSSEEvent(event, activePersonas) {
+  switch (event.type) {
+    case 'status':
+      setStatus(event.message);
+      break;
+
+    case 'token':
+      if (!activePersonas.has(event.persona)) {
+        activePersonas.add(event.persona);
+        setCursorActive(event.persona, true);
+      }
+      appendToken(event.persona, event.text);
+      break;
+
+    case 'done': {
+      const meta = event.metadata || {};
+      document.getElementById('footer-meta').classList.remove('hidden');
+      document.getElementById('meta-entity').textContent =
+        `${meta.entity || '?'} → ${meta.target || '?'}`;
+      document.getElementById('meta-dbs').textContent =
+        `DBs: ${(meta.databases_queried || []).join(' · ')}`;
+      document.getElementById('meta-calls').textContent =
+        `LLM calls: ${meta.llm_calls || '?'}`;
+      break;
+    }
+  }
+}
+
+async function runDemo() {
+  document.getElementById('query-input').value =
+    'What do I need to know about imatinib and its target ABL1?';
+  if (!isCompareMode) {
+    currentPersona = null;
+    isCompareMode = true;
+    setupQueryView();
+  }
+  await runQuery(true);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+[project]
+name = "prism"
+version = "1.0.0"
+description = "Persona-Driven Research Intelligence System — Gladstone Hackathon 2026"
+requires-python = ">=3.11"
+dependencies = [
+    "anthropic>=0.40.0",
+    "fastapi>=0.111.0",
+    "uvicorn[standard]>=0.29.0",
+    "httpx>=0.27.0",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0.0",
+    "sse-starlette>=2.1.0",
+]
+
+[dependency-groups]
+dev = []
