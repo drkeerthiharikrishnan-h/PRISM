@@ -4,6 +4,7 @@ users.py — Hardcoded demo researcher profiles for PRISM.
 Each user has a pre-assigned persona. No passwords, no database.
 Session is stored in the browser (sessionStorage) via the frontend.
 """
+from typing import Optional
 
 DEMO_USERS = {
     "dr_sarah": {
@@ -73,7 +74,7 @@ PERSONA_EMOJIS = {
 }
 
 
-def get_user(user_id: str) -> dict | None:
+def get_user(user_id: str) -> Optional[dict]:
     return DEMO_USERS.get(user_id)
 
 
