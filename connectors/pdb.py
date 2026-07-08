@@ -1,4 +1,5 @@
 """PDB/RCSB connector — 3D structures. Used by chemist + comp biologist."""
+from typing import Optional
 import httpx
 from connectors.utils import retryable_get, retryable_post
 
@@ -33,7 +34,7 @@ async def fetch(entity_ids: dict, params: dict) -> dict:
         return {"structures": [], "error": str(e)}
 
 
-async def _search_structures(client: httpx.AsyncClient, entity: str, uniprot_id: str | None) -> list[str]:
+async def _search_structures(client: httpx.AsyncClient, entity: str, uniprot_id: Optional[str]) -> list[str]:
     """Search RCSB for structures containing the entity as a ligand."""
     query: dict = {
         "query": {
@@ -79,7 +80,7 @@ async def _search_structures(client: httpx.AsyncClient, entity: str, uniprot_id:
     return [hit["identifier"] for hit in data.get("result_set", [])]
 
 
-async def _fetch_entry(client: httpx.AsyncClient, pdb_id: str) -> dict | None:
+async def _fetch_entry(client: httpx.AsyncClient, pdb_id: str) -> Optional[dict]:
     """Fetch title, resolution, and experimental method for a PDB entry."""
     try:
         r = await retryable_get(client, f"{ENTRY_URL}/{pdb_id}", timeout=8)

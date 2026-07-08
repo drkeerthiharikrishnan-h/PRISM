@@ -1,4 +1,5 @@
 """UniProt connector — protein function, sequence, GO terms. Cell biologist + comp biologist."""
+from typing import Optional
 import httpx
 from connectors.utils import retryable_get
 
@@ -38,7 +39,7 @@ async def fetch(entity_ids: dict, params: dict) -> dict:
         return {"accession": accession, "error": str(e)}
 
 
-async def _lookup_accession(gene: str) -> str | None:
+async def _lookup_accession(gene: str) -> Optional[str]:
     try:
         async with httpx.AsyncClient(follow_redirects=True) as client:
             r = await retryable_get(

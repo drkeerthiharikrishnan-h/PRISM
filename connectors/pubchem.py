@@ -1,4 +1,5 @@
 """PubChem connector — scaffold / SMILES / molecular properties. Medicinal chemist."""
+from typing import Optional
 import httpx
 from connectors.utils import retryable_get
 
@@ -42,7 +43,7 @@ async def fetch(entity_ids: dict, params: dict) -> dict:
         return {"cid": cid, "error": str(e)}
 
 
-async def _lookup_cid(name: str) -> str | None:
+async def _lookup_cid(name: str) -> Optional[str]:
     try:
         async with httpx.AsyncClient(follow_redirects=True) as client:
             r = await retryable_get(

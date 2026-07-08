@@ -2,7 +2,7 @@
 name = "prism"
 version = "1.0.0"
 description = "Persona-Driven Research Intelligence System — Gladstone Hackathon 2026"
-requires-python = ">=3.11"
+requires-python = ">=3.9"
 dependencies = [
     "anthropic>=0.40.0",
     "fastapi>=0.111.0",

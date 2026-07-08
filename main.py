@@ -4,6 +4,7 @@ FastAPI backend with SSE streaming for 4-panel biomedical query responses.
 import json
 import os
 from pathlib import Path
+from typing import Optional
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
@@ -28,7 +29,7 @@ PERSONAS_DIR = Path(__file__).parent / "personas"
 
 class QueryRequest(BaseModel):
     query: str
-    persona: str | None = None   # None → compare all 4; set → single persona
+    persona: Optional[str] = None   # None → compare all 4; set → single persona
     demo_mode: bool = False
 
 
