@@ -16,6 +16,7 @@ load_dotenv()
 
 from orchestrator import run_pipeline, stream_pipeline
 from entity_resolver import detect_persona
+from users import list_users, get_user, PERSONA_LABELS, PERSONA_EMOJIS
 
 app = FastAPI(title="PRISM", version="1.0.0")
 
@@ -35,6 +36,11 @@ class DetectRequest(BaseModel):
     query: str
 
 
+class SwitchPersonaRequest(BaseModel):
+    user_id: str
+    new_persona: str
+
+
 # ── Routes ────────────────────────────────────────────────────────────────────
 
 @app.get("/")
@@ -45,6 +51,55 @@ async def serve_ui():
 @app.get("/api/health")
 async def health():
     return {"status": "ok", "service": "PRISM"}
+
+
+# ── User endpoints ────────────────────────────────────────────────────────────
+
+@app.get("/api/users")
+async def get_users():
+    """Return all demo researcher profiles for the login screen."""
+    users = []
+    for u in list_users():
+        users.append({
+            **u,
+            "persona_label": PERSONA_LABELS.get(u["persona"], u["persona"]),
+            "persona_emoji": PERSONA_EMOJIS.get(u["persona"], "🔬"),
+        })
+    return {"users": users}
+
+
+@app.get("/api/users/{user_id}")
+async def get_user_profile(user_id: str):
+    """Return a single user profile + their assigned persona details."""
+    user = get_user(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail=f"User '{user_id}' not found")
+    return {
+        **user,
+        "persona_label": PERSONA_LABELS.get(user["persona"], user["persona"]),
+        "persona_emoji": PERSONA_EMOJIS.get(user["persona"], "🔬"),
+    }
+
+
+@app.post("/api/users/{user_id}/switch-persona")
+async def switch_persona(user_id: str, req: SwitchPersonaRequest):
+    """
+    Allow a user to override their default persona for the session.
+    The override is remembered in the browser (sessionStorage) — not persisted server-side.
+    """
+    user = get_user(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail=f"User '{user_id}' not found")
+    if req.new_persona not in PERSONA_LABELS:
+        raise HTTPException(status_code=400, detail=f"Unknown persona '{req.new_persona}'")
+    return {
+        "user_id": user_id,
+        "name": user["name"],
+        "new_persona": req.new_persona,
+        "persona_label": PERSONA_LABELS[req.new_persona],
+        "persona_emoji": PERSONA_EMOJIS[req.new_persona],
+        "message": f"Switched to {PERSONA_LABELS[req.new_persona]} view",
+    }
 
 
 @app.get("/api/personas")

@@ -1,0 +1,10 @@
+services:
+  prism:
+    build: .
+    ports:
+      - "8000:8000"        # http://localhost:8000
+    env_file:
+      - .env               # reads ANTHROPIC_API_KEY and NCBI_API_KEY
+    volumes:
+      - ./cache:/app/cache # persist demo cache between restarts
+    restart: unless-stopped

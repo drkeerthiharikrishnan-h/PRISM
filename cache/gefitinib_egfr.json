@@ -1,0 +1,424 @@
+{
+  "ids": {
+    "entity": "gefitinib",
+    "target": "EGFR",
+    "drug_pubchem": "123631",
+    "drug_chembl": "CHEMBL939",
+    "target_uniprot": "P00533",
+    "target_chembl": "CHEMBL4523747"
+  },
+  "evidence": {
+    "medicinal_chemist": {
+      "chembl": {
+        "activities": [],
+        "count": 0
+      },
+      "pdb": {
+        "structures": [
+          {
+            "pdb_id": "5Y80",
+            "title": "Complex structure of cyclin G-associated kinase with gefitinib",
+            "resolution_angstrom": 2.5,
+            "method": "X-RAY DIFFRACTION"
+          },
+          {
+            "pdb_id": "5Y7Z",
+            "title": "Complex structure of cyclin G-associated kinase with gefitinib",
+            "resolution_angstrom": 2.804,
+            "method": "X-RAY DIFFRACTION"
+          },
+          {
+            "pdb_id": "9D5H",
+            "title": "Crystal structure of the ILK mutant (R371Q)/alpha-parvin core complex bound to gefitinib",
+            "resolution_angstrom": 1.5,
+            "method": "X-RAY DIFFRACTION"
+          },
+          {
+            "pdb_id": "9D5E",
+            "title": "Crystal structure of the ILK/alpha-parvin core complex bound to gefitinib",
+            "resolution_angstrom": 1.5,
+            "method": "X-RAY DIFFRACTION"
+          },
+          {
+            "pdb_id": "4WKQ",
+            "title": "1.85 angstrom structure of EGFR kinase domain with gefitinib",
+            "resolution_angstrom": 1.85,
+            "method": "X-RAY DIFFRACTION"
+          }
+        ]
+      },
+      "pubchem": {
+        "cid": "123631",
+        "canonical_smiles": "COC1=C(C=C2C(=C1)N=CN=C2NC3=CC(=C(C=C3)F)Cl)OCCCN4CCOCC4",
+        "molecular_formula": "C22H24ClFN4O3",
+        "molecular_weight": "446.9",
+        "iupac_name": "N-(3-chloro-4-fluorophenyl)-7-methoxy-6-(3-morpholin-4-ylpropoxy)quinazolin-4-amine"
+      },
+      "pubmed": {
+        "abstracts": [
+          {
+            "pmid": "35127374",
+            "title": "Pure drug nano-assemblies: A facile carrier-free nanoplatform for efficient cancer therapy.",
+            "abstract": "Nanoparticulate drug delivery systems (Nano-DDSs) have emerged as possible solution to the obstacles of anticancer drug delivery. However, the clinical outcomes and translation are restricted by several drawbacks, such as low drug loading, premature drug leakage and carrier-related toxicity. Recently, pure drug nano-assemblies (PDNAs), fabricated by the self-assembly or co-assembly of pure drug molecules, have attracted considerable attention. Their facile and reproducible preparation technique helps to remove the bottleneck of nanomedicines including quality control, scale-up production and c"
+          },
+          {
+            "pmid": "34861243",
+            "title": "Dictamnine, a novel c-Met inhibitor, suppresses the proliferation of lung cancer cells by downregulating the PI3K/AKT/mTOR and MAPK signaling pathways.",
+            "abstract": "Dictamnine (Dic), a naturally occurring small-molecule furoquinoline alkaloid isolated from the root bark of Dictamnus dasycarpus Turcz., is reported to display anticancer properties. However, little is known about the direct target proteins and anticancer mechanisms of Dic. In the current study, Dic was found to suppress the growth of lung cancer cells in vitro and in vivo, and to attenuate the activation of PI3K/AKT/mTOR and mitogen-activated protein kinase (MAPK) signaling pathways by inhibiting the phosphorylation and activation of receptor tyrosine kinase c-Met. Moreover, the binding of D"
+          },
+          {
+            "pmid": "37111291",
+            "title": "Structure-Activity Relationship Studies Based on Quinazoline Derivatives as EGFR Kinase Inhibitors (2017-Present).",
+            "abstract": "The epidermal growth factor receptor (EGFR) plays a critical role in the tumorigenesis of various forms of cancer. Targeting the mutant forms of EGFR has been identified as an attractive therapeutic approach and led to the approval of three generations of inhibitors. The quinazoline core has emerged as a favorable scaffold for the development of novel EGFR inhibitors due to increased affinity for the active site of EGFR kinase. Currently, there are five first-generation (gefitinib, erlotinib, lapatinib, vandetanib, and icotinib) and two second-generation (afatinib and dacomitinib) quinazoline-"
+          },
+          {
+            "pmid": "31891230",
+            "title": "Combined treatment with N-acetylcysteine and gefitinib overcomes drug resistance to gefitinib in NSCLC cell line.",
+            "abstract": "We aimed to explore the molecular substrate underlying EGFR-TKI resistance and investigate the effects of N-acetylcysteine (NAC) on reversing EGFR-TKI resistance. In the current research, the effects of NAC in combination with gefitinib on reversing gefitinib resistance were examined using CCK-8 assay, combination index (CI) method, matrigel invasion assay, wound-healing assay, flow cytometry, western blot, and quantitative real-time PCR (qRT-PCR). CCK8 assay showed that NAC plus gefitinib combination overcame EGFR-TKI resistance in non-small cell lung cancer (NSCLC) cells by lowering the valu"
+          },
+          {
+            "pmid": "26996617",
+            "title": "Review on EGFR Inhibitors: Critical Updates.",
+            "abstract": "Epidermal Growth Factor Receptor (EGFR) is a transmembrane glycoprotein that constitutes one of the four members of ErbB family of tyrosine kinase receptors. Activation of EGFR leads to autophosphorylation of receptor tyrosine kinase that initiates a cascade of downstream signaling pathways involved in regulating cellular proliferation, differentiation, and survival. EGFR is abnormally activated by various mechanisms like receptor overexpression, mutation, ligand-dependent receptor dimerization, ligand-independent activation and is associated with the development of variety of human cancers. E"
+          }
+        ]
+      }
+    },
+    "pathologist": {
+      "clinvar": {
+        "variants": [
+          {
+            "variant_id": "4842914",
+            "title": "NM_005228.5(EGFR):c.2101C>T (p.Gln701Ter)",
+            "clinical_significance": "Uncertain significance",
+            "condition": "",
+            "review_status": "criteria provided, single submitter"
+          },
+          {
+            "variant_id": "4842904",
+            "title": "NM_005228.5(EGFR):c.3163-15_3183del",
+            "clinical_significance": "Uncertain significance",
+            "condition": "",
+            "review_status": "criteria provided, single submitter"
+          },
+          {
+            "variant_id": "4826848",
+            "title": "NM_005228.5(EGFR):c.1232del (p.Pro411fs)",
+            "clinical_significance": "Uncertain significance",
+            "condition": "",
+            "review_status": "criteria provided, single submitter"
+          },
+          {
+            "variant_id": "4824466",
+            "title": "NM_005228.5(EGFR):c.1299-2A>G",
+            "clinical_significance": "Uncertain significance",
+            "condition": "",
+            "review_status": "criteria provided, single submitter"
+          },
+          {
+            "variant_id": "4735901",
+            "title": "NM_005228.5(EGFR):c.1214del (p.Leu405fs)",
+            "clinical_significance": "Pathogenic",
+            "condition": "",
+            "review_status": "criteria provided, single submitter"
+          },
+          {
+            "variant_id": "4726907",
+            "title": "NM_005228.5(EGFR):c.1823G>A (p.Trp608Ter)",
+            "clinical_significance": "Pathogenic",
+            "condition": "",
+            "review_status": "criteria provided, single submitter"
+          },
+          {
+            "variant_id": "4725069",
+            "title": "NM_005228.5(EGFR):c.637del (p.Ile213fs)",
+            "clinical_significance": "Pathogenic",
+            "condition": "",
+            "review_status": "criteria provided, single submitter"
+          },
+          {
+            "variant_id": "4723261",
+            "title": "NM_005228.5(EGFR):c.2479del (p.Tyr827fs)",
+            "clinical_significance": "Pathogenic",
+            "condition": "",
+            "review_status": "criteria provided, single submitter"
+          }
+        ],
+        "gene": "EGFR"
+      },
+      "pubmed": {
+        "abstracts": [
+          {
+            "pmid": "18227510",
+            "title": "The T790M mutation in EGFR kinase causes drug resistance by increasing the affinity for ATP.",
+            "abstract": "Lung cancers caused by activating mutations in the epidermal growth factor receptor (EGFR) are initially responsive to small molecule tyrosine kinase inhibitors (TKIs), but the efficacy of these agents is often limited because of the emergence of drug resistance conferred by a second mutation, T790M. Threonine 790 is the \"gatekeeper\" residue, an important determinant of inhibitor specificity in the ATP binding pocket. The T790M mutation has been thought to cause resistance by sterically blocking binding of TKIs such as gefitinib and erlotinib, but this explanation is difficult to reconcile wit"
+          },
+          {
+            "pmid": "22281684",
+            "title": "Unresponsiveness of colon cancer to BRAF(V600E) inhibition through feedback activation of EGFR.",
+            "abstract": "Inhibition of the BRAF(V600E) oncoprotein by the small-molecule drug PLX4032 (vemurafenib) is highly effective in the treatment of melanoma. However, colon cancer patients harbouring the same BRAF(V600E) oncogenic lesion have poor prognosis and show only a very limited response to this drug. To investigate the cause of the limited therapeutic effect of PLX4032 in BRAF(V600E) mutant colon tumours, here we performed an RNA-interference-based genetic screen in human cells to search for kinases whose knockdown synergizes with BRAF(V600E) inhibition. We report that blockade of the epidermal growth "
+          },
+          {
+            "pmid": "37463108",
+            "title": "NAT10-mediated ac4C tRNA modification promotes EGFR mRNA translation and gefitinib resistance in cancer.",
+            "abstract": "Aberrant RNA modifications are frequently associated with cancers, while the underlying mechanisms and clinical significance remain poorly understood. Here, we find that the ac4C RNA acetyltransferase NAT10 is significantly upregulated in esophageal cancers (ESCAs) and associated with poor ESCA prognosis. In addition, using ESCA cell lines and mouse models, we confirm the critical functions of NAT10 in promoting ESCA tumorigenesis and progression in&#xa0;vitro and in&#xa0;vivo. Mechanistically, NAT10 depletion reduces the abundance of ac4C-modified tRNAs and decreases the translation efficienc"
+          },
+          {
+            "pmid": "25453378",
+            "title": "Clinical significance of epidermal growth factor receptor tyrosine kinase inhibitors: sensitivity and resistance.",
+            "abstract": "Gefitinib and erlotinib, which are epidermal growth factor receptor (EGFR) tyrosine kinase inhibitors (EGFR-TKIs), are highly effective against lung tumors with EGFR activating mutations. However, in 20-30% of cases, there is intrinsic resistance, and even if the treatment is effective, resistance is acquired in one to several years. Possible mechanisms of acquired resistance to EGFR-TKI, thus far, include a gatekeeper mutation of EGFR, activation of an alternate pathway, activation of EGFR downstream signals, transformation to small cell lung cancer, and epithelial-mesenchymal transition (EMT"
+          },
+          {
+            "pmid": "41742226",
+            "title": "Integrin &#x3b1;v&#x3b2;3-dependent pathogenic effect and therapeutic effects of DL-N2 combined with EGFR inhibitors in pancreatic adenocarcinoma.",
+            "abstract": "BACKGROUND: Pancreatic adenocarcinoma (PDAC) remains one of the most lethal malignancies, characterized by aggressive progression, pronounced stromal desmoplasia, and a limited response to targeted therapies. Although epidermal growth factor receptor (EGFR) inhibitors have shown promise in preclinical studies, their clinical efficacy has been modest, suggesting the existence of compensatory signaling networks. METHODS: An integrated analytical framework was employed, combining bulk transcriptomic analyses of TCGA-PDAC and GTEx datasets, DNA methylation profiling, protein&#x2013;protein interac"
+          }
+        ]
+      }
+    },
+    "cell_biologist": {
+      "reactome": {
+        "pathways": [
+          {
+            "stable_id": "R-HSA-1227986",
+            "display_name": "Signaling by ERBB2",
+            "species": "Homo sapiens"
+          },
+          {
+            "stable_id": "R-HSA-1236382",
+            "display_name": "Constitutive Signaling by Ligand-Responsive EGFR Cancer Variants",
+            "species": "Homo sapiens"
+          },
+          {
+            "stable_id": "R-HSA-1236394",
+            "display_name": "Signaling by ERBB4",
+            "species": "Homo sapiens"
+          },
+          {
+            "stable_id": "R-HSA-1250196",
+            "display_name": "SHC1 events in ERBB2 signaling",
+            "species": "Homo sapiens"
+          },
+          {
+            "stable_id": "R-HSA-1251932",
+            "display_name": "PLCG1 events in ERBB2 signaling",
+            "species": "Homo sapiens"
+          },
+          {
+            "stable_id": "R-HSA-1257604",
+            "display_name": "PIP3 activates AKT signaling",
+            "species": "Homo sapiens"
+          },
+          {
+            "stable_id": "R-HSA-177929",
+            "display_name": "Signaling by EGFR",
+            "species": "Homo sapiens"
+          },
+          {
+            "stable_id": "R-HSA-179812",
+            "display_name": "GRB2 events in EGFR signaling",
+            "species": "Homo sapiens"
+          },
+          {
+            "stable_id": "R-HSA-180292",
+            "display_name": "GAB1 signalosome",
+            "species": "Homo sapiens"
+          },
+          {
+            "stable_id": "R-HSA-180336",
+            "display_name": "SHC1 events in EGFR signaling",
+            "species": "Homo sapiens"
+          }
+        ],
+        "uniprot_id": "P00533"
+      },
+      "uniprot": {
+        "accession": "P00533",
+        "gene": "EGFR",
+        "function": "(Microbial infection) Acts as a receptor for hepatitis C virus (HCV) in hepatocytes and facilitates its cell entry. Mediates HCV entry by promoting the formation of the CD81-CLDN1 receptor complexes that are essential for HCV entry and by enhancing membrane fusion of cells expressing HCV envelope glycoproteins",
+        "go_terms": [
+          {
+            "id": "GO:0009925",
+            "term": "C:basal plasma membrane"
+          },
+          {
+            "id": "GO:0016323",
+            "term": "C:basolateral plasma membrane"
+          },
+          {
+            "id": "GO:0030054",
+            "term": "C:cell junction"
+          },
+          {
+            "id": "GO:0009986",
+            "term": "C:cell surface"
+          },
+          {
+            "id": "GO:0030669",
+            "term": "C:clathrin-coated endocytic vesicle membrane"
+          },
+          {
+            "id": "GO:0005737",
+            "term": "C:cytoplasm"
+          },
+          {
+            "id": "GO:0031901",
+            "term": "C:early endosome membrane"
+          },
+          {
+            "id": "GO:0005789",
+            "term": "C:endoplasmic reticulum membrane"
+          }
+        ],
+        "sequence_length": null,
+        "binding_sites": [],
+        "domains": []
+      },
+      "pubmed": {
+        "abstracts": [
+          {
+            "pmid": "35303882",
+            "title": "Cholesterol promotes EGFR-TKIs resistance in NSCLC by inducing EGFR/Src/Erk/SP1 signaling-mediated ERR&#x3b1; re-expression.",
+            "abstract": "The use of epidermal growth factor receptor tyrosine kinase inhibitors (EGFR-TKIs) brings remarkable benefits for the survival of patients with advanced NSCLC harboring EGFR mutations. Unfortunately, acquired resistance seems to be inevitable and limits the application of EGFR-TKIs in clinical practice. This study reported a common molecular mechanism sustaining resistance and potential treatment options to overcome EGFR-TKIs resistance."
+          },
+          {
+            "pmid": "35551173",
+            "title": "Gefitinib and fostamatinib target EGFR and SYK to attenuate silicosis: a multi-omics study with drug exploration.",
+            "abstract": "Silicosis is the most prevalent and fatal occupational disease with no effective therapeutics, and currently used drugs cannot reverse the disease progress. Worse still, there are still challenges to be addressed to fully decipher the intricated pathogenesis. Thus, specifying the essential mechanisms and targets in silicosis progression then exploring anti-silicosis pharmacuticals are desperately needed. In this work, multi-omics atlas was constructed to depict the pivotal abnormalities of silicosis and develop targeted agents. By utilizing an unbiased and time-resolved analysis of the transcr"
+          },
+          {
+            "pmid": "37392558",
+            "title": "Elevated NOX4 promotes tumorigenesis and acquired EGFR-TKIs resistance via enhancing IL-8/PD-L1 signaling in NSCLC.",
+            "abstract": "Epidermal growth factor receptor (EGFR) tyrosine kinase inhibitors (TKIs) have been widely used for human non-small-cell lung cancer (NSCLC) treatment. However, acquired resistance to EGFR-TKIs is the major barrier of treatment success, and new resistance mechanism remains to be elucidated. In this study, we found that elevated NADPH oxidase 4 (NOX4) expression was associated with acquired EGFR-TKIs resistance. Gefitinib is the first-generation FDA-approved EGFR-TKI, and osimertinib is the third-generation FDA-approved EGFR-TKI. We demonstrated that NOX4 knockdown in the EGFR-TKI resistant cel"
+          },
+          {
+            "pmid": "37463108",
+            "title": "NAT10-mediated ac4C tRNA modification promotes EGFR mRNA translation and gefitinib resistance in cancer.",
+            "abstract": "Aberrant RNA modifications are frequently associated with cancers, while the underlying mechanisms and clinical significance remain poorly understood. Here, we find that the ac4C RNA acetyltransferase NAT10 is significantly upregulated in esophageal cancers (ESCAs) and associated with poor ESCA prognosis. In addition, using ESCA cell lines and mouse models, we confirm the critical functions of NAT10 in promoting ESCA tumorigenesis and progression in&#xa0;vitro and in&#xa0;vivo. Mechanistically, NAT10 depletion reduces the abundance of ac4C-modified tRNAs and decreases the translation efficienc"
+          },
+          {
+            "pmid": "39475281",
+            "title": "Epidermal growth factor receptor signaling governs the host inflammatory response to invasive aspergillosis.",
+            "abstract": "The epidermal growth factor receptor (EGFR) has been identified as an epithelial cell receptor for Mucorales fungi and Candida albicans. Blocking EGFR with small molecule inhibitors reduces disease severity in mouse models of mucormycosis and oropharyngeal candidiasis. In contrast, cases of invasive aspergillosis have been reported in cancer patients who were treated with EGFR inhibitors, suggesting that EGFR signaling may play a protective role in the host defense against this infection. Here, we analyzed transcriptomic data from the lungs of mice with invasive aspergillosis and found evidenc"
+          }
+        ]
+      }
+    },
+    "comp_biologist": {
+      "pdb": {
+        "structures": [
+          {
+            "pdb_id": "5Y80",
+            "title": "Complex structure of cyclin G-associated kinase with gefitinib",
+            "resolution_angstrom": 2.5,
+            "method": "X-RAY DIFFRACTION"
+          },
+          {
+            "pdb_id": "5Y7Z",
+            "title": "Complex structure of cyclin G-associated kinase with gefitinib",
+            "resolution_angstrom": 2.804,
+            "method": "X-RAY DIFFRACTION"
+          },
+          {
+            "pdb_id": "9D5H",
+            "title": "Crystal structure of the ILK mutant (R371Q)/alpha-parvin core complex bound to gefitinib",
+            "resolution_angstrom": 1.5,
+            "method": "X-RAY DIFFRACTION"
+          },
+          {
+            "pdb_id": "9D5E",
+            "title": "Crystal structure of the ILK/alpha-parvin core complex bound to gefitinib",
+            "resolution_angstrom": 1.5,
+            "method": "X-RAY DIFFRACTION"
+          },
+          {
+            "pdb_id": "4WKQ",
+            "title": "1.85 angstrom structure of EGFR kinase domain with gefitinib",
+            "resolution_angstrom": 1.85,
+            "method": "X-RAY DIFFRACTION"
+          }
+        ]
+      },
+      "alphafold": {
+        "accession": "P00533",
+        "entry_id": "AF-P00533-F1",
+        "model_url": "https://alphafold.ebi.ac.uk/files/AF-P00533-F1-model_v6.pdb",
+        "cif_url": "https://alphafold.ebi.ac.uk/files/AF-P00533-F1-model_v6.cif",
+        "plddt_global": 75.94,
+        "sequence_length": null,
+        "organism": "Homo sapiens",
+        "available": true
+      },
+      "uniprot": {
+        "accession": "P00533",
+        "gene": "EGFR",
+        "go_terms": [],
+        "sequence_length": 1210,
+        "binding_sites": [
+          {
+            "type": "Binding site",
+            "position": "718-726",
+            "description": ""
+          },
+          {
+            "type": "Binding site",
+            "position": "745-745",
+            "description": ""
+          },
+          {
+            "type": "Binding site",
+            "position": "790-791",
+            "description": ""
+          },
+          {
+            "type": "Binding site",
+            "position": "855-855",
+            "description": ""
+          }
+        ],
+        "domains": [
+          {
+            "name": "Protein kinase",
+            "range": "712-979"
+          }
+        ]
+      },
+      "chembl": {
+        "dataset_count": 1,
+        "sample": [
+          {
+            "molecule_chembl_id": "CHEMBL4444591",
+            "standard_type": "Activity",
+            "standard_value": null,
+            "standard_units": null
+          }
+        ],
+        "target_chembl_id": "CHEMBL4523747"
+      },
+      "pubmed": {
+        "abstracts": [
+          {
+            "pmid": "27251290",
+            "title": "Overcoming EGFR(T790M) and EGFR(C797S) resistance with mutant-selective allosteric inhibitors.",
+            "abstract": "The epidermal growth factor receptor (EGFR)-directed tyrosine kinase inhibitors (TKIs) gefitinib, erlotinib and afatinib are approved treatments for non-small cell lung cancers harbouring activating mutations in the EGFR kinase, but resistance arises rapidly, most frequently owing to the secondary T790M mutation within the ATP site of the receptor. Recently developed mutant-selective irreversible inhibitors are highly active against the T790M mutant, but their efficacy can be compromised by acquired mutation of C797, the cysteine residue with which they form a key covalent bond. All current EG"
+          },
+          {
+            "pmid": "22588876",
+            "title": "Occupy EGFR.",
+            "abstract": "Erlotinib and gefitinib inhibit the growth of non-small cell lung cancer tumors that harbor activating epidermal growth factor receptor (EGFR) mutations but are ineffective against EGFR variants found in glioblastoma. New studies by Barkovich and colleagues and Vivanco and colleagues show that these drugs only occupy the active sites of glioblastoma-derived EGFR mutants to a limited extent and fail to inhibit the activated receptor. Other EGFR inhibitors that target distinct receptor conformations are more effective in the treatment of glioblastoma. These studies reveal distinct drug selectivi"
+          },
+          {
+            "pmid": "17116285",
+            "title": "Protein kinase inhibitors.",
+            "abstract": "Since protein kinases have been found to be implicated in many diseases, first of all malignancies, they are considered as promising therapeutic targets. Many protein kinase inhibitors have been designed by now. These molecules have a low molecular weight and most of them bind to protein kinases competing with ATP for the ATP-binding site. Some protein kinase inhibitors currently undergo clinical trials or have already been successfully introduced into treatment as exemplified by Bcr-Abl, c-kit and PDGFR inhibitor imatinib mesylate (Gleevec), flavopiridol and roscovitine, inhibitors of cyclin-"
+          },
+          {
+            "pmid": "20641864",
+            "title": "Structural, biochemical, and clinical characterization of epidermal growth factor receptor (EGFR) exon 20 insertion mutations in lung cancer.",
+            "abstract": "Epidermal growth factor receptor (EGFR) gene mutations (G719X, exon 19 deletions/insertions, L858R, and L861Q) predict favorable responses to EGFR tyrosine kinase inhibitors (TKIs) in advanced non-small cell lung cancer (NSCLC). However, EGFR exon 20 insertion mutations (~10% of all EGFR mutations) are generally associated with insensitivity to available TKIs (gefitinib, erlotinib, and afatinib). The basis of this primary resistance is poorly understood. We studied a broad subset of exon 20 insertion mutations, comparing in vitro TKI sensitivity with responses to gefitinib and erlotinib in NSC"
+          }
+        ]
+      }
+    }
+  }
+}

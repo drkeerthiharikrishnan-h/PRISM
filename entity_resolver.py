@@ -1,6 +1,7 @@
 """
-entity_resolver.py — Steps 1 & 2 of the PRISM pipeline.
+entity_resolver.py — Steps 1 & 2 of the PRISM pipeline + guardrails.
 
+guardrail_check:        1 Haiku call → is query biomedical? Reject early if not.
 Step 1 (parse_query):   1 LLM call → extract entity + target from free text.
 Step 2 (resolve_ids):   Pure HTTP → map names to database IDs.
 detect_persona:         1 LLM call → infer professional role from query language.
@@ -182,3 +183,70 @@ async def detect_persona(query: str) -> tuple[str, float]:
     if persona_id not in PERSONA_IDS:
         persona_id = "medicinal_chemist"
     return persona_id, confidence
+
+
+# ── Guardrail ─────────────────────────────────────────────────────────────────
+
+class GuardrailResult:
+    def __init__(self, is_biomedical: bool, reason: str, suggestion: str):
+        self.is_biomedical = is_biomedical
+        self.reason        = reason
+        self.suggestion    = suggestion
+
+
+async def guardrail_check(query: str) -> GuardrailResult:
+    """
+    Fast pre-flight check — is this query biomedical?
+    Uses Claude Haiku (~$0.0002 per call, <1s).
+
+    Accepts: drug/compound queries, gene/protein questions, disease mechanism,
+             pathway/signaling, clinical variants, structural biology, any life-sciences topic.
+    Rejects: general knowledge, greetings, math, weather, coding, politics, etc.
+
+    Returns GuardrailResult with is_biomedical flag + helpful message if rejected.
+    """
+    system = """You are a guardrail for a biomedical research tool called PRISM.
+
+PRISM can only answer questions about:
+- Drugs, compounds, small molecules (e.g. imatinib, aspirin, gefitinib)
+- Genes, proteins, enzymes, kinases (e.g. ABL1, EGFR, BRCA1, TP53)
+- Diseases and their molecular basis (e.g. CML, lung cancer, Alzheimer's)
+- Biological pathways and signaling (e.g. MAPK, PI3K/AKT, apoptosis)
+- Drug-target interactions, binding affinity, SAR, resistance mutations
+- Clinical variants, biomarkers, diagnostics
+- Protein structures, sequences, docking, molecular modeling
+- Anything in biomedical research, pharmacology, biochemistry, or molecular biology
+
+PRISM cannot answer:
+- General knowledge questions (weather, history, politics, sports, math)
+- Greetings or casual conversation (hello, hi, how are you)
+- Coding or software questions
+- Business, finance, or legal questions
+- Creative writing or personal advice
+
+Classify the query. Return ONLY valid JSON:
+{
+  "is_biomedical": true or false,
+  "reason": "one short sentence why",
+  "suggestion": "if false — one example of a valid PRISM query the user could try instead; if true — empty string"
+}
+No explanation outside the JSON."""
+
+    try:
+        msg = await _client.messages.create(
+            model="claude-haiku-4-5",
+            max_tokens=150,
+            system=system,
+            messages=[{"role": "user", "content": f"Query: {query}"}],
+        )
+        raw = msg.content[0].text.strip()
+        if raw.startswith("```"):
+            raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
+        result     = json.loads(raw)
+        is_bio     = bool(result.get("is_biomedical", True))
+        reason     = result.get("reason", "")
+        suggestion = result.get("suggestion", "")
+        return GuardrailResult(is_bio, reason, suggestion)
+    except Exception:
+        # If guardrail itself fails, let the query through (fail open)
+        return GuardrailResult(True, "", "")

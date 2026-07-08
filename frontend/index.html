@@ -3,425 +3,865 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PRISM — Persona-Driven Research Intelligence System</title>
+  <title>PRISM — Biomedical Research Intelligence</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-    body { font-family: 'Inter', sans-serif; }
+    * { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #080d14; }
     .mono { font-family: 'JetBrains Mono', monospace; }
-    .panel-content { min-height: 280px; }
-    .cursor::after { content: '▋'; animation: blink 0.8s step-end infinite; opacity: 0; }
-    .cursor.active::after { opacity: 1; }
-    @keyframes blink { 50% { opacity: 0; } 0%, 100% { opacity: 1; } }
+
+    /* Gradient text */
     .gradient-text {
-      background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #34d399 100%);
+      background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 60%, #34d399 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-    .persona-card { transition: all 0.2s ease; border: 2px solid transparent; }
-    .persona-card:hover { transform: translateY(-2px); border-color: var(--card-color); }
-    .persona-card.selected { border-color: var(--card-color); background: color-mix(in srgb, var(--card-color) 10%, #1e293b); }
-    .panel { border-top: 3px solid var(--panel-color); }
-    .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-    .status-dot.running { animation: pulse 1s ease-in-out infinite; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-    .prose-custom h2 { font-size: 0.9rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin: 1rem 0 0.5rem; }
-    .prose-custom p { font-size: 0.875rem; line-height: 1.6; color: #cbd5e1; margin-bottom: 0.5rem; }
-    .prose-custom ul { font-size: 0.875rem; color: #cbd5e1; padding-left: 1rem; }
-    .prose-custom li { margin-bottom: 0.25rem; }
-    .prose-custom strong { color: #f1f5f9; }
-    .fade-in { animation: fadeIn 0.3s ease-in; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 2px; }
+
+    /* Cursor blink — hidden by default, animates when .active, fully gone when .done */
+    .cursor::after { content: ''; }
+    .cursor.active::after {
+      content: '▋'; color: #60a5fa;
+      animation: blink 0.9s step-end infinite;
+    }
+    .cursor.done::after { content: ''; animation: none; }
+    @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
+
+    /* Panel top-border accent */
+    .panel-accent { border-top: 2px solid var(--panel-color); }
+
+    /* Status dot */
+    .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+    .dot.pulse { animation: dotpulse 1.2s ease-in-out infinite; }
+    @keyframes dotpulse { 0%,100% { opacity:1; } 50% { opacity: 0.25; } }
+
+    /* Animations */
+    .fade-in  { animation: fadeIn 0.25s ease-out; }
+    .slide-up { animation: slideUp 0.3s ease-out; }
+    @keyframes fadeIn  { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes slideUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+    /* Prose inside response panels */
+    .prose h2 { font-size: 0.75rem; font-weight: 600; color: #64748b; text-transform: uppercase;
+                letter-spacing: 0.07em; margin: 1.1rem 0 0.45rem; padding-bottom: 0.3rem;
+                border-bottom: 1px solid #1e293b; }
+    .prose p  { font-size: 0.825rem; line-height: 1.65; color: #94a3b8; margin-bottom: 0.5rem; }
+    .prose ul { font-size: 0.825rem; color: #94a3b8; padding-left: 1.1rem; margin-bottom: 0.5rem; }
+    .prose li { margin-bottom: 0.2rem; }
+    .prose strong { color: #e2e8f0; font-weight: 600; }
+    .prose em { color: #7dd3fc; font-style: normal; }
+
+    /* User card hover */
+    .user-card { transition: all 0.18s ease; border: 1.5px solid transparent; cursor: pointer; }
+    .user-card:hover { border-color: var(--uc); transform: translateY(-2px);
+                       box-shadow: 0 6px 24px rgba(0,0,0,0.5); }
+    .user-card.active { border-color: var(--uc);
+                        background: color-mix(in srgb, var(--uc) 8%, #0f1928); }
+
+    /* Avatar */
+    .av { border-radius: 50%; display:flex; align-items:center; justify-content:center;
+          font-weight:700; flex-shrink:0; }
+
+    /* Recommended question pills */
+    .q-pill { transition: all 0.15s ease; border: 1px solid #1e293b; cursor: pointer; }
+    .q-pill:hover { border-color: var(--pill-color, #334155);
+                    background: color-mix(in srgb, var(--pill-color, #334155) 10%, #0f172a);
+                    transform: translateX(2px); }
+
+    /* Input area glow on focus */
+    #query-input:focus { box-shadow: 0 0 0 2px rgba(96,165,250,0.25); }
+
+    /* Glassmorphism panel */
+    .glass { background: rgba(15,23,42,0.8); backdrop-filter: blur(12px); border: 1px solid #1e293b; }
+
+    /* Sidebar */
+    #sidebar { width: 260px; flex-shrink: 0; }
+
+    /* Persona switch modal */
+    .switch-btn { transition: all 0.15s; border: 1px solid #1e293b; }
+    .switch-btn:hover { border-color: var(--sw); background: color-mix(in srgb, var(--sw) 12%, #0f172a); }
+    .switch-btn.active-sw { border-color: var(--sw); background: color-mix(in srgb, var(--sw) 15%, #0f172a); }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen">
+<body class="text-slate-100 min-h-screen">
 
-<!-- ═══════════════════════════════════════════════════════════════════════════
-     LANDING VIEW
-════════════════════════════════════════════════════════════════════════════ -->
-<div id="landing" class="min-h-screen flex flex-col items-center justify-center px-4 py-16">
-  <div class="text-center mb-12 fade-in">
-    <div class="mono text-blue-400 text-sm tracking-widest mb-4 uppercase">Persona-Driven Research Intelligence</div>
-    <h1 class="text-5xl font-bold mb-4"><span class="gradient-text">PRISM</span></h1>
-    <p class="text-slate-400 text-lg max-w-xl mx-auto">
-      One biomedical query. Four expert lenses. Tell PRISM who you are —
-      and get answers built exactly for your role.
+<!-- ═══════════════════════════════════════════════════════════════════
+     VIEW 1 — RESEARCHER LOGIN
+═══════════════════════════════════════════════════════════════════ -->
+<div id="v-login" class="min-h-screen flex flex-col items-center justify-center px-4 py-12">
+
+  <!-- Brand -->
+  <div class="text-center mb-10 fade-in">
+    <div class="mono text-blue-500/70 text-xs tracking-[0.3em] mb-4 uppercase">
+      Persona-Driven Research Intelligence
+    </div>
+    <h1 class="text-6xl font-bold mb-3 tracking-tight">
+      <span class="gradient-text">PRISM</span>
+    </h1>
+    <p class="text-slate-500 text-sm max-w-md mx-auto leading-relaxed">
+      One biomedical query. Four expert lenses.<br>
+      Select your researcher profile to begin.
     </p>
   </div>
 
-  <div class="grid grid-cols-2 gap-4 max-w-2xl w-full mb-8 fade-in">
-    <button onclick="selectPersona('medicinal_chemist')"
-      class="persona-card bg-slate-900 rounded-xl p-6 text-left cursor-pointer"
-      style="--card-color: #0ea5e9" id="card-medicinal_chemist">
-      <div class="text-3xl mb-3">🧪</div>
-      <div class="font-semibold text-slate-100 mb-1">Medicinal Chemist</div>
-      <div class="text-xs text-slate-400">Potency · SAR · 3D structures · Scaffold chemistry</div>
-    </button>
-
-    <button onclick="selectPersona('pathologist')"
-      class="persona-card bg-slate-900 rounded-xl p-6 text-left cursor-pointer"
-      style="--card-color: #f59e0b" id="card-pathologist">
-      <div class="text-3xl mb-3">🔬</div>
-      <div class="font-semibold text-slate-100 mb-1">Pathologist</div>
-      <div class="text-xs text-slate-400">Resistance variants · Clinical significance · Diagnostics</div>
-    </button>
-
-    <button onclick="selectPersona('cell_biologist')"
-      class="persona-card bg-slate-900 rounded-xl p-6 text-left cursor-pointer"
-      style="--card-color: #10b981" id="card-cell_biologist">
-      <div class="text-3xl mb-3">🧬</div>
-      <div class="font-semibold text-slate-100 mb-1">Cell / Molecular Biologist</div>
-      <div class="text-xs text-slate-400">Pathways · Signaling · Mechanism of action</div>
-    </button>
-
-    <button onclick="selectPersona('comp_biologist')"
-      class="persona-card bg-slate-900 rounded-xl p-6 text-left cursor-pointer"
-      style="--card-color: #8b5cf6" id="card-comp_biologist">
-      <div class="text-3xl mb-3">💻</div>
-      <div class="font-semibold text-slate-100 mb-1">Computational Biologist</div>
-      <div class="text-xs text-slate-400">Structures · Sequences · ML datasets · Docking</div>
-    </button>
+  <!-- Researcher cards -->
+  <div id="login-cards" class="grid grid-cols-3 gap-3 max-w-2xl w-full mb-8 fade-in">
+    <div class="col-span-3 text-center text-slate-600 text-xs py-10 mono">Loading profiles…</div>
   </div>
 
+  <!-- Compare shortcut -->
   <button onclick="goCompare()"
-    class="text-slate-400 hover:text-slate-200 text-sm border border-slate-700 hover:border-slate-500 px-6 py-3 rounded-lg transition-all fade-in">
-    Or see all 4 expert views side-by-side →
+    class="group flex items-center gap-2 text-slate-500 hover:text-slate-300 text-sm border border-slate-800 hover:border-slate-600 px-5 py-2.5 rounded-full transition-all fade-in">
+    <span class="grid grid-cols-2 gap-0.5 opacity-60 group-hover:opacity-100 transition-opacity">
+      <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
+      <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+      <span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>
+    </span>
+    Compare all 4 expert views side-by-side
   </button>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════════════════════
-     QUERY VIEW (single persona or compare)
-════════════════════════════════════════════════════════════════════════════ -->
-<div id="query-view" class="hidden min-h-screen flex flex-col">
 
-  <!-- Header -->
-  <header class="border-b border-slate-800 px-6 py-4 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <span class="text-xl font-bold gradient-text">PRISM</span>
-      <span class="text-slate-500 text-sm">|</span>
-      <span id="view-label" class="text-slate-400 text-sm"></span>
-    </div>
-    <div class="flex gap-3">
-      <button onclick="showLanding()" class="text-slate-500 hover:text-slate-300 text-sm transition-colors">
-        ← Change role
+<!-- ═══════════════════════════════════════════════════════════════════
+     VIEW 2 — WELCOME / PERSONA CONFIRM
+═══════════════════════════════════════════════════════════════════ -->
+<div id="v-welcome" class="hidden min-h-screen flex flex-col items-center justify-center px-4 py-12">
+  <div class="max-w-sm w-full fade-in">
+
+    <!-- Card -->
+    <div class="glass rounded-2xl p-7 mb-4">
+      <div class="flex items-center gap-4 mb-5">
+        <div id="wc-av" class="av text-white font-bold" style="width:52px;height:52px;font-size:1rem;background:#0ea5e9">SC</div>
+        <div>
+          <div class="text-slate-500 text-xs mb-0.5">Welcome back 👋</div>
+          <div id="wc-name" class="text-lg font-semibold text-white leading-tight">Dr. Sarah Chen</div>
+          <div id="wc-org"  class="text-slate-500 text-xs mt-0.5">Gladstone Institutes</div>
+        </div>
+      </div>
+
+      <!-- Persona badge -->
+      <div class="bg-slate-900 rounded-xl px-4 py-3 mb-1 flex items-center gap-3 border border-slate-800">
+        <span id="wc-emoji" class="text-xl">🧪</span>
+        <div class="flex-1 min-w-0">
+          <div class="text-slate-600 text-[10px] uppercase tracking-widest mb-0.5">Assigned lens</div>
+          <div id="wc-label" class="text-sm font-semibold text-slate-100 truncate">Medicinal Chemist</div>
+        </div>
+        <button onclick="toggleSwitcher()"
+          class="text-slate-600 hover:text-slate-300 text-xs border border-slate-700 hover:border-slate-500 px-2 py-1 rounded-md transition-all">
+          Switch
+        </button>
+      </div>
+      <p id="wc-note" class="text-slate-600 text-xs px-1 mb-5">
+        Focused on potency data, co-crystal structures, and SAR insights.
+      </p>
+
+      <!-- Persona switcher -->
+      <div id="persona-switcher" class="hidden grid grid-cols-2 gap-2 mb-5">
+        <!-- filled by JS -->
+      </div>
+
+      <!-- CTA -->
+      <button onclick="proceedToQuery()"
+        class="w-full bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white py-3 rounded-xl font-semibold text-sm transition-colors">
+        Start Researching →
       </button>
-      <button id="compare-toggle" onclick="toggleCompare()"
-        class="text-slate-400 hover:text-slate-200 text-sm border border-slate-700 hover:border-slate-500 px-4 py-1.5 rounded-lg transition-all hidden">
-        Compare all 4 →
+    </div>
+
+    <button onclick="showLogin()"
+      class="w-full text-slate-600 hover:text-slate-400 text-xs text-center py-2 transition-colors">
+      ← Back to profiles
+    </button>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     VIEW 3 — RESEARCH INTERFACE (sidebar + chat)
+═══════════════════════════════════════════════════════════════════ -->
+<div id="v-research" class="hidden h-screen flex flex-col overflow-hidden">
+
+  <!-- ── Top bar ────────────────────────────────────────────── -->
+  <header class="flex-shrink-0 flex items-center justify-between px-5 py-3
+                 border-b border-slate-800/80 bg-slate-950/90 backdrop-blur">
+    <div class="flex items-center gap-3">
+      <span class="text-lg font-bold gradient-text tracking-tight">PRISM</span>
+      <span class="text-slate-800">|</span>
+      <div id="hdr-user" class="hidden items-center gap-2">
+        <div id="hdr-av" class="av text-white" style="width:24px;height:24px;font-size:0.6rem;background:#0ea5e9"></div>
+        <span id="hdr-name" class="text-slate-400 text-xs font-medium"></span>
+        <span class="text-slate-700 text-xs">·</span>
+      </div>
+      <span id="hdr-view" class="text-slate-500 text-xs"></span>
+    </div>
+    <div class="flex items-center gap-3">
+      <div id="status-wrap" class="hidden items-center gap-2">
+        <span id="status-dot" class="dot bg-blue-400 pulse"></span>
+        <span id="status-text" class="text-slate-500 text-xs mono max-w-xs truncate"></span>
+      </div>
+      <!-- "Back to my view" — only visible when in compare mode with a logged-in user -->
+      <button id="back-to-persona-btn" onclick="backToPersona()"
+        class="hidden items-center gap-1.5 text-xs border border-slate-700 hover:border-blue-500/50
+               text-slate-400 hover:text-blue-300 px-3 py-1.5 rounded-lg transition-all">
+        ← Back to my view
+      </button>
+      <button id="compare-btn" onclick="toggleCompare()"
+        class="hidden text-slate-500 hover:text-slate-300 text-xs border border-slate-800 hover:border-slate-600 px-3 py-1.5 rounded-lg transition-all">
+        Compare all 4
+      </button>
+      <button onclick="showLogin()"
+        class="text-slate-600 hover:text-slate-300 text-xs transition-colors">
+        Switch user ↗
       </button>
     </div>
   </header>
 
-  <!-- Query bar -->
-  <div class="px-6 py-4 border-b border-slate-800 bg-slate-900/50">
-    <!-- Auto-detect banner -->
-    <div id="detect-banner" class="hidden mb-3 flex items-center gap-2 bg-blue-950 border border-blue-800 rounded-lg px-4 py-2 text-sm">
-      <span class="text-blue-400">🤖 Detected role:</span>
-      <span id="detect-persona-label" class="text-blue-200 font-medium"></span>
-      <span class="text-blue-500 mx-1">·</span>
-      <button onclick="showLanding()" class="text-blue-400 hover:text-blue-200 underline transition-colors">Change</button>
+  <!-- ── Guardrail rejection banner ───────────────────────── -->
+  <div id="guardrail-banner" class="hidden flex-shrink-0 px-5 py-3 bg-amber-950/50 border-b border-amber-900/40
+       flex items-center gap-3">
+    <span class="text-amber-500 text-base">⚠️</span>
+    <div class="flex-1 min-w-0">
+      <span class="text-amber-300 text-xs font-medium">PRISM is a biomedical research tool. </span>
+      <span id="guardrail-reason" class="text-amber-500/80 text-xs"></span>
+      <span id="guardrail-suggestion" class="text-slate-500 text-xs block mt-0.5"></span>
     </div>
-
-    <div class="flex gap-3">
-      <input id="query-input"
-        class="flex-1 bg-slate-800 border border-slate-700 focus:border-blue-500 rounded-lg px-4 py-3 text-slate-100 placeholder-slate-500 outline-none transition-colors text-sm"
-        placeholder="e.g. What do I need to know about imatinib and its target ABL1?"
-        onkeydown="if(event.key==='Enter')runQuery()" />
-      <button onclick="runQuery()"
-        class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-lg font-medium text-sm transition-colors whitespace-nowrap">
-        ▶ Run
-      </button>
-      <button onclick="runDemo()"
-        class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 py-3 rounded-lg text-sm transition-colors whitespace-nowrap">
-        Demo
-      </button>
-    </div>
+    <button onclick="document.getElementById('guardrail-banner').classList.add('hidden')"
+      class="text-amber-800 hover:text-amber-500 text-sm leading-none flex-shrink-0 transition-colors">✕</button>
   </div>
 
-  <!-- Status bar -->
-  <div id="status-bar" class="hidden px-6 py-2 bg-slate-900/30 border-b border-slate-800 flex items-center gap-3 text-xs mono">
-    <span id="status-dot" class="status-dot bg-blue-400 running"></span>
-    <span id="status-text" class="text-slate-400"></span>
-  </div>
+  <!-- ── Body: sidebar + main ──────────────────────────────── -->
+  <div class="flex flex-1 overflow-hidden">
 
-  <!-- Panels -->
-  <div id="panels-container" class="flex-1 overflow-auto p-4">
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="flex flex-col border-r border-slate-800/60 overflow-hidden bg-slate-950/60">
 
-    <!-- Single persona view -->
-    <div id="single-panel" class="hidden max-w-3xl mx-auto">
-      <div id="single-panel-inner" class="bg-slate-900 rounded-xl p-6 panel"
-        style="--panel-color: #64748b">
-        <div class="flex items-center gap-2 mb-4">
-          <span id="single-emoji" class="text-2xl"></span>
-          <span id="single-name" class="font-semibold text-slate-200"></span>
-          <span id="single-cursor" class="cursor ml-1 text-blue-400"></span>
+      <!-- Persona indicator -->
+      <div id="sb-persona" class="flex items-center gap-2.5 px-4 py-3 border-b border-slate-800/60">
+        <span id="sb-emoji" class="text-base">🧪</span>
+        <div class="flex-1 min-w-0">
+          <div class="text-slate-600 text-[9px] uppercase tracking-widest">Current lens</div>
+          <div id="sb-label" class="text-slate-300 text-xs font-semibold truncate">Medicinal Chemist</div>
         </div>
-        <div id="single-content" class="prose-custom panel-content text-slate-300 leading-relaxed"></div>
-      </div>
-    </div>
-
-    <!-- 4-panel compare view -->
-    <div id="compare-panels" class="hidden grid grid-cols-2 gap-4">
-      <!-- Medicinal Chemist -->
-      <div class="bg-slate-900 rounded-xl p-5 panel" style="--panel-color: #0ea5e9">
-        <div class="flex items-center gap-2 mb-3">
-          <span class="text-xl">🧪</span>
-          <span class="font-semibold text-slate-200 text-sm">Medicinal Chemist</span>
-          <span id="cursor-medicinal_chemist" class="cursor ml-auto text-sky-400 text-xs"></span>
-        </div>
-        <div class="text-xs mono text-slate-500 mb-3">ChEMBL · PDB · PubChem · PubMed</div>
-        <div id="panel-medicinal_chemist" class="prose-custom panel-content text-slate-300 text-sm leading-relaxed"></div>
       </div>
 
-      <!-- Pathologist -->
-      <div class="bg-slate-900 rounded-xl p-5 panel" style="--panel-color: #f59e0b">
-        <div class="flex items-center gap-2 mb-3">
-          <span class="text-xl">🔬</span>
-          <span class="font-semibold text-slate-200 text-sm">Pathologist</span>
-          <span id="cursor-pathologist" class="cursor ml-auto text-amber-400 text-xs"></span>
-        </div>
-        <div class="text-xs mono text-slate-500 mb-3">ClinVar · PubMed</div>
-        <div id="panel-pathologist" class="prose-custom panel-content text-slate-300 text-sm leading-relaxed"></div>
+      <!-- Suggested questions -->
+      <div class="flex-1 overflow-y-auto px-3 py-3 space-y-4">
+        <div id="suggested-qs"></div>
       </div>
 
-      <!-- Cell Biologist -->
-      <div class="bg-slate-900 rounded-xl p-5 panel" style="--panel-color: #10b981">
-        <div class="flex items-center gap-2 mb-3">
-          <span class="text-xl">🧬</span>
-          <span class="font-semibold text-slate-200 text-sm">Cell / Molecular Biologist</span>
-          <span id="cursor-cell_biologist" class="cursor ml-auto text-emerald-400 text-xs"></span>
+      <!-- Footer: only show "compare" link when in single-persona mode -->
+      <div id="sb-footer" class="hidden px-3 pb-3 pt-2 border-t border-slate-800/60">
+        <button onclick="switchToCompare()"
+          class="w-full flex items-center justify-center gap-2 text-slate-600 hover:text-slate-400
+                 text-[10px] py-2 rounded-lg transition-all">
+          See all 4 expert views →
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 flex flex-col overflow-hidden">
+
+      <!-- Chat history — scrollable, entries accumulate here -->
+      <div id="chat-history" class="flex-1 overflow-y-auto px-5 py-5 flex flex-col gap-6">
+
+        <!-- Empty state — hidden once first query fires -->
+        <div id="empty-state" class="flex-1 flex flex-col items-center justify-center text-center fade-in">
+          <div class="text-4xl mb-4 opacity-30">🔬</div>
+          <p class="text-slate-600 text-sm font-medium mb-1">Ask a biomedical question</p>
+          <p class="text-slate-700 text-xs max-w-xs">
+            Try one of the suggested questions on the left, or type your own below.
+          </p>
         </div>
-        <div class="text-xs mono text-slate-500 mb-3">Reactome · UniProt · PubMed</div>
-        <div id="panel-cell_biologist" class="prose-custom panel-content text-slate-300 text-sm leading-relaxed"></div>
+
+        <!-- History entries injected here by JS -->
       </div>
 
-      <!-- Computational Biologist -->
-      <div class="bg-slate-900 rounded-xl p-5 panel" style="--panel-color: #8b5cf6">
-        <div class="flex items-center gap-2 mb-3">
-          <span class="text-xl">💻</span>
-          <span class="font-semibold text-slate-200 text-sm">Computational Biologist</span>
-          <span id="cursor-comp_biologist" class="cursor ml-auto text-violet-400 text-xs"></span>
+      <!-- ── Chat input bar ──────────────────────────────── -->
+      <div class="flex-shrink-0 px-4 pb-4 pt-2 border-t border-slate-800/60 bg-slate-950/80">
+        <div id="query-hint" class="hidden text-amber-400 text-xs mb-2 px-1 flex items-center gap-1.5">
+          <span>⚠️</span><span id="query-hint-text"></span>
         </div>
-        <div class="text-xs mono text-slate-500 mb-3">PDB · AlphaFold · UniProt · ChEMBL</div>
-        <div id="panel-comp_biologist" class="prose-custom panel-content text-slate-300 text-sm leading-relaxed"></div>
+        <div class="flex gap-2 items-end">
+          <div class="flex-1 relative">
+            <textarea id="query-input"
+              rows="1"
+              class="w-full bg-slate-900 border border-slate-700/80 focus:border-blue-500/60
+                     rounded-xl px-4 py-3 pr-12 text-sm text-slate-100 placeholder-slate-600
+                     outline-none transition-all resize-none leading-relaxed"
+              placeholder="Ask a biomedical question…"
+              onkeydown="handleKey(event)"
+              oninput="autoResize(this)"></textarea>
+            <button id="send-btn" onclick="runQuery()"
+              class="absolute right-2 bottom-2 w-8 h-8 bg-blue-600 hover:bg-blue-500 active:bg-blue-700
+                     rounded-lg flex items-center justify-center transition-colors">
+              <!-- Arrow icon (default) -->
+              <svg id="send-icon" class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+              <!-- Spinner icon (loading) -->
+              <svg id="send-spinner" class="hidden w-3.5 h-3.5 text-white animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
+                <path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <p class="text-slate-800 text-[10px] text-center mt-2">
+          PRISM answers biomedical questions only · Powered by Claude + 8 open databases
+        </p>
       </div>
-    </div>
-  </div>
-
-  <!-- Footer metadata -->
-  <div id="footer-meta" class="hidden px-6 py-3 border-t border-slate-800 flex items-center gap-4 text-xs mono text-slate-500">
-    <span id="meta-entity"></span>
-    <span>·</span>
-    <span id="meta-dbs"></span>
-    <span>·</span>
-    <span id="meta-calls"></span>
+    </main>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════════════════════
+
+<!-- ═══════════════════════════════════════════════════════════════════
      JAVASCRIPT
-════════════════════════════════════════════════════════════════════════════ -->
+═══════════════════════════════════════════════════════════════════ -->
 <script>
+// ── Constants ─────────────────────────────────────────────────────
+
 const PERSONAS = {
-  medicinal_chemist: { name: 'Medicinal Chemist',        emoji: '🧪', color: '#0ea5e9' },
-  pathologist:       { name: 'Pathologist',               emoji: '🔬', color: '#f59e0b' },
-  cell_biologist:    { name: 'Cell / Molecular Biologist', emoji: '🧬', color: '#10b981' },
-  comp_biologist:    { name: 'Computational Biologist',   emoji: '💻', color: '#8b5cf6' },
+  medicinal_chemist: { name:'Medicinal Chemist',         emoji:'🧪', color:'#0ea5e9' },
+  pathologist:       { name:'Pathologist',                emoji:'🔬', color:'#f59e0b' },
+  cell_biologist:    { name:'Cell / Molecular Biologist', emoji:'🧬', color:'#10b981' },
+  comp_biologist:    { name:'Computational Biologist',    emoji:'💻', color:'#8b5cf6' },
 };
 
-let currentPersona = null;   // null = compare all
-let isCompareMode = false;
-let activeSSE = null;
-let rawTokens = {};           // persona_id → accumulated raw markdown
+// Recommended questions per persona — shown in sidebar
+const QUESTIONS = {
+  medicinal_chemist: {
+    label: '🧪 Chemistry & SAR',
+    color: '#0ea5e9',
+    items: [
+      { short:'Imatinib SAR & ABL1 structures', q:'What do I need to know about imatinib and its target ABL1?' },
+      { short:'Dasatinib BCR-ABL selectivity',  q:'What is the binding affinity of dasatinib against BCR-ABL and what 3D structures explain its broader kinase selectivity?' },
+      { short:'Gefitinib EGFR scaffold',         q:'What SAR data exists for EGFR inhibitors like gefitinib and how does the quinazoline scaffold contribute to potency?' },
+      { short:'Vemurafenib BRAF structures',     q:'What co-crystal structures and binding affinity data exist for vemurafenib against BRAF V600E?' },
+    ],
+  },
+  pathologist: {
+    label: '🔬 Variants & Resistance',
+    color: '#f59e0b',
+    items: [
+      { short:'ABL1 imatinib resistance',   q:'Which ABL1 mutations cause imatinib resistance in CML patients and what are the clinical options?' },
+      { short:'BRCA1/2 hereditary cancer',  q:'What BRCA1 and BRCA2 variants are classified as pathogenic for hereditary breast and ovarian cancer?' },
+      { short:'KRAS anti-EGFR resistance',  q:'Which KRAS mutations drive resistance to anti-EGFR therapy in colorectal cancer?' },
+      { short:'EGFR resistance mutations',  q:'What EGFR mutations cause resistance to gefitinib in lung cancer patients?' },
+    ],
+  },
+  cell_biologist: {
+    label: '🧬 Pathways & Signaling',
+    color: '#10b981',
+    items: [
+      { short:'Imatinib ABL1 signaling',    q:'How does imatinib blocking ABL1 change downstream BCR-ABL signaling — which pathways and proteins are involved?' },
+      { short:'Vemurafenib BRAF MAPK',      q:'How does vemurafenib inhibit BRAF V600E and what downstream MAPK pathway effects does it produce?' },
+      { short:'PI3K AKT mTOR axis',         q:'What is the role of PI3K AKT mTOR signaling in cancer cell survival and how do PI3K inhibitors disrupt this pathway?' },
+      { short:'BCR-ABL STAT5 mechanism',    q:'How does constitutively active BCR-ABL drive STAT5 signaling and what is the downstream consequence?' },
+    ],
+  },
+  comp_biologist: {
+    label: '💻 Structures & Datasets',
+    color: '#8b5cf6',
+    items: [
+      { short:'ABL1 structures & datasets',   q:'What experimental and predicted structures and bioactivity datasets exist for ABL1 to train a docking model?' },
+      { short:'EGFR ML-ready data',           q:'What PDB structures, AlphaFold predictions and bioactivity datasets exist for EGFR kinase for molecular docking?' },
+      { short:'TP53 structural data',         q:'What structural data and ML-ready datasets are available for TP53 to study interaction with small molecule reactivators?' },
+      { short:'AlphaFold BRAF V600E',         q:'What AlphaFold prediction exists for BRAF and what are the sequence features around the V600E mutation site?' },
+    ],
+  },
+};
 
-// ── Navigation ──────────────────────────────────────────────────────────────
+// Cross-persona questions (shown regardless of role)
+const GENERAL_QUESTIONS = {
+  label: '🌐 Compare All Experts',
+  color: '#64748b',
+  items: [
+    { short:'Imatinib & ABL1 — all views',   q:'What do I need to know about imatinib and its target ABL1?' },
+    { short:'Gefitinib & EGFR — all views',  q:'What do I need to know about gefitinib and its target EGFR?' },
+    { short:'Vemurafenib & BRAF — all views',q:'What do I need to know about vemurafenib and its target BRAF?' },
+  ],
+};
 
-function showLanding() {
-  document.getElementById('landing').classList.remove('hidden');
-  document.getElementById('query-view').classList.add('hidden');
-  if (activeSSE) { activeSSE.close(); activeSSE = null; }
+// ── State ──────────────────────────────────────────────────────────
+
+let currentUser    = null;
+let currentPersona = null;
+let isCompareMode  = false;
+let rawTokens      = {};
+let chatHistory    = [];   // [{id, query, persona, isCompare}]
+let currentEntryId = null;
+
+// ── View helpers ───────────────────────────────────────────────────
+
+const show = id => document.getElementById(id).classList.remove('hidden');
+const hide = id => document.getElementById(id).classList.add('hidden');
+const el   = id => document.getElementById(id);
+
+function showLogin() {
+  ['v-login','v-welcome','v-research'].forEach(v =>
+    el(v).classList.toggle('hidden', v !== 'v-login')
+  );
+}
+function showWelcome() {
+  ['v-login','v-welcome','v-research'].forEach(v =>
+    el(v).classList.toggle('hidden', v !== 'v-welcome')
+  );
+}
+function showResearch() {
+  ['v-login','v-welcome','v-research'].forEach(v =>
+    el(v).classList.toggle('hidden', v !== 'v-research')
+  );
 }
 
-function selectPersona(personaId) {
-  currentPersona = personaId;
-  isCompareMode = false;
-  document.getElementById('landing').classList.add('hidden');
-  document.getElementById('query-view').classList.remove('hidden');
-  setupQueryView();
+// ── Boot: load researcher profiles ────────────────────────────────
+
+async function loadUsers() {
+  try {
+    const { users } = await (await fetch('/api/users')).json();
+    renderLoginCards(users);
+  } catch {
+    el('login-cards').innerHTML =
+      '<div class="col-span-3 text-center text-red-500/70 text-xs py-10">Could not load profiles — is the server running?</div>';
+  }
+}
+
+function renderLoginCards(users) {
+  el('login-cards').innerHTML = users.map(u => `
+    <button class="user-card glass rounded-xl p-4 text-left"
+      style="--uc:${u.color}"
+      onclick='selectUser(${JSON.stringify(u).replace(/'/g,"&#39;")})'>
+      <div class="flex items-center gap-3 mb-2.5">
+        <div class="av text-white" style="width:36px;height:36px;font-size:0.75rem;background:${u.color}">
+          ${u.initials}
+        </div>
+        <div class="min-w-0">
+          <div class="text-slate-200 text-xs font-semibold leading-tight truncate">${u.name}</div>
+          <div class="text-slate-600 text-[10px] truncate">${u.org}</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5 mt-1">
+        <span class="text-sm">${u.persona_emoji}</span>
+        <span class="text-[10px] font-medium" style="color:${u.color}">${u.persona_label}</span>
+      </div>
+    </button>
+  `).join('');
+}
+
+// ── User selection ─────────────────────────────────────────────────
+
+function selectUser(user) {
+  currentUser    = user;
+  currentPersona = user.persona;
+  sessionStorage.setItem('prism_user', JSON.stringify(user));
+
+  el('wc-av').textContent    = user.initials;
+  el('wc-av').style.background = user.color;
+  el('wc-name').textContent  = user.name;
+  el('wc-org').textContent   = `${user.title} · ${user.org}`;
+  el('wc-emoji').textContent = user.persona_emoji;
+  el('wc-label').textContent = user.persona_label;
+  el('wc-note').textContent  = user.welcome_note;
+
+  // Build switcher buttons
+  el('persona-switcher').innerHTML = Object.entries(PERSONAS).map(([id, p]) => `
+    <button onclick="switchPersona('${id}')"
+      class="switch-btn rounded-lg px-3 py-2 text-left flex items-center gap-2 ${id === user.persona ? 'active-sw' : ''}"
+      style="--sw:${p.color}" id="sw-${id}">
+      <span class="text-base">${p.emoji}</span>
+      <span class="text-xs text-slate-400">${p.name}</span>
+    </button>
+  `).join('');
+  hide('persona-switcher');
+
+  showWelcome();
+}
+
+function toggleSwitcher() {
+  el('persona-switcher').classList.toggle('hidden');
+}
+
+function switchPersona(id) {
+  currentPersona = id;
+  const p = PERSONAS[id];
+  el('wc-emoji').textContent = p.emoji;
+  el('wc-label').textContent = p.name;
+  el('wc-note').textContent  = `Switched to ${p.name} view.`;
+  document.querySelectorAll('[id^="sw-"]').forEach(b => {
+    b.classList.toggle('active-sw', b.id === `sw-${id}`);
+  });
 }
 
 function goCompare() {
+  currentUser    = null;
   currentPersona = null;
+  isCompareMode  = true;
+  enterResearch();
+}
+
+function proceedToQuery() {
+  isCompareMode = false;
+  enterResearch();
+}
+
+// ── Research view setup ────────────────────────────────────────────
+
+function enterResearch() {
+  showResearch();
+  setupHeader();
+  buildSidebar();
+  clearHistory();
+}
+
+function setupHeader() {
+  if (currentUser) {
+    el('hdr-av').textContent     = currentUser.initials;
+    el('hdr-av').style.background = currentUser.color;
+    el('hdr-name').textContent   = currentUser.name;
+    el('hdr-user').classList.remove('hidden');
+    el('hdr-user').style.display = 'flex';
+  } else {
+    el('hdr-user').classList.add('hidden');
+  }
+
+  if (isCompareMode || !currentPersona) {
+    el('hdr-view').textContent = '4-Expert Compare';
+    hide('compare-btn');
+    // Show "Back to my view" only when user is logged in
+    if (currentUser) {
+      const p = PERSONAS[currentUser.persona];
+      el('back-to-persona-btn').textContent = `← Back to ${p.emoji} ${currentUser.name.split(' ')[1] || currentUser.name}'s view`;
+      el('back-to-persona-btn').classList.remove('hidden');
+      el('back-to-persona-btn').style.display = 'flex';
+    } else {
+      hide('back-to-persona-btn');
+    }
+  } else {
+    const p = PERSONAS[currentPersona];
+    el('hdr-view').textContent = `${p.emoji} ${p.name}`;
+    // Clear inline style too — otherwise 'hidden' class can't override style.display='flex'
+    const backBtn = el('back-to-persona-btn');
+    backBtn.classList.add('hidden');
+    backBtn.style.display = '';
+    el('compare-btn').classList.remove('hidden');
+    el('compare-btn').style.display = 'inline-flex';
+  }
+}
+
+function buildSidebar() {
+  const persona = currentPersona;
+
+  // Persona indicator strip at top of sidebar
+  if (persona && PERSONAS[persona]) {
+    const p = PERSONAS[persona];
+    el('sb-emoji').textContent = p.emoji;
+    el('sb-label').textContent = p.name;
+    show('sb-persona');
+  } else {
+    hide('sb-persona');
+  }
+
+  let html = '';
+
+  if (persona && QUESTIONS[persona]) {
+    // ── Single persona mode: show ONLY this persona's questions ──
+    // No compare grid, no other persona sections — keep it clean and focused
+    const section = QUESTIONS[persona];
+    html += `<div class="text-[9px] font-semibold text-slate-700 uppercase tracking-widest px-3 mb-2 mt-1">
+               Suggested questions
+             </div>`;
+    html += section.items.map(item => `
+      <button
+        class="q-pill w-full text-left px-3 py-2.5 rounded-lg text-[11px] text-slate-500 hover:text-slate-300 leading-snug mb-1"
+        style="--pill-color:${section.color}"
+        onclick="askQuestion(${JSON.stringify(item.q).replace(/"/g,'&quot;')})">
+        ${item.short}
+      </button>
+    `).join('');
+
+  } else {
+    // ── Compare mode: show all 4 persona sections ──
+    html += `<div class="text-[9px] font-semibold text-slate-700 uppercase tracking-widest px-3 mb-2 mt-1">
+               Sample queries
+             </div>`;
+    Object.entries(QUESTIONS).forEach(([id, section]) => {
+      html += renderQSection(section);
+    });
+  }
+
+  el('suggested-qs').innerHTML = html;
+
+  // Show "See all 4 views" footer link only in single-persona mode
+  if (persona) {
+    el('sb-footer').classList.remove('hidden');
+  } else {
+    el('sb-footer').classList.add('hidden');
+  }
+}
+
+function renderQSection(section, primary) {
+  const pills = section.items.map(item => `
+    <button
+      class="q-pill w-full text-left px-3 py-2 rounded-lg text-[11px] text-slate-500 hover:text-slate-300 leading-snug"
+      style="--pill-color:${section.color}"
+      onclick="askQuestion(${JSON.stringify(item.q).replace(/"/g,'&quot;')})">
+      ${item.short}
+    </button>
+  `).join('');
+
+  return `
+    <div class="mb-3">
+      <div class="text-[9px] font-semibold text-slate-700 uppercase tracking-widest px-3 mb-1 mt-1">
+        ${section.label}
+      </div>
+      ${pills}
+    </div>
+  `;
+}
+
+function askQuestion(query) {
+  el('query-input').value = query;
+  autoResize(el('query-input'));
+  runQuery();
+}
+
+function switchToCompare() {
   isCompareMode = true;
-  document.getElementById('landing').classList.add('hidden');
-  document.getElementById('query-view').classList.remove('hidden');
-  setupQueryView();
+  currentPersona = null;
+  setupHeader();
+  buildSidebar();
+  clearHistory();
 }
 
 function toggleCompare() {
-  if (!isCompareMode) goCompare();
+  switchToCompare();
 }
 
-function setupQueryView() {
-  const lbl = document.getElementById('view-label');
-  const compareToggle = document.getElementById('compare-toggle');
-  const singlePanel = document.getElementById('single-panel');
-  const comparePanel = document.getElementById('compare-panels');
-
-  if (isCompareMode || !currentPersona) {
-    lbl.textContent = '4-Expert Compare';
-    compareToggle.classList.add('hidden');
-    singlePanel.classList.add('hidden');
-    comparePanel.classList.remove('hidden');
-  } else {
-    const p = PERSONAS[currentPersona];
-    lbl.innerHTML = `${p.emoji} ${p.name}`;
-    compareToggle.classList.remove('hidden');
-    singlePanel.classList.remove('hidden');
-    comparePanel.classList.add('hidden');
-
-    // Style single panel
-    const inner = document.getElementById('single-panel-inner');
-    inner.style.setProperty('--panel-color', p.color);
-    document.getElementById('single-emoji').textContent = p.emoji;
-    document.getElementById('single-name').textContent = p.name;
-  }
-
-  resetPanels();
+function backToPersona() {
+  if (!currentUser) { showLogin(); return; }
+  isCompareMode  = false;
+  currentPersona = currentUser.persona;
+  setupHeader();
+  buildSidebar();
+  clearHistory();
 }
 
-// ── Panel helpers ────────────────────────────────────────────────────────────
+// ── Response area ──────────────────────────────────────────────────
 
-function resetPanels() {
-  rawTokens = {};
-  document.getElementById('detect-banner').classList.add('hidden');
-  document.getElementById('status-bar').classList.add('hidden');
-  document.getElementById('footer-meta').classList.add('hidden');
+// ── History helpers ────────────────────────────────────────────────
 
-  // Clear all panel content
-  ['medicinal_chemist','pathologist','cell_biologist','comp_biologist'].forEach(p => {
-    const el = document.getElementById(`panel-${p}`);
-    if (el) el.innerHTML = '';
-    const cursor = document.getElementById(`cursor-${p}`);
-    if (cursor) cursor.classList.remove('active');
-  });
-
-  const single = document.getElementById('single-content');
-  if (single) single.innerHTML = '';
-  const singleCursor = document.getElementById('single-cursor');
-  if (singleCursor) singleCursor.classList.remove('active');
+function clearHistory() {
+  chatHistory    = [];
+  currentEntryId = null;
+  rawTokens      = {};
+  const hist = el('chat-history');
+  [...hist.querySelectorAll('.history-entry')].forEach(n => n.remove());
+  show('empty-state');
+  hide('guardrail-banner');
+  hide('status-wrap');
 }
 
-function setStatus(message, running = true) {
-  const bar = document.getElementById('status-bar');
-  bar.classList.remove('hidden');
-  document.getElementById('status-text').textContent = message;
-  const dot = document.getElementById('status-dot');
-  if (running) {
-    dot.classList.add('running');
-    dot.className = 'status-dot bg-blue-400 running';
-  } else {
-    dot.className = 'status-dot bg-green-400';
-  }
+function createHistoryEntry(query) {
+  const id      = Date.now();
+  const compare = isCompareMode || !currentPersona;
+  chatHistory.push({ id, query, persona: currentPersona, isCompare: compare });
+  currentEntryId = id;
+  rawTokens      = {};
+
+  hide('empty-state');
+
+  const wrap = document.createElement('div');
+  wrap.className = 'history-entry fade-in';
+  wrap.id        = `he-${id}`;
+  wrap.innerHTML = compare ? _buildCompareHTML(id, query) : _buildSingleHTML(id, query);
+  el('chat-history').appendChild(wrap);
+  scrollToBottom();
+  return id;
+}
+
+function _buildSingleHTML(id, query) {
+  const p = PERSONAS[currentPersona];
+  return `
+    <div class="flex justify-end mb-3">
+      <div class="max-w-xl bg-blue-600/15 border border-blue-500/25 rounded-2xl rounded-tr-sm px-4 py-2.5">
+        <p class="text-slate-200 text-sm leading-relaxed">${_esc(query)}</p>
+      </div>
+    </div>
+    <div class="glass rounded-2xl p-5 panel-accent" style="--panel-color:${p.color}">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="text-xl">${p.emoji}</span>
+        <span class="text-sm font-semibold text-slate-200">${p.name}</span>
+        <span id="hcur-${id}-${currentPersona}" class="cursor text-blue-400 text-xs ml-1"></span>
+      </div>
+      <div id="hpanel-${id}-${currentPersona}" class="prose text-slate-400 min-h-[80px]"></div>
+    </div>
+    <div id="hmeta-${id}" class="hidden mt-2 flex items-center gap-2 text-[10px] mono text-slate-700 px-1"></div>
+  `;
+}
+
+function _buildCompareHTML(id, query) {
+  const defs = [
+    { key:'medicinal_chemist', emoji:'🧪', name:'Medicinal Chemist',         color:'#0ea5e9', dbs:'ChEMBL · PDB · PubChem · PubMed', cur:'text-sky-400' },
+    { key:'pathologist',       emoji:'🔬', name:'Pathologist',                color:'#f59e0b', dbs:'ClinVar · PubMed',                cur:'text-amber-400' },
+    { key:'cell_biologist',    emoji:'🧬', name:'Cell / Molecular Biologist', color:'#10b981', dbs:'Reactome · UniProt · PubMed',     cur:'text-emerald-400' },
+    { key:'comp_biologist',    emoji:'💻', name:'Computational Biologist',    color:'#8b5cf6', dbs:'PDB · AlphaFold · UniProt · ChEMBL', cur:'text-violet-400' },
+  ];
+  const panels = defs.map(p => `
+    <div class="glass rounded-2xl p-4 panel-accent" style="--panel-color:${p.color}">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="text-base">${p.emoji}</span>
+        <span class="text-xs font-semibold text-slate-300">${p.name}</span>
+        <span id="hcur-${id}-${p.key}" class="cursor ${p.cur} text-xs ml-auto"></span>
+      </div>
+      <div class="text-[10px] mono text-slate-700 mb-2">${p.dbs}</div>
+      <div id="hpanel-${id}-${p.key}" class="prose text-slate-400 min-h-[120px]"></div>
+    </div>`).join('');
+  return `
+    <div class="flex justify-end mb-3">
+      <div class="max-w-xl bg-blue-600/15 border border-blue-500/25 rounded-2xl rounded-tr-sm px-4 py-2.5">
+        <p class="text-slate-200 text-sm leading-relaxed">${_esc(query)}</p>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-3">${panels}</div>
+    <div id="hmeta-${id}" class="hidden mt-2 flex items-center gap-2 text-[10px] mono text-slate-700 px-1"></div>
+  `;
+}
+
+function _esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function scrollToBottom() {
+  const h = el('chat-history');
+  h.scrollTop = h.scrollHeight;
+}
+
+// ── Status + token helpers ─────────────────────────────────────────
+
+function setStatus(msg, running = true) {
+  el('status-wrap').classList.remove('hidden');
+  el('status-wrap').style.display = 'flex';
+  el('status-text').textContent   = msg;
+  el('status-dot').className      = running ? 'dot bg-blue-400 pulse' : 'dot bg-green-400';
 }
 
 function appendToken(personaId, text) {
   rawTokens[personaId] = (rawTokens[personaId] || '') + text;
-  const html = marked.parse(rawTokens[personaId]);
-
-  if (isCompareMode || !currentPersona) {
-    const el = document.getElementById(`panel-${personaId}`);
-    if (el) el.innerHTML = html;
-  } else if (currentPersona === personaId) {
-    const el = document.getElementById('single-content');
-    if (el) el.innerHTML = html;
-  }
+  const panel = document.getElementById(`hpanel-${currentEntryId}-${personaId}`);
+  if (panel) { panel.innerHTML = marked.parse(rawTokens[personaId]); scrollToBottom(); }
 }
 
 function setCursorActive(personaId, active) {
-  if (isCompareMode || !currentPersona) {
-    const c = document.getElementById(`cursor-${personaId}`);
-    if (c) c.classList.toggle('active', active);
-  } else if (currentPersona === personaId) {
-    const c = document.getElementById('single-cursor');
-    if (c) c.classList.toggle('active', active);
+  const c = document.getElementById(`hcur-${currentEntryId}-${personaId}`);
+  if (!c) return;
+  if (active) { c.classList.remove('done'); c.classList.add('active'); }
+  else        { c.classList.remove('active'); c.classList.add('done'); }
+}
+
+// ── Input helpers ──────────────────────────────────────────────────
+
+function autoResize(ta) {
+  ta.style.height = 'auto';
+  ta.style.height = Math.min(ta.scrollHeight, 140) + 'px';
+}
+
+function setSendLoading(loading) {
+  const btn     = el('send-btn');
+  const icon    = el('send-icon');
+  const spinner = el('send-spinner');
+  if (loading) {
+    btn.disabled = true;
+    btn.classList.replace('bg-blue-600', 'bg-slate-700');
+    btn.classList.remove('hover:bg-blue-500', 'active:bg-blue-700');
+    icon.classList.add('hidden');
+    spinner.classList.remove('hidden');
+    el('query-input').disabled = true;
+  } else {
+    btn.disabled = false;
+    btn.classList.replace('bg-slate-700', 'bg-blue-600');
+    btn.classList.add('hover:bg-blue-500', 'active:bg-blue-700');
+    icon.classList.remove('hidden');
+    spinner.classList.add('hidden');
+    el('query-input').disabled = false;
+    el('query-input').focus();
   }
 }
 
-// ── Query execution ──────────────────────────────────────────────────────────
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); runQuery(); }
+}
 
-async function runQuery(demoMode = false) {
-  const query = document.getElementById('query-input').value.trim();
+function validateQuery(query) {
+  if (query.length < 8)
+    return 'Too short — try something like "imatinib ABL1 binding affinity"';
+  const greet = /^(hello|hi|hey|test|ok|yes|no|thanks|bye|sup)\W*$/i;
+  if (greet.test(query))
+    return 'PRISM answers biomedical questions — e.g. "What is the SAR of imatinib against ABL1?"';
+  return null;
+}
+
+function showQueryHint(msg) {
+  el('query-hint-text').textContent = msg;
+  el('query-hint').classList.remove('hidden');
+  el('query-hint').style.display = 'flex';
+  setTimeout(() => hide('query-hint'), 4500);
+}
+
+// ── Run query ──────────────────────────────────────────────────────
+
+async function runQuery() {
+  const query = el('query-input').value.trim();
   if (!query) return;
 
-  if (activeSSE) { activeSSE.close(); activeSSE = null; }
-  resetPanels();
-  setStatus('Starting…');
+  hide('query-hint');
+  const validErr = validateQuery(query);
+  if (validErr) { showQueryHint(validErr); return; }
 
-  // Auto-detect persona if no role selected and not compare mode
-  if (!currentPersona && !isCompareMode) {
-    setStatus('Detecting your role from query…');
-    try {
-      const res = await fetch('/api/detect-persona', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query }),
-      });
-      const data = await res.json();
-      if (data.persona_id && data.confidence > 0.6) {
-        currentPersona = data.persona_id;
-        const p = PERSONAS[data.persona_id];
-        document.getElementById('detect-banner').classList.remove('hidden');
-        document.getElementById('detect-persona-label').textContent = `${p.emoji} ${p.name}`;
-        setupQueryView();
-      } else {
-        isCompareMode = true;
-        setupQueryView();
-      }
-    } catch (e) {
-      isCompareMode = true;
-      setupQueryView();
-    }
-  }
+  // Clear input and show spinner immediately — don't wait for streaming to finish
+  el('query-input').value = '';
+  el('query-input').style.height = 'auto';
+  setSendLoading(true);
 
-  const body = {
-    query,
-    persona: isCompareMode ? null : currentPersona,
-    demo_mode: demoMode,
-  };
+  // Create a new history entry for this query — old entries stay visible
+  createHistoryEntry(query);
+  setStatus('Checking query…');
 
   const response = await fetch('/api/query', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      query,
+      persona:   isCompareMode ? null : currentPersona,
+      demo_mode: false,
+    }),
   });
 
-  const reader = response.body.getReader();
+  const reader  = response.body.getReader();
   const decoder = new TextDecoder();
   let buffer = '';
-
   const activePersonas = new Set();
 
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
-
     buffer += decoder.decode(value, { stream: true });
     const lines = buffer.split('\n');
     buffer = lines.pop() || '';
-
     for (const line of lines) {
       if (!line.startsWith('data: ')) continue;
-      try {
-        const event = JSON.parse(line.slice(6));
-        handleSSEEvent(event, activePersonas);
-      } catch (e) { /* skip malformed */ }
+      try { handleSSEEvent(JSON.parse(line.slice(6)), activePersonas); }
+      catch {}
     }
   }
 
-  // Deactivate all cursors
   activePersonas.forEach(p => setCursorActive(p, false));
   setStatus('Complete', false);
+  setSendLoading(false);
 }
 
 function handleSSEEvent(event, activePersonas) {
@@ -429,6 +869,21 @@ function handleSSEEvent(event, activePersonas) {
     case 'status':
       setStatus(event.message);
       break;
+
+    case 'guardrail_rejected': {
+      // Remove the pending history entry since no response was generated
+      const pending = document.getElementById(`he-${currentEntryId}`);
+      if (pending) pending.remove();
+      if (chatHistory.length === 0) show('empty-state');
+      hide('status-wrap');
+      el('guardrail-banner').classList.remove('hidden');
+      el('guardrail-banner').style.display = 'flex';
+      el('guardrail-reason').textContent = event.reason || '';
+      el('guardrail-suggestion').textContent =
+        event.suggestion ? '💡 Try: ' + event.suggestion : '';
+      setSendLoading(false);
+      break;
+    }
 
     case 'token':
       if (!activePersonas.has(event.persona)) {
@@ -439,29 +894,29 @@ function handleSSEEvent(event, activePersonas) {
       break;
 
     case 'done': {
-      const meta = event.metadata || {};
-      document.getElementById('footer-meta').classList.remove('hidden');
-      document.getElementById('meta-entity').textContent =
-        `${meta.entity || '?'} → ${meta.target || '?'}`;
-      document.getElementById('meta-dbs').textContent =
-        `DBs: ${(meta.databases_queried || []).join(' · ')}`;
-      document.getElementById('meta-calls').textContent =
-        `LLM calls: ${meta.llm_calls || '?'}`;
+      const m  = event.metadata || {};
+      const fm = document.getElementById(`hmeta-${currentEntryId}`);
+      if (fm) {
+        fm.classList.remove('hidden');
+        fm.style.display = 'flex';
+        fm.innerHTML = `
+          <span>${m.entity||'?'} → ${m.target||'?'}</span>
+          <span>·</span><span>DBs: ${(m.databases_queried||[]).join(' · ')}</span>
+          <span>·</span><span>${m.llm_calls||'?'} LLM calls</span>`;
+      }
       break;
     }
   }
 }
 
-async function runDemo() {
-  document.getElementById('query-input').value =
-    'What do I need to know about imatinib and its target ABL1?';
-  if (!isCompareMode) {
-    currentPersona = null;
-    isCompareMode = true;
-    setupQueryView();
-  }
-  await runQuery(true);
-}
+// ── Session restore ────────────────────────────────────────────────
+
+(function() {
+  const saved = sessionStorage.getItem('prism_user');
+  if (saved) try { currentUser = JSON.parse(saved); } catch {}
+})();
+
+loadUsers();
 </script>
 </body>
 </html>

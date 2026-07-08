@@ -13,5 +13,17 @@ dependencies = [
     "sse-starlette>=2.1.0",
 ]
 
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.pytest.ini_options.markers]
+backend = "backend unit/integration tests"
+e2e = "Playwright end-to-end tests"
+
 [dependency-groups]
-dev = []
+dev = [
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "pytest-playwright>=0.8.0",
+]

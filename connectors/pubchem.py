@@ -24,13 +24,15 @@ async def fetch(entity_ids: dict, params: dict) -> dict:
         async with httpx.AsyncClient(follow_redirects=True) as client:
             r = await client.get(
                 f"{BASE}/compound/cid/{cid}/property/"
-                "CanonicalSMILES,MolecularFormula,MolecularWeight,IUPACName/JSON",
+                "SMILES,MolecularFormula,MolecularWeight,IUPACName/JSON",
                 timeout=8,
             )
             props = r.json().get("PropertyTable", {}).get("Properties", [{}])[0]
+            # PubChem returns "SMILES" (was "CanonicalSMILES" in older API versions)
+            smiles = props.get("SMILES") or props.get("CanonicalSMILES", "")
             return {
                 "cid": cid,
-                "canonical_smiles": props.get("CanonicalSMILES", ""),
+                "canonical_smiles": smiles,
                 "molecular_formula": props.get("MolecularFormula", ""),
                 "molecular_weight": props.get("MolecularWeight"),
                 "iupac_name": props.get("IUPACName", ""),

@@ -1,0 +1,261 @@
+{
+  "ids": {
+    "entity": "imatinib",
+    "target": "BCR-ABL",
+    "drug_pubchem": "5291",
+    "drug_chembl": "CHEMBL941",
+    "target_uniprot": null,
+    "target_chembl": "CHEMBL6105"
+  },
+  "evidence": {
+    "medicinal_chemist": {
+      "chembl": {
+        "activities": [],
+        "count": 0
+      },
+      "pdb": {
+        "structures": [
+          {
+            "pdb_id": "4CSV",
+            "title": "Tyrosine kinase AS - a common ancestor of Src and Abl bound to Gleevec",
+            "resolution_angstrom": 2.05,
+            "method": "X-RAY DIFFRACTION"
+          },
+          {
+            "pdb_id": "3FW1",
+            "title": "Quinone Reductase 2",
+            "resolution_angstrom": 1.75,
+            "method": "X-RAY DIFFRACTION"
+          },
+          {
+            "pdb_id": "2OIQ",
+            "title": "Crystal Structure of chicken c-Src kinase domain in complex with the cancer drug imatinib.",
+            "resolution_angstrom": 2.07,
+            "method": "X-RAY DIFFRACTION"
+          },
+          {
+            "pdb_id": "5MQT",
+            "title": "Crystal structure of dCK mutant C3S in complex with imatinib and UDP",
+            "resolution_angstrom": 3.2,
+            "method": "X-RAY DIFFRACTION"
+          },
+          {
+            "pdb_id": "3OEZ",
+            "title": "crystal structure of the L317I mutant of the chicken c-Src tyrosine kinase domain complexed with imatinib",
+            "resolution_angstrom": 2.4,
+            "method": "X-RAY DIFFRACTION"
+          }
+        ]
+      },
+      "pubchem": {
+        "cid": "5291",
+        "canonical_smiles": "CC1=C(C=C(C=C1)NC(=O)C2=CC=C(C=C2)CN3CCN(CC3)C)NC4=NC=CC(=N4)C5=CN=CC=C5",
+        "molecular_formula": "C29H31N7O",
+        "molecular_weight": "493.6",
+        "iupac_name": "4-[(4-methylpiperazin-1-yl)methyl]-N-[4-methyl-3-[(4-pyridin-3-ylpyrimidin-2-yl)amino]phenyl]benzamide"
+      },
+      "pubmed": {
+        "abstracts": [
+          {
+            "pmid": "12054102",
+            "title": "Imatinib. Novartis.",
+            "abstract": "Novartis has launched imatinib, an inhibitor of tyrosine kinases, including Bcr-Abl, for the treatment of chronic myeloid leukemia (CML). Imatinib selectively inhibits activation of target proteins involved in cellular proliferation. It also inhibits c-KIT tyrosine kinase activity and is equally effective against both wild-type and constitutively active enzyme. Close correlation between in vitro responses to IFNalpha and imatinib suggested that it may be an alternative to IFNalpha therapy for chronic-phase CML, and the compound has the advantage that it can be administered orally. Futhermore, "
+          },
+          {
+            "pmid": "36927348",
+            "title": "Overcoming the imatinib-resistant BCR-ABL mutants with new ureidobenzothiazole chemotypes endowed with potent and broad-spectrum anticancer activity.",
+            "abstract": "The design of kinase inhibitors targeting the oncogenic kinase BCR-ABL constitutes a promising paradigm for treating chronic myeloid leukaemia (CML). Nevertheless, the efficacy of imatinib, the first FDA-approved targeted therapy for CML, is curbed by the emergence of resistance. Herein, we report the identification of the 2-methoxyphenyl ureidobenzothiazole AK-HW-90 (2b) as a potent pan-BCR-ABL inhibitor against imatinib-resistant mutants, particularly T315I. A concise array of six compounds 2a-f was designed based on our previously reported benzothiazole lead AKE-5l to improve its BCR-ABLT31"
+          },
+          {
+            "pmid": "29925402",
+            "title": "Past, present, and future of Bcr-Abl inhibitors: from chemical development to clinical efficacy.",
+            "abstract": "Bcr-Abl inhibitors paved the way of targeted therapy epoch. Imatinib was the first tyrosine kinase inhibitor to be discovered with high specificity for Bcr-Abl protein resulting from t(9, 22)-derived Philadelphia chromosome. Although the specific targeting of that oncoprotein, several Bcr-Abl-dependent and Bcr-Abl-independent mechanisms of resistance to imatinib arose after becoming first-line therapy in chronic myelogenous leukemia (CML) treatment.Consequently, new specific drugs, namely dasatinib, nilotinib, bosutinib, and ponatinib, were rationally designed and approved for clinic to overri"
+          },
+          {
+            "pmid": "40760738",
+            "title": "The role of METTL14 in the progression of chronic myeloid leukemia.",
+            "abstract": "Chronic myeloid leukemia (CML), a clonal malignant disease arising from the BCR-ABL fusion gene, presents significant therapeutic challenges, particularly in chemotherapy resistance. The role of METTL14, a key m6A methyltransferase, is implicated in cancer biology, but its role in CML remains unclear."
+          },
+          {
+            "pmid": "16721371",
+            "title": "AMN107 (nilotinib): a novel and selective inhibitor of BCR-ABL.",
+            "abstract": "Chronic myelogenous leukaemia (CML) and Philadelphia chromosome positive (Ph+) acute lymphoblastic leukaemia (ALL) are caused by the BCR-ABL oncogene. Imatinib inhibits the tyrosine kinase activity of the BCR-ABL protein and is an effective, frontline therapy for chronic-phase CML. However, accelerated or blast-crisis phase CML patients and Ph+ ALL patients often relapse due to drug resistance resulting from the emergence of imatinib-resistant point mutations within the BCR-ABL tyrosine kinase domain. This has stimulated the development of new kinase inhibitors that are able to over-ride resis"
+          }
+        ]
+      }
+    },
+    "pathologist": {
+      "clinvar": {
+        "variants": [],
+        "gene": "BCR-ABL"
+      },
+      "pubmed": {
+        "abstracts": [
+          {
+            "pmid": "37088793",
+            "title": "Management of chronic myeloid leukemia in 2023 - common ground and common sense.",
+            "abstract": "With the improving knowledge of CML and its management, the goals of therapy need to be revisited to ensure an optimal use of the BCR::ABL1 TKIs in the frontline and later-line therapy of CML. In the frontline therapy of CML in the chronic phase (CML-CP), imatinib and the three second-generation TKIs (bosutinib, dasatinib and nilotinib) are associated with comparable survival results. The second-generation TKIs may produce earlier deep molecular responses, hence reducing the time to reaching a treatment-free remission (TFR). The choice of the second-generation TKI versus imatinib in frontline "
+          },
+          {
+            "pmid": "21220945",
+            "title": "Impact of BCR-ABL mutations on patients with chronic myeloid leukemia.",
+            "abstract": "Therapies that target BCR-ABL in chronic myeloid leukemia, including imatinib, dasatinib and nilotinib, have dramatically improved patient outcome. BCR-ABL mutations, however, contribute to treatment resistance by disrupting drug contact sites or causing conformational changes thus making contact sites inaccessible. Clinical data indicate that developing BCR-ABL mutations during imatinib treatment is predictive for shorter progression-free survival, and that outcomes may depend on mutation type or location. In vitro, dasatinib and nilotinib inhibit most imatinib-resistant BCR-ABL mutations, ex"
+          },
+          {
+            "pmid": "30199910",
+            "title": "[Chronic Myelogenous Leukemia].",
+            "abstract": "The advent of tyrosine kinase inhibitors (TKI) has improved prognosis and outcome of patients with chronic myelogenous leukemia (CML) considerably. In comparison to imatinib, first line use of second generation inhibitors nilotinib, dasatinib and bosutinib lead to faster and deeper molecular remissions accompanied by a novel adverse event profile. Essential part of the management of CML patients is a consequent use of cytogenetic and molecular follow up with standardized methods to regularly assess the remission status. Long lasting remission without treatment in an important minority of patie"
+          },
+          {
+            "pmid": "28260399",
+            "title": "Synthesis and identification of GZD856 as an orally bioavailable Bcr-AblT315I inhibitor overcoming acquired imatinib resistance.",
+            "abstract": "Bcr-AblT315I induced drug resistance remains a major challenge to chronic myelogenous leukemia (CML) treatment. Herein, we reported GZD856 as a novel orally bioavailable Bcr-AblT315I inhibitor, which strongly suppressed the kinase activities of both native Bcr-Abl and the T315I mutant with IC50 values of 19.9 and 15.4&#x2009;nM, and potently inhibited proliferation of corresponding K562, Ba/F3WT and Ba/F3T315I cells with IC50 values of 2.2, 0.64 and 10.8&#x2009;nM. Furthermore, GZD856 potently suppressed tumor growth in mouse bearing xenograft K562 and Ba/F3 cells expressing Bcr-AblT315I. Thus"
+          },
+          {
+            "pmid": "30504305",
+            "title": "The argument for using imatinib in CML.",
+            "abstract": "June 2018 was the 20th anniversary of the clinical use of the first tyrosine kinase inhibitor (TKI), imatinib, for chronic myeloid leukemia. Since then, the change in prognosis for patients with this disease is one of the major success stories of modern cancer medicine. The dilemmas that face physicians and patients are no longer only those concerned with delaying inevitable progression to the terminal blastic phase or selecting the individuals most likely to benefit from allogeneic stem-cell transplantation; rather, they are now focused also on the choice of TKI, the management of comorbiditi"
+          }
+        ]
+      }
+    },
+    "cell_biologist": {
+      "reactome": {
+        "pathways": []
+      },
+      "uniprot": {},
+      "pubmed": {
+        "abstracts": [
+          {
+            "pmid": "38280275",
+            "title": "The impact of the BCR-ABL oncogene in the pathology and treatment of chronic myeloid leukemia.",
+            "abstract": "Chronic Myeloid Leukemia (CML) is characterized by chromosomal aberrations involving the fusion of the BCR and ABL genes on chromosome 22, resulting from a reciprocal translocation between chromosomes 9 and 22. This fusion gives rise to the oncogenic BCR-ABL, an aberrant tyrosine kinase identified as Abl protein. The Abl protein intricately regulates the cell cycle by phosphorylating protein tyrosine residues through diverse signaling pathways. In CML, the BCR-ABL fusion protein disrupts the first exon of Abl, leading to sustained activation of tyrosine kinase and resistance to deactivation me"
+          },
+          {
+            "pmid": "12409651",
+            "title": "Mechanisms of resistance to imatinib mesylate in Bcr-Abl-positive leukemias.",
+            "abstract": "The constitutive activity of the Bcr-Abl tyrosine kinase plays a critical role in the molecular pathogenesis of not only the chronic but also the accelerated and blastic phases of chronic myelogenous leukemia. Therefore, Bcr-Abl tyrosine kinase is a rational therapeutic target in all phases of chronic myelogenous leukemia. Although imatinib mesylate (STI571, Gleevec, Novartis, Basal, Switzerland) produces high rates of complete clinical and cytogenetic responses in the chronic phase, resistance is universal and clinical relapse develops rapidly in the advanced phases of chronic myelogenous leu"
+          },
+          {
+            "pmid": "12446421",
+            "title": "Chronic myelogenous leukemia.",
+            "abstract": "The treatment options for chronic myelogenous leukemia (CML) continue to evolve rapidly. Imatinib mesylate (Gleevec, Glivec, formerly STI571) has continued to show remarkable clinical benefits and the updated results with this agent are reviewed. As relapses using single agent imatinib have occurred, particularly in advanced phase patients, the issue of whether combinations of other antileukemic agents with imatinib may yield improved results is addressed. In addition, data on new agents that have potential in the treatment of CML are reviewed. These agents are presented in the context of thei"
+          },
+          {
+            "pmid": "15324693",
+            "title": "SRCircumventing imatinib resistance.",
+            "abstract": "The ABL inhibitor imatinib is a highly effective therapy for patients with chronic myeloid leukemia. Relapses after an initial response have been observed in some patients, and mutations of the BCR-ABL gene are the most common mechanism driving these relapses. Alternative ABL inhibitors have been identified that inhibit most of the common BCR-ABL mutations, and one has entered clinical trials. The structural basis for these results has yielded significant insights into the mechanism of action of these compounds, mechanisms of resistance, and their ability to inhibit the BCR-ABL mutants. These "
+          },
+          {
+            "pmid": "29076384",
+            "title": "Pharmacology and pharmacokinetics of imatinib in pediatric patients.",
+            "abstract": "The tyrosine kinase inhibitor (TKI) imatinib was rationally designed to target BCR-ABL1 which is constitutively activated in chronic myeloid leukemia (CML). Following the tremendous success in adults, imatinib also became licensed for treatment of CML in minors. The rarity of pediatric CML hampers the conduction of formal trials. Thus, imatinib is still the single TKI approved for CML treatment in childhood. Areas covered: This review attempts to provide an overview of the literature on pharmacology, pharmacokinetic, and pharmacogenetic of imatinib concerning pediatric CML treatment. Articles "
+          }
+        ]
+      }
+    },
+    "comp_biologist": {
+      "pdb": {
+        "structures": [
+          {
+            "pdb_id": "4CSV",
+            "title": "Tyrosine kinase AS - a common ancestor of Src and Abl bound to Gleevec",
+            "resolution_angstrom": 2.05,
+            "method": "X-RAY DIFFRACTION"
+          },
+          {
+            "pdb_id": "3FW1",
+            "title": "Quinone Reductase 2",
+            "resolution_angstrom": 1.75,
+            "method": "X-RAY DIFFRACTION"
+          },
+          {
+            "pdb_id": "2OIQ",
+            "title": "Crystal Structure of chicken c-Src kinase domain in complex with the cancer drug imatinib.",
+            "resolution_angstrom": 2.07,
+            "method": "X-RAY DIFFRACTION"
+          },
+          {
+            "pdb_id": "5MQT",
+            "title": "Crystal structure of dCK mutant C3S in complex with imatinib and UDP",
+            "resolution_angstrom": 3.2,
+            "method": "X-RAY DIFFRACTION"
+          },
+          {
+            "pdb_id": "3OEZ",
+            "title": "crystal structure of the L317I mutant of the chicken c-Src tyrosine kinase domain complexed with imatinib",
+            "resolution_angstrom": 2.4,
+            "method": "X-RAY DIFFRACTION"
+          }
+        ]
+      },
+      "alphafold": {},
+      "uniprot": {},
+      "chembl": {
+        "dataset_count": 42,
+        "sample": [
+          {
+            "molecule_chembl_id": "CHEMBL3939150",
+            "standard_type": "Inhibition",
+            "standard_value": null,
+            "standard_units": "%"
+          },
+          {
+            "molecule_chembl_id": "CHEMBL3939150",
+            "standard_type": "Inhibition",
+            "standard_value": null,
+            "standard_units": "%"
+          },
+          {
+            "molecule_chembl_id": "CHEMBL3939150",
+            "standard_type": "Inhibition",
+            "standard_value": null,
+            "standard_units": "%"
+          },
+          {
+            "molecule_chembl_id": "CHEMBL3939150",
+            "standard_type": "Inhibition",
+            "standard_value": null,
+            "standard_units": "%"
+          },
+          {
+            "molecule_chembl_id": "CHEMBL3939150",
+            "standard_type": "Inhibition",
+            "standard_value": null,
+            "standard_units": "%"
+          }
+        ],
+        "target_chembl_id": "CHEMBL6105"
+      },
+      "pubmed": {
+        "abstracts": [
+          {
+            "pmid": "17116285",
+            "title": "Protein kinase inhibitors.",
+            "abstract": "Since protein kinases have been found to be implicated in many diseases, first of all malignancies, they are considered as promising therapeutic targets. Many protein kinase inhibitors have been designed by now. These molecules have a low molecular weight and most of them bind to protein kinases competing with ATP for the ATP-binding site. Some protein kinase inhibitors currently undergo clinical trials or have already been successfully introduced into treatment as exemplified by Bcr-Abl, c-kit and PDGFR inhibitor imatinib mesylate (Gleevec), flavopiridol and roscovitine, inhibitors of cyclin-"
+          },
+          {
+            "pmid": "35551036",
+            "title": "The progress of small-molecules and degraders against BCR-ABL for the treatment of CML.",
+            "abstract": "Chronic myeloid leukemia (CML) is a malignant disease of the hematopoietic system with crucial pathogenic protein named BCR-ABL, which endangers the life of patients severely. As a milestone of targeted drug, Imatinib has achieved great success in the treatment of CML. Nevertheless, inevitable drug resistance of Imatinib has occurred frequently in clinical due to the several mutations in the BCR-ABL kinase. Subsequently, the second-generation of tyrosine kinase inhibitors (TKIs) against BCR-ABL was developed to address the mutants of Imatinib resistance, except T315I. To date, the third-genera"
+          },
+          {
+            "pmid": "33034143",
+            "title": "Recent advances in Bcr-Abl tyrosine kinase inhibitors for overriding T315I mutation.",
+            "abstract": "BCR-ABL is a gene produced by the fusion of the bcr gene and the c-abl proto-oncogene and is considered to be the main cause of chronic myelogenous leukemia (CML) production. Therefore, the development of selective Bcr-Abl kinase inhibitors is an attractive strategy for the treatment of CML. However, in the treatment of CML with a Bcr-Abl kinase inhibitor, the T315I gatekeeper mutant disrupts the important contact interaction between the inhibitor and the enzyme, resistant to the first- and second-generation drugs currently approved, such as imatinib, bosutinib, nilotinib, and dasatinib. In or"
+          },
+          {
+            "pmid": "16721371",
+            "title": "AMN107 (nilotinib): a novel and selective inhibitor of BCR-ABL.",
+            "abstract": "Chronic myelogenous leukaemia (CML) and Philadelphia chromosome positive (Ph+) acute lymphoblastic leukaemia (ALL) are caused by the BCR-ABL oncogene. Imatinib inhibits the tyrosine kinase activity of the BCR-ABL protein and is an effective, frontline therapy for chronic-phase CML. However, accelerated or blast-crisis phase CML patients and Ph+ ALL patients often relapse due to drug resistance resulting from the emergence of imatinib-resistant point mutations within the BCR-ABL tyrosine kinase domain. This has stimulated the development of new kinase inhibitors that are able to over-ride resis"
+          },
+          {
+            "pmid": "19075651",
+            "title": "Targeted drugs in chronic myeloid leukemia.",
+            "abstract": "Chronic myeloid leukemia (CML) is characterized by the presence of the Philadelphia (Ph) chromosome, which results from a reciprocal translocation between the long arms of the chromosomes 9 and 22 t(9;22)(q34;q11). This translocation creates two new genes, BCR-ABL on the 22q- (Ph chromosome) and the reciprocal ABL-BCR on 9q-. The BCR-ABL gene encodes for a 210-kD protein with deregulated tyrosine kinase (TK) activity, which is crucial for malignant transformation in CML. The recognition of the BCR-ABL gene and corresponding protein led to the synthesis of small-molecule drugs, designed to inte"
+          }
+        ]
+      }
+    }
+  }
+}

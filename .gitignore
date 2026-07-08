@@ -12,6 +12,13 @@ build/
 # Cache files (pre-generated, include in repo for demo)
 # cache/*.json  ← intentionally NOT ignored — demo cache committed
 
+# Test recordings (large binaries — share via zip, not git)
+test-recordings/
+prism-test-recordings/
+prism-test-recordings*/
+*.zip
+*.webm
+
 # macOS
 .DS_Store
 

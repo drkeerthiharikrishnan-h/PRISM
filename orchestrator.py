@@ -18,7 +18,7 @@ import yaml
 from anthropic import AsyncAnthropic
 
 from connectors import REGISTRY
-from entity_resolver import parse_query, resolve_ids
+from entity_resolver import parse_query, resolve_ids, guardrail_check
 
 _client = AsyncAnthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 PERSONAS_DIR = Path(__file__).parent / "personas"
@@ -147,6 +147,18 @@ async def stream_pipeline(
       {"type": "done",    "metadata": dict}
     """
     personas_to_run = [persona] if persona and persona in PERSONA_ORDER else PERSONA_ORDER
+
+    # ── Stage: guardrail ──
+    if not demo_mode:
+        yield {"type": "status", "stage": "checking", "message": "Checking query…"}
+        guard = await guardrail_check(query)
+        if not guard.is_biomedical:
+            yield {
+                "type": "guardrail_rejected",
+                "reason": guard.reason,
+                "suggestion": guard.suggestion,
+            }
+            return   # stop pipeline — no LLM synthesis calls made
 
     # ── Stage: parse ──
     yield {"type": "status", "stage": "parsing", "message": "Extracting entity and target…"}

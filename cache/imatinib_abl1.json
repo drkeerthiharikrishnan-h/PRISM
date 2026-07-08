@@ -1,0 +1,478 @@
+{
+  "ids": {
+    "entity": "imatinib",
+    "target": "ABL1",
+    "drug_pubchem": "5291",
+    "drug_chembl": "CHEMBL941",
+    "target_uniprot": "P00519",
+    "target_chembl": "CHEMBL3099"
+  },
+  "evidence": {
+    "medicinal_chemist": {
+      "chembl": {
+        "activities": [
+          {
+            "molecule_chembl_id": "CHEMBL941",
+            "standard_type": "IC50",
+            "standard_value": "10.8",
+            "standard_units": "nM",
+            "assay_description": "Inhibition of mouse recombinant N-terminal His6-tagged Abl by radiometric kinase assay"
+          },
+          {
+            "molecule_chembl_id": "CHEMBL941",
+            "standard_type": "IC50",
+            "standard_value": "730.0",
+            "standard_units": "nM",
+            "assay_description": "Inhibition of ABL in mouse BAF3 cells assessed as reduction in cell viability after 72 hrs by MTT assay"
+          },
+          {
+            "molecule_chembl_id": "CHEMBL941",
+            "standard_type": "IC50",
+            "standard_value": "20030.0",
+            "standard_units": "nM",
+            "assay_description": "Inhibition of ABL T315I mutant in mouse BAF3 cells assessed as reduction in cell viability after 72 hrs by MTT assay"
+          }
+        ],
+        "count": 3
+      },
+      "pdb": {
+        "structures": [
+          {
+            "pdb_id": "4CSV",
+            "title": "Tyrosine kinase AS - a common ancestor of Src and Abl bound to Gleevec",
+            "resolution_angstrom": 2.05,
+            "method": "X-RAY DIFFRACTION"
+          },
+          {
+            "pdb_id": "3FW1",
+            "title": "Quinone Reductase 2",
+            "resolution_angstrom": 1.75,
+            "method": "X-RAY DIFFRACTION"
+          },
+          {
+            "pdb_id": "2OIQ",
+            "title": "Crystal Structure of chicken c-Src kinase domain in complex with the cancer drug imatinib.",
+            "resolution_angstrom": 2.07,
+            "method": "X-RAY DIFFRACTION"
+          },
+          {
+            "pdb_id": "5MQT",
+            "title": "Crystal structure of dCK mutant C3S in complex with imatinib and UDP",
+            "resolution_angstrom": 3.2,
+            "method": "X-RAY DIFFRACTION"
+          },
+          {
+            "pdb_id": "3OEZ",
+            "title": "crystal structure of the L317I mutant of the chicken c-Src tyrosine kinase domain complexed with imatinib",
+            "resolution_angstrom": 2.4,
+            "method": "X-RAY DIFFRACTION"
+          }
+        ]
+      },
+      "pubchem": {
+        "cid": "5291",
+        "canonical_smiles": "CC1=C(C=C(C=C1)NC(=O)C2=CC=C(C=C2)CN3CCN(CC3)C)NC4=NC=CC(=N4)C5=CN=CC=C5",
+        "molecular_formula": "C29H31N7O",
+        "molecular_weight": "493.6",
+        "iupac_name": "4-[(4-methylpiperazin-1-yl)methyl]-N-[4-methyl-3-[(4-pyridin-3-ylpyrimidin-2-yl)amino]phenyl]benzamide"
+      },
+      "pubmed": {
+        "abstracts": [
+          {
+            "pmid": "34301758",
+            "title": "Lentiviral-Driven Discovery of Cancer Drug Resistance Mutations.",
+            "abstract": "Identifying resistance mutations in a drug target provides crucial information. Lentiviral transduction creates multiple types of mutations due to the error-prone nature of the HIV-1 reverse transcriptase (RT). Here we optimized and leveraged this property to identify drug resistance mutations, developing a technique we term LentiMutate. This technique was validated by identifying clinically relevant EGFR resistance mutations, then applied to two additional clinical anticancer drugs: imatinib, a BCR-ABL inhibitor, and AMG 510, a KRAS G12C inhibitor. Novel deletions in BCR-ABL1 conferred resist"
+          },
+          {
+            "pmid": "36681201",
+            "title": "Synthesis and biological evaluation of novel aromatic amide derivatives as potential BCR-ABL inhibitors.",
+            "abstract": "BCR-ABL1 kinase is a key driver of the pathophysiology of chronic myeloid leukemia (CML). Current treatments need to broaden the chemical diversity of BCR-ABL1 kinase inhibitors to overcome drug resistance. We designed and synthesized a series of aromatic amide derivatives based on several generations of BCR-ABL1 kinase inhibitors. Biological studies showed that compared with Imatinib, these compounds showed significant proliferation inhibitory activities of HL-60 and K562 in cell activity assay. Compounds 4g and 4j exhibited significant anti-tumor activity against the K562 cells with IC50 val"
+          },
+          {
+            "pmid": "38627294",
+            "title": "Spirooxadiazoline-oxindoles derived from imatinib show antimyeloproliferative potential in K562 cells.",
+            "abstract": "Imatinib mesylate was the first representative BCR-ABL1 tyrosine kinase inhibitor (TKI) class for the treatment of chronic myeloid leukemia. Despite the revolution promoted by TKIs in the treatment of this pathology, a resistance mechanism occurs against all BCR-ABL1 inhibitors, necessitating a constant search for new therapeutic options. To develop new antimyeloproliferative substances, we applied a medicinal chemistry tool known as molecular hybridization to design 25 new substances. These compounds were synthesized and biologically evaluated against K562 cells, which express BCR-ABL1, a con"
+          },
+          {
+            "pmid": "31602720",
+            "title": "Discovery and structure-activity relationship of plastoquinone analogs as anticancer agents against chronic myelogenous leukemia cells.",
+            "abstract": "Two series of amino-1,4-benzoquinones (AQ1-18) based on the structural analogs of plastoquinones were synthesized and the structure-activity relationship against chronic myelogenous leukemia activity was examined. All of the synthesized compounds were tested for their cytotoxic effects on different leukemic cell lines. Of interest, AQ15 exhibited a better selectivity than the reference drug imatinib on cancer cells. Owing to this, AQ15 was selected for a further apoptosis/necrosis evaluation where AQ15-treated K562 cells demonstrated similar apoptotic effects like imatinib-treated cells at the"
+          },
+          {
+            "pmid": "35887063",
+            "title": "Ketoconazole Reverses Imatinib Resistance in Human Chronic Myelogenous Leukemia K562 Cells.",
+            "abstract": "Chronic myeloid leukemia (CML) is a hematologic disorder characterized by the oncogene BCR-ABL1, which encodes an oncoprotein with tyrosine kinase activity. Imatinib, a BCR-ABL1 tyrosine kinase inhibitor, performs exceptionally well with minimal toxicity in CML chemotherapy. According to clinical trials, however, 20-30% of CML patients develop resistance to imatinib. Although the best studied resistance mechanisms are BCR-ABL1-dependent, P-glycoprotein (P-gp, a drug efflux transporter) may also contribute significantly. This study aimed to establish an imatinib-resistant human CML cell line, e"
+          }
+        ]
+      }
+    },
+    "pathologist": {
+      "clinvar": {
+        "variants": [
+          {
+            "variant_id": "4756050",
+            "title": "NM_005157.6(ABL1):c.1510G>A (p.Asp504Asn)",
+            "clinical_significance": "Uncertain significance",
+            "condition": "",
+            "review_status": "criteria provided, single submitter"
+          },
+          {
+            "variant_id": "4529785",
+            "title": "NM_005157.6(ABL1):c.223A>G (p.Ser75Gly)",
+            "clinical_significance": "Uncertain significance",
+            "condition": "",
+            "review_status": "criteria provided, single submitter"
+          },
+          {
+            "variant_id": "4527174",
+            "title": "NM_005157.6(ABL1):c.1155_1156dup (p.Arg386fs)",
+            "clinical_significance": "Uncertain significance",
+            "condition": "",
+            "review_status": "criteria provided, single submitter"
+          },
+          {
+            "variant_id": "4527100",
+            "title": "NM_005157.6(ABL1):c.403A>G (p.Asn135Asp)",
+            "clinical_significance": "Uncertain significance",
+            "condition": "",
+            "review_status": "criteria provided, single submitter"
+          },
+          {
+            "variant_id": "4353136",
+            "title": "NM_005157.6(ABL1):c.1086-1G>C",
+            "clinical_significance": "",
+            "condition": "",
+            "review_status": ""
+          },
+          {
+            "variant_id": "4076775",
+            "title": "NM_005157.6(ABL1):c.3098T>C (p.Leu1033Pro)",
+            "clinical_significance": "Uncertain significance",
+            "condition": "",
+            "review_status": "criteria provided, single submitter"
+          },
+          {
+            "variant_id": "4075962",
+            "title": "GRCh37/hg19 9q33.2-34.3(chr9:124095694-141020389)x3",
+            "clinical_significance": "Pathogenic",
+            "condition": "",
+            "review_status": "criteria provided, single submitter"
+          },
+          {
+            "variant_id": "3906852",
+            "title": "NM_005157.6(ABL1):c.895G>C (p.Val299Leu)",
+            "clinical_significance": "",
+            "condition": "",
+            "review_status": ""
+          }
+        ],
+        "gene": "ABL1"
+      },
+      "pubmed": {
+        "abstracts": [
+          {
+            "pmid": "39093014",
+            "title": "Chronic myeloid leukemia: 2025 update on diagnosis, therapy, and monitoring.",
+            "abstract": "Chronic myeloid leukemia (CML) is a myeloproliferative neoplasm with an annual incidence of two cases/100&#x2009;000. It accounts for approximately 15% of newly diagnosed cases of leukemia in adults."
+          },
+          {
+            "pmid": "38722621",
+            "title": "Ponatinib vs Imatinib in Frontline Philadelphia Chromosome-Positive Acute Lymphoblastic Leukemia: A Randomized Clinical Trial.",
+            "abstract": "In newly diagnosed Philadelphia chromosome-positive (Ph+) acute lymphoblastic leukemia (ALL), disease progression due to acquired resistance to first- or second-generation BCR::ABL1 tyrosine kinase inhibitors is common. Ponatinib inhibits BCR::ABL1 and all single-mutation variants, including T315I."
+          },
+          {
+            "pmid": "35751859",
+            "title": "Chronic myeloid leukemia: 2022 update on diagnosis, therapy, and monitoring.",
+            "abstract": "Chronic Myeloid Leukemia (CML) is a myeloproliferative neoplasm with an incidence of 1-2 cases per 100&#x2009;000 adults. It accounts for approximately 15% of newly diagnosed cases of leukemia in adults."
+          },
+          {
+            "pmid": "23803709",
+            "title": "European LeukemiaNet recommendations for the management of chronic myeloid leukemia: 2013.",
+            "abstract": "Advances in chronic myeloid leukemia treatment, particularly regarding tyrosine kinase inhibitors, mandate regular updating of concepts and management. A European LeukemiaNet expert panel reviewed prior and new studies to update recommendations made in 2009. We recommend as initial treatment imatinib, nilotinib, or dasatinib. Response is assessed with standardized real quantitative polymerase chain reaction and/or cytogenetics at 3, 6, and 12 months. BCR-ABL1 transcript levels &#x2264;10% at 3 months, &lt;1% at 6 months, and &#x2264;0.1% from 12 months onward define optimal response, whereas &"
+          },
+          {
+            "pmid": "28273028",
+            "title": "Long-Term Outcomes of Imatinib Treatment for Chronic Myeloid Leukemia.",
+            "abstract": "Imatinib, a selective BCR-ABL1 kinase inhibitor, improved the prognosis for patients with chronic myeloid leukemia (CML). We conducted efficacy and safety analyses on the basis of more than 10 years of follow-up in patients with CML who were treated with imatinib as initial therapy."
+          }
+        ]
+      }
+    },
+    "cell_biologist": {
+      "reactome": {
+        "pathways": [
+          {
+            "stable_id": "R-HSA-2029482",
+            "display_name": "Regulation of actin dynamics for phagocytic cup formation",
+            "species": "Homo sapiens"
+          },
+          {
+            "stable_id": "R-HSA-428890",
+            "display_name": "Role of ABL in ROBO-SLIT signaling",
+            "species": "Homo sapiens"
+          },
+          {
+            "stable_id": "R-HSA-525793",
+            "display_name": "Myogenesis",
+            "species": "Homo sapiens"
+          },
+          {
+            "stable_id": "R-HSA-5663213",
+            "display_name": "RHO GTPases Activate WASPs and WAVEs",
+            "species": "Homo sapiens"
+          },
+          {
+            "stable_id": "R-HSA-5685938",
+            "display_name": "HDR through Single Strand Annealing (SSA)",
+            "species": "Homo sapiens"
+          },
+          {
+            "stable_id": "R-HSA-5693565",
+            "display_name": "Recruitment and ATM-mediated phosphorylation of repair and signaling proteins at DNA double strand breaks",
+            "species": "Homo sapiens"
+          },
+          {
+            "stable_id": "R-HSA-69231",
+            "display_name": "Cyclin D associated events in G1",
+            "species": "Homo sapiens"
+          },
+          {
+            "stable_id": "R-HSA-8939236",
+            "display_name": "RUNX1 regulates transcription of genes involved in differentiation of HSCs",
+            "species": "Homo sapiens"
+          },
+          {
+            "stable_id": "R-HSA-8940973",
+            "display_name": "RUNX2 regulates osteoblast differentiation",
+            "species": "Homo sapiens"
+          },
+          {
+            "stable_id": "R-HSA-9664422",
+            "display_name": "FCGR3A-mediated phagocytosis",
+            "species": "Homo sapiens"
+          }
+        ],
+        "uniprot_id": "P00519"
+      },
+      "uniprot": {
+        "accession": "P00519",
+        "gene": "ABL1",
+        "function": "Non-receptor tyrosine-protein kinase that plays a role in many key processes linked to cell growth and survival such as cytoskeleton remodeling in response to extracellular stimuli, cell motility and adhesion, receptor endocytosis, autophagy, DNA damage response and apoptosis. Coordinates actin remodeling through tyrosine phosphorylation of proteins controlling cytoskeleton dynamics like WASF3 (involved in branch formation); ANXA1 (involved in membrane anchoring); DBN1, DBNL, CTTN, RAPH1 and ENAH (involved in signaling); or MAPT and PXN (microtubule-binding proteins). Phosphorylation of WASF3 ",
+        "go_terms": [
+          {
+            "id": "GO:0015629",
+            "term": "C:actin cytoskeleton"
+          },
+          {
+            "id": "GO:0005737",
+            "term": "C:cytoplasm"
+          },
+          {
+            "id": "GO:0005829",
+            "term": "C:cytosol"
+          },
+          {
+            "id": "GO:0030425",
+            "term": "C:dendrite"
+          },
+          {
+            "id": "GO:0098978",
+            "term": "C:glutamatergic synapse"
+          },
+          {
+            "id": "GO:0030426",
+            "term": "C:growth cone"
+          },
+          {
+            "id": "GO:0005739",
+            "term": "C:mitochondrion"
+          },
+          {
+            "id": "GO:0043025",
+            "term": "C:neuronal cell body"
+          }
+        ],
+        "sequence_length": null,
+        "binding_sites": [],
+        "domains": []
+      },
+      "pubmed": {
+        "abstracts": [
+          {
+            "pmid": "38722621",
+            "title": "Ponatinib vs Imatinib in Frontline Philadelphia Chromosome-Positive Acute Lymphoblastic Leukemia: A Randomized Clinical Trial.",
+            "abstract": "In newly diagnosed Philadelphia chromosome-positive (Ph+) acute lymphoblastic leukemia (ALL), disease progression due to acquired resistance to first- or second-generation BCR::ABL1 tyrosine kinase inhibitors is common. Ponatinib inhibits BCR::ABL1 and all single-mutation variants, including T315I."
+          },
+          {
+            "pmid": "35751859",
+            "title": "Chronic myeloid leukemia: 2022 update on diagnosis, therapy, and monitoring.",
+            "abstract": "Chronic Myeloid Leukemia (CML) is a myeloproliferative neoplasm with an incidence of 1-2 cases per 100&#x2009;000 adults. It accounts for approximately 15% of newly diagnosed cases of leukemia in adults."
+          },
+          {
+            "pmid": "27217448",
+            "title": "Final 5-Year Study Results of DASISION: The Dasatinib Versus Imatinib Study in Treatment-Na&#xef;ve Chronic Myeloid Leukemia Patients Trial.",
+            "abstract": "We report the 5-year analysis from the phase III Dasatinib Versus Imatinib Study in Treatment-Na&#xef;ve Chronic Myeloid Leukemia Patients (DASISION) trial, evaluating long-term efficacy and safety outcomes of patients with chronic myeloid leukemia (CML) in chronic phase (CP) treated with dasatinib or imatinib."
+          },
+          {
+            "pmid": "23803709",
+            "title": "European LeukemiaNet recommendations for the management of chronic myeloid leukemia: 2013.",
+            "abstract": "Advances in chronic myeloid leukemia treatment, particularly regarding tyrosine kinase inhibitors, mandate regular updating of concepts and management. A European LeukemiaNet expert panel reviewed prior and new studies to update recommendations made in 2009. We recommend as initial treatment imatinib, nilotinib, or dasatinib. Response is assessed with standardized real quantitative polymerase chain reaction and/or cytogenetics at 3, 6, and 12 months. BCR-ABL1 transcript levels &#x2264;10% at 3 months, &lt;1% at 6 months, and &#x2264;0.1% from 12 months onward define optimal response, whereas &"
+          },
+          {
+            "pmid": "37088793",
+            "title": "Management of chronic myeloid leukemia in 2023 - common ground and common sense.",
+            "abstract": "With the improving knowledge of CML and its management, the goals of therapy need to be revisited to ensure an optimal use of the BCR::ABL1 TKIs in the frontline and later-line therapy of CML. In the frontline therapy of CML in the chronic phase (CML-CP), imatinib and the three second-generation TKIs (bosutinib, dasatinib and nilotinib) are associated with comparable survival results. The second-generation TKIs may produce earlier deep molecular responses, hence reducing the time to reaching a treatment-free remission (TFR). The choice of the second-generation TKI versus imatinib in frontline "
+          }
+        ]
+      }
+    },
+    "comp_biologist": {
+      "pdb": {
+        "structures": [
+          {
+            "pdb_id": "4CSV",
+            "title": "Tyrosine kinase AS - a common ancestor of Src and Abl bound to Gleevec",
+            "resolution_angstrom": 2.05,
+            "method": "X-RAY DIFFRACTION"
+          },
+          {
+            "pdb_id": "3FW1",
+            "title": "Quinone Reductase 2",
+            "resolution_angstrom": 1.75,
+            "method": "X-RAY DIFFRACTION"
+          },
+          {
+            "pdb_id": "2OIQ",
+            "title": "Crystal Structure of chicken c-Src kinase domain in complex with the cancer drug imatinib.",
+            "resolution_angstrom": 2.07,
+            "method": "X-RAY DIFFRACTION"
+          },
+          {
+            "pdb_id": "5MQT",
+            "title": "Crystal structure of dCK mutant C3S in complex with imatinib and UDP",
+            "resolution_angstrom": 3.2,
+            "method": "X-RAY DIFFRACTION"
+          },
+          {
+            "pdb_id": "3OEZ",
+            "title": "crystal structure of the L317I mutant of the chicken c-Src tyrosine kinase domain complexed with imatinib",
+            "resolution_angstrom": 2.4,
+            "method": "X-RAY DIFFRACTION"
+          }
+        ]
+      },
+      "alphafold": {
+        "accession": "P00519",
+        "entry_id": "AF-P00519-F1",
+        "model_url": "https://alphafold.ebi.ac.uk/files/AF-P00519-F1-model_v6.pdb",
+        "cif_url": "https://alphafold.ebi.ac.uk/files/AF-P00519-F1-model_v6.cif",
+        "plddt_global": 63.38,
+        "sequence_length": null,
+        "organism": "Homo sapiens",
+        "available": true
+      },
+      "uniprot": {
+        "accession": "P00519",
+        "gene": "ABL1",
+        "go_terms": [],
+        "sequence_length": 1130,
+        "binding_sites": [
+          {
+            "type": "Binding site",
+            "position": "248-256",
+            "description": ""
+          },
+          {
+            "type": "Binding site",
+            "position": "271-271",
+            "description": ""
+          },
+          {
+            "type": "Binding site",
+            "position": "316-322",
+            "description": ""
+          }
+        ],
+        "domains": [
+          {
+            "name": "SH3",
+            "range": "61-121"
+          },
+          {
+            "name": "SH2",
+            "range": "127-217"
+          },
+          {
+            "name": "Protein kinase",
+            "range": "242-493"
+          }
+        ]
+      },
+      "chembl": {
+        "dataset_count": 215,
+        "sample": [
+          {
+            "molecule_chembl_id": "CHEMBL22978",
+            "standard_type": "IC50",
+            "standard_value": "86759.0",
+            "standard_units": "nM"
+          },
+          {
+            "molecule_chembl_id": "CHEMBL419409",
+            "standard_type": "Inhibition",
+            "standard_value": "-36.0",
+            "standard_units": "%"
+          },
+          {
+            "molecule_chembl_id": "CHEMBL120067",
+            "standard_type": "Inhibition",
+            "standard_value": "-15.0",
+            "standard_units": "%"
+          },
+          {
+            "molecule_chembl_id": "CHEMBL383955",
+            "standard_type": "Activity",
+            "standard_value": "80.0",
+            "standard_units": "%"
+          },
+          {
+            "molecule_chembl_id": "CHEMBL247067",
+            "standard_type": "Inhibition",
+            "standard_value": "108.0",
+            "standard_units": "%"
+          }
+        ],
+        "target_chembl_id": "CHEMBL3099"
+      },
+      "pubmed": {
+        "abstracts": [
+          {
+            "pmid": "34959482",
+            "title": "The TKI Era in Chronic Leukemias.",
+            "abstract": "Tyrosine kinases are proteins involved in physiological cell functions including proliferation, differentiation, and survival. However, the dysregulation of tyrosine kinase pathways occurs in malignancy, including hematological leukemias such as chronic myeloid leukemia (CML) and chronic lymphocytic leukemia (CLL). Particularly, the fusion oncoprotein BCR-ABL1 in CML and the B-cell receptor (BCR) signaling pathway in CLL are critical for leukemogenesis. Therapeutic management of these two hematological conditions was fundamentally changed in recent years, making the role of conventional chemot"
+          },
+          {
+            "pmid": "40087828",
+            "title": "Asciminib: the tyrosine kinase inhibitor with a unique mechanism of action.",
+            "abstract": "Management of chronic phase chronic myeloid leukemia (CML-CP) was revolutionized with the development of tyrosine kinase inhibitors (TKIs). Imatinib (first generation), dasatinib, nilotinib and bosutinib (second generation), and ponatinib (third generation) are the five approved TKIs that inhibit BCR::ABL1 by binding to the ATP binding site of ABL1. About half of the resistance to TKIs develops through acquisition of mutations in the ATP binding site, including T315I. Hence, a novel TKI with a distinct mechanism of action that inhibits bcr-abl1 by specifically targeting the ABL1 myristoyl pock"
+          },
+          {
+            "pmid": "42357552",
+            "title": "Non-Classical Binding Mechanisms of Ferrocene-Modified Imatinib and Nilotinib Analogues in BCR-ABL1 Kinase Revealed by Computational Analysis.",
+            "abstract": "Ferrocene-containing compounds have gained attention in medicinal chemistry due to their unique redox and structural properties. This study investigates ferrocene-based analogues of imatinib and nilotinib to define their binding determinants within the ABL1 kinase domain using an integrated in silico approach, in relation to their previously reported cytotoxic activity."
+          },
+          {
+            "pmid": "35337107",
+            "title": "Hybrids of Imatinib with Quinoline: Synthesis, Antimyeloproliferative Activity Evaluation, and Molecular Docking.",
+            "abstract": "Imatinib (IMT) is the first-in-class BCR-ABL commercial tyrosine kinase inhibitor (TKI). However, the resistance and toxicity associated with the use of IMT highlight the importance of the search for new TKIs. In this context, heterocyclic systems, such as quinoline, which is present as a pharmacophore in the structure of the TKI inhibitor bosutinib (BST), have been widely applied. Thus, this work aimed to obtain new hybrids of imatinib containing quinoline moieties and evaluate them against K562 cells. The compounds were synthesized with a high purity degree. Among the produced molecules, the"
+          },
+          {
+            "pmid": "36676983",
+            "title": "Curcumin Decreases Viability and Inhibits Proliferation of Imatinib-Sensitive and Imatinib-Resistant Chronic Myeloid Leukemia Cell Lines.",
+            "abstract": "Chronic myeloid leukemia (CML) is a myeloproliferative haematological malignancy characterized by constitutive activation of BCR-ABL1 tyrosine kinase in the majority of patients. BCR-ABL1 expression activates signaling pathways involved in cell proliferation and survival. Current treatment options for CML include tyrosine kinase inhibitors (TKI) with resistance as a major issue. Various treatment options for overcoming resistance are being investigated. Among them, phytochemical curcumin could play an important role. Curcumin has been found to exhibit anti-cancerous effects in various models, "
+          }
+        ]
+      }
+    }
+  }
+}
