@@ -1,0 +1,118 @@
+# Persona profile for the connector-backed scientific search application.
+# Each entry in `connectors` names a module under connectors/ exposing the shared
+#   async fetch(entity_ids: dict, params: dict) -> dict  template.
+# `connector_bindings` documents, per persona, the inputs consumed from entity_ids,
+# the params passed, the fields read back, and the data source. Every source is a
+# free/open public API (keyless unless a free key is noted). Connectors and returned
+# fields verified against the live API before release. Fields ending _url / _image_url
+# and *_images[].url are directly renderable image assets for the UI.
+name: CELL_MOLECULAR_BIOLOGIST
+display_name: Cell & Molecular Biologist
+description: Gene function, regulation, interaction, and structural context. Retrieves protein function/domains,
+  family architecture, interaction partners, pathways, tissue expression, structures, and literature.
+system_prompt: |-
+  You are the Cell & Molecular Biologist. You explain molecular mechanism in cellular context: protein function, GO terms, domains and binding sites (UniProt); family/domain architecture (InterPro); functional and physical interaction partners (STRING); pathway and signaling membership (Reactome); tissue expression pattern (GTEx); predicted (AlphaFold) and experimental (PDB) structures; and supporting literature (PubMed). You resolve identifiers across databases and cite records verbatim (UniProt accession, InterPro/Reactome/PDB ID, PMID). You deliver mechanism summaries and pathway/interaction/structure tables as source-linked artifacts. You do not give clinical advice.
+connectors:
+- uniprot
+- interpro
+- string_ppi
+- reactome
+- gtex
+- alphafold
+- pdb
+- pubmed
+connector_bindings:
+  uniprot:
+    module: connectors/uniprot.py
+    reads_from_entity_ids:
+    - target_uniprot
+    - target
+    params: 'fields: [cc_function, go, sequence, ft_binding, ft_domain]'
+    extracts_fields:
+    - accession
+    - gene
+    - function
+    - go_terms
+    - sequence_length
+    - binding_sites
+    - domains
+    data_source: UniProtKB REST (rest.uniprot.org, keyless)
+  interpro:
+    module: connectors/interpro.py
+    reads_from_entity_ids:
+    - target_uniprot
+    params: limit (default 12)
+    extracts_fields:
+    - entry_count
+    - entries[interpro_id, name, type]
+    data_source: EBI InterPro API (ebi.ac.uk/interpro, keyless) — NEW
+  string_ppi:
+    module: connectors/string_ppi.py
+    reads_from_entity_ids:
+    - target
+    params: species (default 9606); limit; min_score (default 0.4)
+    extracts_fields:
+    - partners[partner, score, experimental, database, textmining]
+    - network_image_url (renderable PNG of the interaction network)
+    - network_svg_url (vector version)
+    - viewer_url (interactive STRING network page)
+    data_source: STRING API (string-db.org, keyless) — NEW
+  reactome:
+    module: connectors/reactome.py
+    reads_from_entity_ids:
+    - target_uniprot
+    - target
+    params: (none)
+    extracts_fields:
+    - pathways[stable_id, display_name, species]
+    - pathways[].diagram_url (renderable pathway-map PNG; served behind a bot filter)
+    - pathways[].viewer_url (interactive Reactome PathwayBrowser)
+    data_source: Reactome ContentService (reactome.org, keyless)
+  gtex:
+    module: connectors/gtex.py
+    reads_from_entity_ids:
+    - target_gencode
+    - target
+    params: dataset_id (default gtex_v8); top_n (default 5)
+    extracts_fields:
+    - gencode_id
+    - unit
+    - top_tissues[tissue, median]
+    - expression[tissue, median]
+    data_source: GTEx Portal v2 API (gtexportal.org, keyless) — NEW
+  alphafold:
+    module: connectors/alphafold.py
+    reads_from_entity_ids:
+    - target_uniprot
+    params: (none)
+    extracts_fields:
+    - entry_id
+    - model_url
+    - cif_url
+    - pae_image_url
+    - viewer_url
+    - plddt_global
+    - sequence_length
+    - organism
+    - available
+    data_source: AlphaFold DB API (alphafold.ebi.ac.uk, keyless). cif_url/model_url feed 3D viewer; pae_image_url
+      = renderable PNG; viewer_url = interactive
+  pdb:
+    module: connectors/pdb.py
+    reads_from_entity_ids:
+    - entity
+    - target_uniprot
+    params: 'query_type: ligand_search | all_structures'
+    extracts_fields:
+    - structures[pdb_id, title, resolution_angstrom, method, image_url, viewer_url]
+    data_source: RCSB search + data API (rcsb.org, keyless). image_url = renderable assembly JPEG; viewer_url
+      = interactive 3D
+  pubmed:
+    module: connectors/pubmed.py
+    reads_from_entity_ids:
+    - entity
+    - target
+    params: 'keywords: [str, ...]'
+    extracts_fields:
+    - abstracts[pmid, title, abstract]
+    data_source: NCBI E-utilities / PubMed (keyless; optional free NCBI_API_KEY)

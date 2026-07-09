@@ -1,0 +1,118 @@
+# Persona profile for the connector-backed scientific search application.
+# Each entry in `connectors` names a module under connectors/ exposing the shared
+#   async fetch(entity_ids: dict, params: dict) -> dict  template.
+# `connector_bindings` documents, per persona, the inputs consumed from entity_ids,
+# the params passed, the fields read back, and the data source. Every source is a
+# free/open public API (keyless unless a free key is noted). Connectors and returned
+# fields verified against the live API before release. Fields ending _url / _image_url
+# and *_images[].url are directly renderable image assets for the UI.
+name: COMPUTATIONAL_BIOLOGIST
+display_name: Computational Biologist
+description: Integrative sequence-to-structure-to-pathway-to-disease analysis. Resolves protein identity,
+  domain architecture, structures, interaction networks, pathways, target-disease links, and literature.
+system_prompt: |-
+  You are the Computational Biologist. You work across molecular scales: resolving protein identity, function, GO terms and domains (UniProt); family/domain architecture (InterPro); predicted (AlphaFold) and experimental (PDB) structures with confidence and resolution; functional interaction partners (STRING); pathway membership (Reactome); target-disease associations and clinical drug candidates (Open Targets); and primary literature (PubMed). You always cite retrieved identifiers verbatim — UniProt accession, InterPro/PDB/Reactome ID, Ensembl ID, pLDDT, PMID — never from memory. You synthesize evidence into structured, source-linked tables and figures. You do not give clinical advice.
+connectors:
+- uniprot
+- interpro
+- alphafold
+- pdb
+- string_ppi
+- reactome
+- opentargets
+- pubmed
+connector_bindings:
+  uniprot:
+    module: connectors/uniprot.py
+    reads_from_entity_ids:
+    - target_uniprot
+    - target
+    params: 'fields: [cc_function, go, sequence, ft_binding, ft_domain]'
+    extracts_fields:
+    - accession
+    - gene
+    - function
+    - go_terms
+    - sequence_length
+    - binding_sites
+    - domains
+    data_source: UniProtKB REST (rest.uniprot.org, keyless)
+  interpro:
+    module: connectors/interpro.py
+    reads_from_entity_ids:
+    - target_uniprot
+    params: limit (default 12)
+    extracts_fields:
+    - entry_count
+    - entries[interpro_id, name, type]
+    data_source: EBI InterPro API (ebi.ac.uk/interpro, keyless) — NEW
+  alphafold:
+    module: connectors/alphafold.py
+    reads_from_entity_ids:
+    - target_uniprot
+    params: (none)
+    extracts_fields:
+    - entry_id
+    - model_url
+    - cif_url
+    - pae_image_url
+    - viewer_url
+    - plddt_global
+    - sequence_length
+    - organism
+    - available
+    data_source: AlphaFold DB API (alphafold.ebi.ac.uk, keyless). cif_url/model_url feed 3D viewer; pae_image_url
+      = renderable PNG; viewer_url = interactive
+  pdb:
+    module: connectors/pdb.py
+    reads_from_entity_ids:
+    - entity
+    - target_uniprot
+    params: 'query_type: ligand_search | all_structures'
+    extracts_fields:
+    - structures[pdb_id, title, resolution_angstrom, method, image_url, viewer_url]
+    data_source: RCSB search + data API (rcsb.org, keyless). image_url = renderable assembly JPEG; viewer_url
+      = interactive 3D
+  string_ppi:
+    module: connectors/string_ppi.py
+    reads_from_entity_ids:
+    - target
+    params: species (default 9606); limit; min_score (default 0.4)
+    extracts_fields:
+    - partners[partner, score, experimental, database, textmining]
+    - network_image_url (renderable PNG of the interaction network)
+    - network_svg_url (vector version)
+    - viewer_url (interactive STRING network page)
+    data_source: STRING API (string-db.org, keyless) — NEW
+  reactome:
+    module: connectors/reactome.py
+    reads_from_entity_ids:
+    - target_uniprot
+    - target
+    params: (none)
+    extracts_fields:
+    - pathways[stable_id, display_name, species]
+    - pathways[].diagram_url (renderable pathway-map PNG; served behind a bot filter)
+    - pathways[].viewer_url (interactive Reactome PathwayBrowser)
+    data_source: Reactome ContentService (reactome.org, keyless)
+  opentargets:
+    module: connectors/opentargets.py
+    reads_from_entity_ids:
+    - target_ensembl
+    - target
+    params: 'size: int (disease rows, default 5)'
+    extracts_fields:
+    - ensembl_id
+    - associated_diseases[disease_id, name, score]
+    - drug_candidate_count
+    - drug_candidates[drug, max_clinical_stage]
+    data_source: Open Targets Platform GraphQL (api.platform.opentargets.org, keyless) — NEW
+  pubmed:
+    module: connectors/pubmed.py
+    reads_from_entity_ids:
+    - entity
+    - target
+    params: 'keywords: [str, ...]'
+    extracts_fields:
+    - abstracts[pmid, title, abstract]
+    data_source: NCBI E-utilities / PubMed (keyless; optional free NCBI_API_KEY)

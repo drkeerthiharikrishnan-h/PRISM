@@ -330,8 +330,8 @@
 const PERSONAS = {
   medicinal_chemist: { name:'Medicinal Chemist',         emoji:'🧪', color:'#0ea5e9' },
   pathologist:       { name:'Pathologist',                emoji:'🔬', color:'#f59e0b' },
-  cell_biologist:    { name:'Cell / Molecular Biologist', emoji:'🧬', color:'#10b981' },
-  comp_biologist:    { name:'Computational Biologist',    emoji:'💻', color:'#8b5cf6' },
+  cell_molecular_biologist: { name:'Cell & Molecular Biologist', emoji:'🧬', color:'#10b981' },
+  computational_biologist:  { name:'Computational Biologist',   emoji:'💻', color:'#8b5cf6' },
 };
 
 // Recommended questions per persona — shown in sidebar
@@ -356,7 +356,7 @@ const QUESTIONS = {
       { short:'EGFR resistance mutations',  q:'What EGFR mutations cause resistance to gefitinib in lung cancer patients?' },
     ],
   },
-  cell_biologist: {
+  cell_molecular_biologist: {
     label: '🧬 Pathways & Signaling',
     color: '#10b981',
     items: [
@@ -366,7 +366,7 @@ const QUESTIONS = {
       { short:'BCR-ABL STAT5 mechanism',    q:'How does constitutively active BCR-ABL drive STAT5 signaling and what is the downstream consequence?' },
     ],
   },
-  comp_biologist: {
+  computational_biologist: {
     label: '💻 Structures & Datasets',
     color: '#8b5cf6',
     items: [
@@ -710,8 +710,8 @@ function _buildCompareHTML(id, query) {
   const defs = [
     { key:'medicinal_chemist', emoji:'🧪', name:'Medicinal Chemist',         color:'#0ea5e9', dbs:'ChEMBL · PDB · PubChem · PubMed', cur:'text-sky-400' },
     { key:'pathologist',       emoji:'🔬', name:'Pathologist',                color:'#f59e0b', dbs:'ClinVar · PubMed',                cur:'text-amber-400' },
-    { key:'cell_biologist',    emoji:'🧬', name:'Cell / Molecular Biologist', color:'#10b981', dbs:'Reactome · UniProt · PubMed',     cur:'text-emerald-400' },
-    { key:'comp_biologist',    emoji:'💻', name:'Computational Biologist',    color:'#8b5cf6', dbs:'PDB · AlphaFold · UniProt · ChEMBL', cur:'text-violet-400' },
+    { key:'cell_molecular_biologist', emoji:'🧬', name:'Cell & Molecular Biologist', color:'#10b981', dbs:'UniProt · InterPro · STRING · Reactome · GTEx · AlphaFold · PDB · PubMed', cur:'text-emerald-400' },
+    { key:'computational_biologist',  emoji:'💻', name:'Computational Biologist',    color:'#8b5cf6', dbs:'UniProt · InterPro · AlphaFold · PDB · STRING · Reactome · Open Targets · PubMed', cur:'text-violet-400' },
   ];
   const panels = defs.map(p => `
     <div class="glass rounded-2xl p-4 panel-accent" style="--panel-color:${p.color}">

@@ -1,58 +1,100 @@
-name: Medicinal Chemist
-emoji: "🧪"
-color: "#0ea5e9"
-description: >
-  Drug molecule design and optimization. Focuses on potency numbers,
-  3D structural data, scaffold chemistry, and SAR insights.
+# Persona profile for the connector-backed scientific search application.
+# Each entry in `connectors` names a module under connectors/ exposing the shared
+#   async fetch(entity_ids: dict, params: dict) -> dict  template.
+# `connector_bindings` documents, per persona, the inputs consumed from entity_ids,
+# the params passed, the fields read back, and the data source. Every source is a
+# free/open public API (keyless unless a free key is noted). Connectors and returned
+# fields verified against the live API before release. Fields ending _url / _image_url
+# and *_images[].url are directly renderable image assets for the UI.
+name: MEDICINAL_CHEMIST
+display_name: Medicinal Chemist
+description: Small-molecule discovery and optimization. Retrieves chemical structure/properties, drug-likeness/ADMET,
+  target potency, target-disease/clinical context, binding-site structures, and literature.
+system_prompt: |-
+  You are the Medicinal Chemist. You specialize in small molecules: resolving structure and physicochemical identity (PubChem — SMILES, formula, MW, IUPAC); assessing drug-likeness and ADMET (ADMET connector — logP, PSA, HBA/HBD, rotatable bonds, Rule-of-5, QED, clinical max_phase); reading target potency (ChEMBL — IC50/Ki/Kd); checking target-disease rationale and competing clinical candidates (Open Targets); inspecting the target pocket via 3D structures (PDB); and citing assays and literature (PubMed). You reason about SAR, selectivity, and developability, and you cite compound identifiers (PubChem CID, ChEMBL ID) and assay provenance verbatim. You do not provide dosing or treatment advice.
 connectors:
-  - name: chembl
-    params:
-      query_type: activity
-      standard_types: [IC50, Ki, Kd]
-  - name: pdb
-    params:
-      query_type: ligand_search
-  - name: pubchem
-    params:
-      query_type: scaffold
-  - name: pubmed
-    params:
-      keywords:
-        - SAR
-        - structure-activity relationship
-        - co-crystal
-        - IC50
-        - analogue
-        - binding affinity
-extract_fields:
-  - binding_affinity
-  - structures
-  - scaffold
-  - sar_notes
-sections:
-  - SAR summary
-  - Key structures
-  - Bioactivity
-  - Open questions
-synthesis_prompt: |
-  You are a senior medicinal chemist responding to a colleague about drug-target interactions.
-  Your colleague is designing or optimizing drug molecules.
-
-  Focus exclusively on:
-  - Binding affinity numbers (IC50, Ki, Kd values with units)
-  - 3D co-crystal structures (PDB entries, resolution, binding mode)
-  - Scaffold chemistry and structural features driving potency
-  - SAR insights: what molecular changes improve or reduce activity
-
-  Structure your response with exactly these sections:
-  ## SAR Summary
-  ## Key Structures
-  ## Bioactivity
-  ## Open Questions
-
-  Rules:
-  - Cite every factual claim with [E1], [E2], etc. matching the evidence provided
-  - Omit any claim not directly supported by the provided evidence
-  - Use precise scientific language appropriate for a medicinal chemist
-  - Do not explain what SAR is — your reader already knows
-  - Keep response focused and under 400 words
+- pubchem
+- admet
+- chembl
+- opentargets
+- pdb
+- pubmed
+connector_bindings:
+  pubchem:
+    module: connectors/pubchem.py
+    reads_from_entity_ids:
+    - drug_pubchem
+    - entity
+    params: 'query_type: scaffold'
+    extracts_fields:
+    - cid
+    - canonical_smiles
+    - molecular_formula
+    - molecular_weight
+    - iupac_name
+    data_source: PubChem PUG REST (pubchem.ncbi.nlm.nih.gov, keyless)
+  admet:
+    module: connectors/admet.py
+    reads_from_entity_ids:
+    - drug_chembl
+    - entity
+    params: (none)
+    extracts_fields:
+    - pref_name
+    - max_phase
+    - molecular_weight
+    - alogp
+    - psa
+    - hba
+    - hbd
+    - rotatable_bonds
+    - aromatic_rings
+    - num_ro5_violations
+    - qed_weighted
+    - ro3_pass
+    - molecular_formula
+    - lipinski_pass
+    data_source: ChEMBL molecule_properties (ebi.ac.uk/chembl, keyless)
+  chembl:
+    module: connectors/chembl.py
+    reads_from_entity_ids:
+    - drug_chembl
+    - target_chembl
+    params: 'query_type: activity | dataset; standard_types: [IC50, Ki, Kd]; limit'
+    extracts_fields:
+    - activities[molecule_chembl_id, standard_type, standard_value, standard_units, assay_description,
+      image_url]
+    - count
+    - image_url (2D structure SVG for the queried molecule)
+    data_source: ChEMBL data API (ebi.ac.uk/chembl, keyless). image_url = renderable 2D structure SVG
+  opentargets:
+    module: connectors/opentargets.py
+    reads_from_entity_ids:
+    - target_ensembl
+    - target
+    params: 'size: int (disease rows, default 5)'
+    extracts_fields:
+    - ensembl_id
+    - associated_diseases[disease_id, name, score]
+    - drug_candidate_count
+    - drug_candidates[drug, max_clinical_stage]
+    data_source: Open Targets Platform GraphQL (api.platform.opentargets.org, keyless) — NEW
+  pdb:
+    module: connectors/pdb.py
+    reads_from_entity_ids:
+    - entity
+    - target_uniprot
+    params: 'query_type: ligand_search | all_structures'
+    extracts_fields:
+    - structures[pdb_id, title, resolution_angstrom, method, image_url, viewer_url]
+    data_source: RCSB search + data API (rcsb.org, keyless). image_url = renderable assembly JPEG; viewer_url
+      = interactive 3D
+  pubmed:
+    module: connectors/pubmed.py
+    reads_from_entity_ids:
+    - entity
+    - target
+    params: 'keywords: [str, ...]'
+    extracts_fields:
+    - abstracts[pmid, title, abstract]
+    data_source: NCBI E-utilities / PubMed (keyless; optional free NCBI_API_KEY)

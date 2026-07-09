@@ -32,7 +32,7 @@ DEMO_USERS = {
         "name":    "Dr. Mei Liu",
         "title":   "Cell Biology Researcher",
         "org":     "Gladstone Institutes",
-        "persona": "cell_biologist",
+        "persona": "cell_molecular_biologist",
         "initials": "ML",
         "color":   "#10b981",
         "welcome_note": "Your view is focused on signaling pathways, mechanism of action, and protein interactions.",
@@ -42,7 +42,7 @@ DEMO_USERS = {
         "name":    "Dr. Alex Rivera",
         "title":   "Computational Biologist",
         "org":     "UCSF QB3",
-        "persona": "comp_biologist",
+        "persona": "computational_biologist",
         "initials": "AR",
         "color":   "#8b5cf6",
         "welcome_note": "Your view is focused on 3D structures, protein sequences, and ML-ready bioactivity datasets.",
@@ -60,17 +60,17 @@ DEMO_USERS = {
 }
 
 PERSONA_LABELS = {
-    "medicinal_chemist": "Medicinal Chemist",
-    "pathologist":       "Pathologist",
-    "cell_biologist":    "Cell / Molecular Biologist",
-    "comp_biologist":    "Computational Biologist",
+    "medicinal_chemist":       "Medicinal Chemist",
+    "pathologist":             "Pathologist",
+    "cell_molecular_biologist": "Cell & Molecular Biologist",
+    "computational_biologist": "Computational Biologist",
 }
 
 PERSONA_EMOJIS = {
-    "medicinal_chemist": "🧪",
-    "pathologist":       "🔬",
-    "cell_biologist":    "🧬",
-    "comp_biologist":    "💻",
+    "medicinal_chemist":       "🧪",
+    "pathologist":             "🔬",
+    "cell_molecular_biologist": "🧬",
+    "computational_biologist": "💻",
 }
 
 

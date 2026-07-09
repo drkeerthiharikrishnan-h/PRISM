@@ -65,6 +65,21 @@ async def parse_query(query: str) -> dict:
 
 # ── Step 2: Resolve IDs ───────────────────────────────────────────────────────
 
+# Common fusion protein / alias → canonical gene symbol
+_GENE_ALIASES: dict = {
+    "BCR-ABL":    "ABL1",
+    "BCR-ABL1":   "ABL1",
+    "EML4-ALK":   "ALK",
+    "TMPRSS2-ERG":"ERG",
+    "SS18-SSX":   "SS18",
+    "FUS-CHOP":   "FUS",
+    "PAX3-FOXO1": "FOXO1",
+}
+
+def _canonical_target(target: str) -> str:
+    """Return canonical gene symbol, resolving fusion-protein aliases."""
+    return _GENE_ALIASES.get(target.upper(), target)
+
 async def _pubchem_cid(entity: str, client: httpx.AsyncClient) -> Optional[str]:
     try:
         r = await client.get(
@@ -92,21 +107,39 @@ async def _chembl_molecule_id(entity: str, client: httpx.AsyncClient) -> Optiona
 
 
 async def _uniprot_accession(target: str, client: httpx.AsyncClient) -> Optional[str]:
+    canonical = _canonical_target(target)
+    for query in [
+        f"gene:{canonical} AND organism_id:9606 AND reviewed:true",
+        f"gene:{canonical} AND organism_id:9606",
+        f"{canonical} AND organism_id:9606 AND reviewed:true",
+    ]:
+        try:
+            r = await client.get(
+                "https://rest.uniprot.org/uniprotkb/search",
+                params={"query": query, "fields": "accession", "format": "json", "size": 1},
+                timeout=8,
+            )
+            results = r.json().get("results", [])
+            if results:
+                return results[0]["primaryAccession"]
+        except Exception:
+            continue
+    return None
+
+
+async def _ensembl_gene_id(target: str, client: httpx.AsyncClient) -> Optional[str]:
+    canonical = _canonical_target(target)
     try:
         r = await client.get(
-            "https://rest.uniprot.org/uniprotkb/search",
-            params={
-                "query": f"gene:{target} AND organism_id:9606 AND reviewed:true",
-                "fields": "accession",
-                "format": "json",
-                "size": 1,
-            },
+            f"https://rest.ensembl.org/lookup/symbol/homo_sapiens/{canonical}",
+            params={"content-type": "application/json"},
             timeout=8,
         )
-        results = r.json().get("results", [])
-        return results[0]["primaryAccession"] if results else None
+        if r.status_code == 200:
+            return r.json().get("id")
     except Exception:
-        return None
+        pass
+    return None
 
 
 async def _chembl_target_id(target: str, client: httpx.AsyncClient) -> Optional[str]:
@@ -132,20 +165,22 @@ async def resolve_ids(entity: str, target: str) -> dict:
         follow_redirects=True,
     ) as client:
         import asyncio
-        drug_cid, drug_chembl, target_uniprot, target_chembl = await asyncio.gather(
+        drug_cid, drug_chembl, target_uniprot, target_chembl, target_ensembl = await asyncio.gather(
             _pubchem_cid(entity, client),
             _chembl_molecule_id(entity, client),
             _uniprot_accession(target, client),
             _chembl_target_id(target, client),
+            _ensembl_gene_id(target, client),
         )
 
     return {
         "entity": entity,
-        "target": target,
+        "target": _canonical_target(target),
         "drug_pubchem": drug_cid,
         "drug_chembl": drug_chembl,
         "target_uniprot": target_uniprot,
         "target_chembl": target_chembl,
+        "target_ensembl": target_ensembl,
     }
 
 

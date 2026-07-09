@@ -1,51 +1,95 @@
-name: Pathologist
-emoji: "🔬"
-color: "#f59e0b"
-description: >
-  Disease interpretation and patient genetics. Focuses on resistance mutations,
-  clinical significance, and diagnostic/therapeutic implications.
+# Persona profile for the connector-backed scientific search application.
+# Each entry in `connectors` names a module under connectors/ exposing the shared
+#   async fetch(entity_ids: dict, params: dict) -> dict  template.
+# `connector_bindings` documents, per persona, the inputs consumed from entity_ids,
+# the params passed, the fields read back, and the data source. Every source is a
+# free/open public API (keyless unless a free key is noted). Connectors and returned
+# fields verified against the live API before release. Fields ending _url / _image_url
+# and *_images[].url are directly renderable image assets for the UI.
+name: PATHOLOGIST
+display_name: Pathologist
+description: Disease-oriented molecular interpretation. Retrieves variant pathogenicity, target-disease
+  evidence and therapies, tissue expression context, renderable pathology/microscopy images, and literature.
+system_prompt: |-
+  You are the Pathologist. You focus on disease-level molecular interpretation: assessing variant pathogenicity, clinical significance and review status (ClinVar); weighing target-disease association evidence and available/clinical therapies (Open Targets); reading tissue expression context (GTEx); relating findings to the affected protein's function (UniProt); retrieving pathology (immunohistochemistry) and microscopy (immunofluorescence) images (Human Protein Atlas); and grounding every assertion in literature (PubMed). You cite each clinical claim to its source record (ClinVar variant ID and review status, Open Targets score, PMID) and state evidence level explicitly. You provide research and informational context only — not a diagnosis; clinical decisions belong to a qualified healthcare professional with full patient context.
 connectors:
-  - name: clinvar
-    params:
-      query_type: resistance_variants
-  - name: pubmed
-    params:
-      keywords:
-        - resistance mutation
-        - T315I
-        - clinical significance
-        - prognosis
-        - diagnostic
-        - treatment failure
-        - variant
-extract_fields:
-  - resistance_variants
-  - diagnostic_correlates
-  - therapy_context
-sections:
-  - Resistance landscape
-  - Diagnostic correlates
-  - Clinical notes
-  - Open questions
-synthesis_prompt: |
-  You are a clinical pathologist responding to a colleague about a patient case.
-  Your colleague is interpreting a patient's disease or genetics in a clinical setting.
-
-  Focus exclusively on:
-  - Resistance mutations: which variants abolish drug binding and their clinical significance
-  - Diagnostic markers: how the target gene/protein defines or classifies disease
-  - Clinical implications: what resistance means for treatment decisions (drug switches, monitoring)
-  - Evidence-based guidance from clinical literature and variant databases
-
-  Structure your response with exactly these sections:
-  ## Resistance Landscape
-  ## Diagnostic Correlates
-  ## Clinical Notes
-  ## Open Questions
-
-  Rules:
-  - Cite every factual claim with [E1], [E2], etc. matching the evidence provided
-  - Omit any claim not directly supported by the provided evidence
-  - Use clinical language appropriate for a pathologist (not chemistry jargon)
-  - Reference specific variants by name (e.g., T315I, E255K) where available
-  - Keep response focused and under 400 words
+- clinvar
+- opentargets
+- gtex
+- uniprot
+- proteinatlas
+- pubmed
+connector_bindings:
+  clinvar:
+    module: connectors/clinvar.py
+    reads_from_entity_ids:
+    - target
+    - entity
+    params: (none)
+    extracts_fields:
+    - variants[variant_id, title, clinical_significance, condition, review_status]
+    - gene
+    data_source: NCBI E-utilities / ClinVar (keyless; optional free NCBI_API_KEY)
+  opentargets:
+    module: connectors/opentargets.py
+    reads_from_entity_ids:
+    - target_ensembl
+    - target
+    params: 'size: int (disease rows, default 5)'
+    extracts_fields:
+    - ensembl_id
+    - associated_diseases[disease_id, name, score]
+    - drug_candidate_count
+    - drug_candidates[drug, max_clinical_stage]
+    data_source: Open Targets Platform GraphQL (api.platform.opentargets.org, keyless) — NEW
+  gtex:
+    module: connectors/gtex.py
+    reads_from_entity_ids:
+    - target_gencode
+    - target
+    params: dataset_id (default gtex_v8); top_n (default 5)
+    extracts_fields:
+    - gencode_id
+    - unit
+    - top_tissues[tissue, median]
+    - expression[tissue, median]
+    data_source: GTEx Portal v2 API (gtexportal.org, keyless) — NEW
+  uniprot:
+    module: connectors/uniprot.py
+    reads_from_entity_ids:
+    - target_uniprot
+    - target
+    params: 'fields: [cc_function, go, sequence, ft_binding, ft_domain]'
+    extracts_fields:
+    - accession
+    - gene
+    - function
+    - go_terms
+    - sequence_length
+    - binding_sites
+    - domains
+    data_source: UniProtKB REST (rest.uniprot.org, keyless)
+  pubmed:
+    module: connectors/pubmed.py
+    reads_from_entity_ids:
+    - entity
+    - target
+    params: 'keywords: [str, ...]'
+    extracts_fields:
+    - abstracts[pmid, title, abstract]
+    data_source: NCBI E-utilities / PubMed (keyless; optional free NCBI_API_KEY)
+  proteinatlas:
+    module: connectors/proteinatlas.py
+    reads_from_entity_ids:
+    - target_ensembl
+    - target
+    params: 'image_type: pathology | microscopy | all; include_cancer: bool; limit (default 6)'
+    extracts_fields:
+    - gene
+    - ensembl_id
+    - pathology_images[url, tissue, assay, antibody]
+    - microscopy_images[url, locations, assay]
+    - pathology_total
+    - microscopy_total
+    data_source: Human Protein Atlas (proteinatlas.org, keyless, CC BY-SA 3.0). All url fields are directly
+      renderable IHC (pathology) / ICC-IF (microscopy) JPEGs — NEW, replaces tcia

@@ -29,7 +29,10 @@ PERSONAS_DIR = Path(__file__).parent / "personas"
 CACHE_DIR = Path(__file__).parent / "cache"
 CACHE_DIR.mkdir(exist_ok=True)
 
-PERSONA_ORDER = ["medicinal_chemist", "pathologist", "cell_biologist", "comp_biologist"]
+_FORMATTER_PATH = Path(__file__).parent / "prompts" / "response_formatter.txt"
+_RESPONSE_FORMATTER = _FORMATTER_PATH.read_text(encoding="utf-8") if _FORMATTER_PATH.exists() else "{persona_prompt}"
+
+PERSONA_ORDER = ["medicinal_chemist", "pathologist", "cell_molecular_biologist", "computational_biologist"]
 
 
 # ── Load persona configs ──────────────────────────────────────────────────────
@@ -46,11 +49,20 @@ def _load_all_personas() -> dict[str, dict]:
 # ── Step 3: Persona plan ──────────────────────────────────────────────────────
 
 def get_persona_plan(persona_cfg: dict, entity_ids: dict) -> list[dict]:
-    """Return list of {connector_name, entity_ids, params} calls."""
-    return [
-        {"name": c["name"], "entity_ids": entity_ids, "params": c.get("params", {})}
-        for c in persona_cfg.get("connectors", [])
-    ]
+    """Return list of {name, entity_ids, params} calls.
+
+    Supports both old dict format [{name, params}] and new string list format.
+    Params for string-format connectors are sourced from connector_bindings if present.
+    """
+    raw = persona_cfg.get("connectors", [])
+    bindings = persona_cfg.get("connector_bindings", {})
+    plan = []
+    for c in raw:
+        if isinstance(c, str):
+            plan.append({"name": c, "entity_ids": entity_ids, "params": {}})
+        else:
+            plan.append({"name": c["name"], "entity_ids": entity_ids, "params": c.get("params", {})})
+    return plan
 
 
 # ── Step 4: Retrieve ──────────────────────────────────────────────────────────
@@ -75,8 +87,8 @@ async def retrieve_for_persona(persona_id: str, persona_cfg: dict, entity_ids: d
 _PERSONA_QUESTION_TEMPLATES = {
     "medicinal_chemist": "What are the IC50/Ki/Kd binding affinities, co-crystal PDB structures, and SAR trends for {entity} at {target}?",
     "pathologist":       "Which {target} resistance mutations emerge under {entity} treatment, and what is their clinical significance?",
-    "cell_biologist":    "How does {entity} disrupt {target} signaling pathways, and what are the downstream cellular consequences?",
-    "comp_biologist":    "What experimental PDB structures, AlphaFold predictions, and ML-ready bioactivity datasets exist for {entity}–{target}?",
+    "cell_molecular_biologist":  "How does {entity} disrupt {target} signaling pathways, and what are the downstream cellular consequences?",
+    "computational_biologist":   "What experimental PDB structures, AlphaFold predictions, and ML-ready bioactivity datasets exist for {entity}–{target}?",
 }
 
 def _build_persona_question(persona_id: str, entity_ids: dict, original_query: str) -> str:
@@ -90,7 +102,8 @@ def _build_persona_question(persona_id: str, entity_ids: dict, original_query: s
 
 def _build_synthesis_prompt(persona_cfg: dict, entity_ids: dict, evidence: dict) -> tuple[str, str, int]:
     """Build system + user messages for synthesis LLM call. Returns (system, user, max_citation_idx)."""
-    system = persona_cfg["synthesis_prompt"].strip()
+    persona_prompt = (persona_cfg.get("system_prompt") or persona_cfg.get("synthesis_prompt", "")).strip()
+    system = _RESPONSE_FORMATTER.replace("{persona_prompt}", persona_prompt)
 
     # Number evidence pieces as [E1], [E2], ...
     evidence_lines = []
@@ -151,10 +164,15 @@ async def _validated_citation_stream(
                 break  # incomplete marker — wait for more tokens
             candidate = buf[: close_pos + 1]
             buf = buf[close_pos + 1 :]
-            if re.fullmatch(r"\[E([1-9]\d*)\]", candidate) and 1 <= int(candidate[2:-1]) <= max_idx:
-                yield candidate
+            m = re.fullmatch(r"\[E(\d+)\]", candidate)
+            if m:
+                n = int(m.group(1))
+                if 1 <= n <= max_idx:
+                    yield candidate  # valid citation
+                else:
+                    logger.warning("PRISM: stripped hallucinated citation %r (valid E1–E%d)", candidate, max_idx)
             else:
-                logger.warning("PRISM: stripped invalid citation %r (valid E1–E%d)", candidate, max_idx)
+                yield candidate  # not a citation marker — pass through unchanged
     if buf:
         yield buf
 
@@ -307,7 +325,7 @@ async def stream_pipeline(
     for p in personas_to_run:
         cfg = _load_persona(p)
         for c in cfg.get("connectors", []):
-            dbs_queried.add(c["name"])
+            dbs_queried.add(c if isinstance(c, str) else c["name"])
 
     yield {
         "type": "done",
