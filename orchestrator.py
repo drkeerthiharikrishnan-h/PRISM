@@ -72,6 +72,22 @@ async def retrieve_for_persona(persona_id: str, persona_cfg: dict, entity_ids: d
 
 # ── Step 5: Synthesize (streaming) ───────────────────────────────────────────
 
+_PERSONA_QUESTION_TEMPLATES = {
+    "medicinal_chemist": "What are the IC50/Ki/Kd binding affinities, co-crystal PDB structures, and SAR trends for {entity} at {target}?",
+    "pathologist":       "Which {target} resistance mutations emerge under {entity} treatment, and what is their clinical significance?",
+    "cell_biologist":    "How does {entity} disrupt {target} signaling pathways, and what are the downstream cellular consequences?",
+    "comp_biologist":    "What experimental PDB structures, AlphaFold predictions, and ML-ready bioactivity datasets exist for {entity}–{target}?",
+}
+
+def _build_persona_question(persona_id: str, entity_ids: dict, original_query: str) -> str:
+    """Rephrase the original query through the persona's professional lens."""
+    entity = entity_ids.get("entity", "")
+    target = entity_ids.get("target", "")
+    template = _PERSONA_QUESTION_TEMPLATES.get(persona_id)
+    if template and entity and target:
+        return template.format(entity=entity, target=target)
+    return original_query
+
 def _build_synthesis_prompt(persona_cfg: dict, entity_ids: dict, evidence: dict) -> tuple[str, str, int]:
     """Build system + user messages for synthesis LLM call. Returns (system, user, max_citation_idx)."""
     system = persona_cfg["synthesis_prompt"].strip()
@@ -263,8 +279,13 @@ async def stream_pipeline(
         """Inner coroutine — streams tokens for one persona."""
         cfg = all_personas_cfg[persona_id]
         evidence = all_evidence.get(persona_id, {}) if not demo_mode else all_evidence.get(persona_id, {})
+        await token_queue.put({
+            "type": "persona_question",
+            "persona": persona_id,
+            "question": _build_persona_question(persona_id, entity_ids, query),
+            "original_query": query,
+        })
         async for token in synthesize_stream(persona_id, cfg, entity_ids, evidence):
-            # We yield into the outer generator via a shared queue
             await token_queue.put({"type": "token", "persona": persona_id, "text": token})
         await token_queue.put({"type": "_done_persona", "persona": persona_id})
 

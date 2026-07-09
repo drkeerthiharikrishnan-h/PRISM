@@ -699,6 +699,7 @@ function _buildSingleHTML(id, query) {
         <span class="text-sm font-semibold text-slate-200">${p.name}</span>
         <span id="hcur-${id}-${currentPersona}" class="cursor text-blue-400 text-xs ml-1"></span>
       </div>
+      <div id="hquestion-${id}-${currentPersona}" class="hidden text-[11px] mono text-slate-500 italic border-l-2 border-slate-700 pl-2 mb-3"></div>
       <div id="hpanel-${id}-${currentPersona}" class="prose text-slate-400 min-h-[80px]"></div>
     </div>
     <div id="hmeta-${id}" class="hidden mt-2 flex items-center gap-2 text-[10px] mono text-slate-700 px-1"></div>
@@ -720,6 +721,7 @@ function _buildCompareHTML(id, query) {
         <span id="hcur-${id}-${p.key}" class="cursor ${p.cur} text-xs ml-auto"></span>
       </div>
       <div class="text-[10px] mono text-slate-700 mb-2">${p.dbs}</div>
+      <div id="hquestion-${id}-${p.key}" class="hidden text-[11px] mono text-slate-500 italic border-l-2 border-slate-700 pl-2 mb-2"></div>
       <div id="hpanel-${id}-${p.key}" class="prose text-slate-400 min-h-[120px]"></div>
     </div>`).join('');
   return `
@@ -882,6 +884,15 @@ function handleSSEEvent(event, activePersonas) {
       el('guardrail-suggestion').textContent =
         event.suggestion ? '💡 Try: ' + event.suggestion : '';
       setSendLoading(false);
+      break;
+    }
+
+    case 'persona_question': {
+      const qEl = document.getElementById(`hquestion-${currentEntryId}-${event.persona}`);
+      if (qEl) {
+        qEl.textContent = event.question;
+        qEl.classList.remove('hidden');
+      }
       break;
     }
 
