@@ -47,16 +47,6 @@ DEMO_USERS = {
         "color":   "#8b5cf6",
         "welcome_note": "Your view is focused on 3D structures, protein sequences, and ML-ready bioactivity datasets.",
     },
-    "dr_priya": {
-        "id":      "dr_priya",
-        "name":    "Dr. Priya Patel",
-        "title":   "Drug Discovery Scientist",
-        "org":     "Genentech",
-        "persona": "medicinal_chemist",
-        "initials": "PP",
-        "color":   "#ec4899",
-        "welcome_note": "Your view is focused on potency data, co-crystal structures, and SAR insights.",
-    },
 }
 
 PERSONA_LABELS = {
