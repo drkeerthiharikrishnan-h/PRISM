@@ -1,98 +1,72 @@
-# PRISM — Persona-Driven Research Intelligence System
+# Persona × Connector × Formatter — Drug/Target Dossier Pipeline
 
-> **Gladstone Institute × Cerebral Valley Hackathon 2026**  
-> *"One query. Four expert lenses."*
+Generate discipline-specific reference dossiers for **any drug/target query** by
+(1) auto-resolving identifiers from a plain name, (2) pulling live data from a bank
+of bioinformatics connectors, and (3) synthesizing a persona-styled document.
+Erlotinib/EGFR is the worked example; nothing about it is hardcoded.
 
-PRISM solves the "flat LLM response" problem in biomedical research. Standard AI tools return identical answers regardless of who is asking. PRISM routes the same query through **four distinct professional lenses** — each hitting different databases, extracting different evidence, and synthesising a role-appropriate response.
+```
+drug name (+optional target)
+        │
+        ▼
+   resolver.py ──────────► entity_ids.json   (ChEMBL / PubChem / UniProt / Ensembl /
+        │                                      PDB id / ligand code / numbering offset)
+        ▼
+   orchestrator.py ─── runs each persona's connector list ──► connector_payload_<persona>.json
+        │
+        ▼
+   persona YAML  +  response_formatter.txt  +  payload
+        │
+        ▼            (LLM synthesis)
+   generated_<persona>.md      ← the dossier
+```
 
----
+## Layout
 
-## Demo
-
-**Query:** *"What do I need to know about imatinib and its target ABL1?"*
-
-| 🧪 Medicinal Chemist | 🔬 Pathologist |
+| File / dir | Role |
 |---|---|
-| IC50 ≈ 0.1 µM vs ABL1 · PDB 1IEP (2.1 Å DFG-out) · 2-phenylaminopyrimidine scaffold | T315I gatekeeper mutation → abolishes imatinib binding · switch to ponatinib |
+| `resolver.py` | From a drug name (+optional target) resolves ALL identifiers: drug/target ChEMBL, PubChem CID, UniProt, Ensembl, best co-crystal PDB, bound-ligand code, and the legacy→UniProt residue-numbering offset. Target is inferred from ChEMBL mechanism when not given. |
+| `orchestrator.py` | Runner. `run_from_names(persona_yaml, drug, target=None, ...)` does resolve → connectors → synthesis-prompt. `run_persona(persona_yaml, entity_ids, ...)` runs from an already-resolved manifest. Threads the primary-target potency from ChEMBL into ligand-efficiency. |
+| `connectors/` | 17 data connectors (see below). Each returns a plain dict; structural/potency params fall back from persona `params` → `entity_ids`, so no per-persona hardcoding. |
+| `*.yaml` (4) | Persona definitions — `cell_biologist.yaml` (molecular biologist), `pathologist.yaml`, `comp_biologist.yaml`, `medicinal_chemist.yaml`. Each holds the connector list, reasoning rules, and a DOSSIER MODE section skeleton (erlotinib demoted to a labeled example). |
+| `response_formatter.txt` | Shared response template / voice + fidelity rules consumed at synthesis. |
+| 
+### Connectors (`connectors/`)
+`pubchem` (identity/SMILES from name), `chembl` (targets + selectivity/potency),
+`rdkit_descriptors` (MW, cLogP, TPSA, QED, Fsp3, ESOL, ligand efficiency),
+`pdb` (best co-crystal + contact geometry), `admet`, `opentargets`, `uniprot`,
+`proteinatlas`, `clinvar`, `pubmed`, `alphafold`, `string_ppi`, `gtex`,
+`interpro`, `reactome`, plus `utils.py`.
 
-| 🧬 Cell Biologist | 💻 Computational Biologist |
-|---|---|
-| Locks inactive conformation → halts STAT5/CrkL phosphorylation · BCR-ABL → RAS/MAPK/PI3K | PDB 1IEP + AlphaFold AF-P00519-F1 · UniProt P00519 (T315 gatekeeper) · ChEMBL ~N bioactivities |
+## Running it
 
----
+```python
+import orchestrator
+# fully from names — resolves everything, runs connectors, builds the prompt:
+out = orchestrator.run_from_names("cell_biologist.yaml", "erlotinib", target="EGFR")
+prompt = out["synthesis_prompt"]          # feed to your LLM
+# … dossier = llm(prompt)
 
-## Architecture
-
-```
-Query → [Step 1] LLM parse (entity + target)
-      → [Step 2] HTTP ID resolve (PubChem · ChEMBL · UniProt)
-      → [Step 3] Persona YAML plan (which databases per role)
-      → [Step 4] Parallel connector fetch (8 open databases)
-      → [Step 5] 4× streaming Claude synthesis
-```
-
-**Total LLM calls: 5–6** (1 parse + optional detect + 4 synthesis)  
-**All databases open:** PubMed · ChEMBL · PDB · UniProt · PubChem · ClinVar · Reactome · AlphaFold
-
----
-
-## Quickstart
-
-```bash
-# 1. Clone
-git clone git@github.com:drkeerthiharikrishnan-h/PRISM.git
-cd PRISM
-
-# 2. Install dependencies (requires uv)
-uv sync
-
-# 3. Configure
-cp .env.example .env
-# Edit .env — add your ANTHROPIC_API_KEY and NCBI_API_KEY
-
-# 4. Run
-uv run uvicorn main:app --reload
-
-# 5. Open http://localhost:8000
+# any drug works, target optional (inferred from ChEMBL mechanism):
+out = orchestrator.run_from_names("comp_biologist.yaml", "imatinib")
+out = orchestrator.run_from_names("medicinal_chemist.yaml", "vemurafenib")
 ```
 
----
+Synthesis itself is done by whatever LLM you wire in; in Claude Science this was
+`host.llm(prompt, model=host.reasoning_model())`.
 
-## Adding a New Persona
+## Design rules (why it generalizes)
 
-No Python needed. Create `personas/your_role.yaml`:
+- **No drug facts in the YAMLs.** Persona files hold only the connector list,
+  discipline reasoning rules, and a generic section skeleton. Erlotinib appears
+  only as a labeled "WORKED EXAMPLE — not to be emitted unless the compound IS
+  erlotinib."
+- **Connectors read `params` then fall back to `entity_ids`.** Structural
+  (`ligand_code`, `numbering_offset`) and potency (`pIC50_values`, `comparators`)
+  inputs thread from the resolver, not from hardcoded persona params.
+- **Retrieved values are sacrosanct.** Connector/RDKit values must appear verbatim
+  in the dossier; enrichment (established pharmacology) is allowed but must be
+  labeled and must never contradict or fabricate retrieved data.
+- **Graceful degradation.** Missing resolver fields (e.g. no co-crystal) are
+  handled by the connectors rather than crashing.
 
-```yaml
-name: Regulatory Specialist
-emoji: "📋"
-color: "#ef4444"
-connectors:
-  - name: pubmed
-    params:
-      keywords: [FDA approval, clinical trial, safety, adverse events]
-extract_fields: [regulatory_status, safety_profile]
-sections: [Regulatory status, Safety profile, Open questions]
-synthesis_prompt: |
-  You are a regulatory affairs specialist...
-```
-
-The system picks it up automatically — no code changes.
-
----
-
-## Tech Stack
-
-| Layer | Technology |
-|---|---|
-| Backend | FastAPI (Python, async) |
-| Streaming | Server-Sent Events (SSE) |
-| Frontend | HTML + TailwindCSS CDN + Vanilla JS |
-| LLM | Claude Sonnet 4.6 (Anthropic) |
-| Package manager | uv |
-
----
-
-## Team
-
-Built at the **Gladstone Institute × Cerebral Valley Built with Claude: Life Sciences Hackathon (July 2026)**  
-by **Keerthi Hari Krishnan** (Biomedical SME) and **Balaji** (Engineering).
