@@ -9,95 +9,85 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
     * { box-sizing: border-box; }
-    body { font-family: 'Inter', sans-serif; background: #080d14; }
+    body { font-family: 'Inter', sans-serif; background: #f7f6f2; }
     .mono { font-family: 'JetBrains Mono', monospace; }
 
-    /* Gradient text */
     .gradient-text {
-      background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 60%, #34d399 100%);
+      background: linear-gradient(135deg, #3b82f6 0%, #7c3aed 60%, #059669 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
 
-    /* Scrollbar */
     ::-webkit-scrollbar { width: 4px; height: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 2px; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
 
-    /* Cursor blink — hidden by default, animates when .active, fully gone when .done */
     .cursor::after { content: ''; }
     .cursor.active::after {
-      content: '▋'; color: #60a5fa;
+      content: '▋'; color: #3b82f6;
       animation: blink 0.9s step-end infinite;
     }
     .cursor.done::after { content: ''; animation: none; }
     @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
 
-    /* Panel top-border accent */
     .panel-accent { border-top: 2px solid var(--panel-color); }
 
-    /* Status dot */
     .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
     .dot.pulse { animation: dotpulse 1.2s ease-in-out infinite; }
     @keyframes dotpulse { 0%,100% { opacity:1; } 50% { opacity: 0.25; } }
 
-    /* Animations */
     .fade-in  { animation: fadeIn 0.25s ease-out; }
     .slide-up { animation: slideUp 0.3s ease-out; }
     @keyframes fadeIn  { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
     @keyframes slideUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
 
-    /* Prose inside response panels */
     .prose h2 { font-size: 0.75rem; font-weight: 600; color: #64748b; text-transform: uppercase;
                 letter-spacing: 0.07em; margin: 1.1rem 0 0.45rem; padding-bottom: 0.3rem;
-                border-bottom: 1px solid #1e293b; }
-    .prose p  { font-size: 0.825rem; line-height: 1.65; color: #94a3b8; margin-bottom: 0.5rem; }
-    .prose ul { font-size: 0.825rem; color: #94a3b8; padding-left: 1.1rem; margin-bottom: 0.5rem; }
+                border-bottom: 1px solid #e2e8f0; }
+    .prose p  { font-size: 0.825rem; line-height: 1.65; color: #475569; margin-bottom: 0.5rem; }
+    .prose ul { font-size: 0.825rem; color: #475569; padding-left: 1.1rem; margin-bottom: 0.5rem; }
     .prose li { margin-bottom: 0.2rem; }
-    .prose strong { color: #e2e8f0; font-weight: 600; }
-    .prose em { color: #7dd3fc; font-style: normal; }
+    .prose strong { color: #1e293b; font-weight: 600; }
+    .prose em { color: #0ea5e9; font-style: normal; }
 
-    /* User card hover */
-    .user-card { transition: all 0.18s ease; border: 1.5px solid transparent; cursor: pointer; }
+    .user-card { transition: all 0.18s ease; border: 1.5px solid #e8e5df; cursor: pointer; background: #ffffff; }
     .user-card:hover { border-color: var(--uc); transform: translateY(-2px);
-                       box-shadow: 0 6px 24px rgba(0,0,0,0.5); }
+                       box-shadow: 0 6px 24px rgba(0,0,0,0.1); }
     .user-card.active { border-color: var(--uc);
-                        background: color-mix(in srgb, var(--uc) 8%, #0f1928); }
+                        background: color-mix(in srgb, var(--uc) 8%, #ffffff); }
 
-    /* Avatar */
     .av { border-radius: 50%; display:flex; align-items:center; justify-content:center;
           font-weight:700; flex-shrink:0; }
 
-    /* Recommended question pills */
-    .q-pill { transition: all 0.15s ease; border: 1px solid #1e293b; cursor: pointer; }
-    .q-pill:hover { border-color: var(--pill-color, #334155);
-                    background: color-mix(in srgb, var(--pill-color, #334155) 10%, #0f172a);
+    .q-pill { transition: all 0.15s ease; border: 1px solid #e8e5df; cursor: pointer; }
+    .q-pill:hover { border-color: var(--pill-color, #cbd5e1);
+                    background: color-mix(in srgb, var(--pill-color, #cbd5e1) 10%, #ffffff);
                     transform: translateX(2px); }
 
-    /* Input area glow on focus */
-    #query-input:focus { box-shadow: 0 0 0 2px rgba(96,165,250,0.25); }
+    #query-input:focus { box-shadow: 0 0 0 2px rgba(59,130,246,0.2); }
 
-    /* Glassmorphism panel */
-    .glass { background: rgba(15,23,42,0.8); backdrop-filter: blur(12px); border: 1px solid #1e293b; }
+    .glass { background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border: 1px solid #e8e5df; }
 
-    /* Sidebar */
+    /* Evidence panel */
+    details > summary::-webkit-details-marker { display: none; }
+    details.evidence-panel[open] .ev-arrow { transform: rotate(90deg); }
+    .ev-arrow { display: inline-block; transition: transform 0.15s ease; }
+
     #sidebar { width: 260px; flex-shrink: 0; }
 
-    /* Persona switch modal */
-    .switch-btn { transition: all 0.15s; border: 1px solid #1e293b; }
-    .switch-btn:hover { border-color: var(--sw); background: color-mix(in srgb, var(--sw) 12%, #0f172a); }
-    .switch-btn.active-sw { border-color: var(--sw); background: color-mix(in srgb, var(--sw) 15%, #0f172a); }
+    .switch-btn { transition: all 0.15s; border: 1px solid #e8e5df; }
+    .switch-btn:hover { border-color: var(--sw); background: color-mix(in srgb, var(--sw) 10%, #f7f6f2); }
+    .switch-btn.active-sw { border-color: var(--sw); background: color-mix(in srgb, var(--sw) 12%, #ffffff); }
   </style>
 </head>
-<body class="text-slate-100 min-h-screen">
+<body class="text-slate-700 min-h-screen">
 
 <!-- ═══════════════════════════════════════════════════════════════════
      VIEW 1 — RESEARCHER LOGIN
 ═══════════════════════════════════════════════════════════════════ -->
 <div id="v-login" class="min-h-screen flex flex-col items-center justify-center px-4 py-12">
 
-  <!-- Brand -->
   <div class="text-center mb-10 fade-in">
-    <div class="mono text-blue-500/70 text-xs tracking-[0.3em] mb-4 uppercase">
+    <div class="mono text-slate-400 text-xs tracking-[0.3em] mb-4 uppercase">
       Persona-Driven Research Intelligence
     </div>
     <h1 class="text-6xl font-bold mb-3 tracking-tight">
@@ -109,14 +99,13 @@
     </p>
   </div>
 
-  <!-- Researcher cards -->
-  <div id="login-cards" class="grid grid-cols-3 gap-3 max-w-2xl w-full mb-8 fade-in">
-    <div class="col-span-3 text-center text-slate-600 text-xs py-10 mono">Loading profiles…</div>
+  <!-- Researcher cards — flex-wrap so odd counts stay centered -->
+  <div id="login-cards" class="flex flex-wrap justify-center gap-4 max-w-3xl w-full mb-8 fade-in">
+    <div class="text-slate-400 text-xs py-10 mono">Loading profiles…</div>
   </div>
 
-  <!-- Compare shortcut -->
   <button onclick="goCompare()"
-    class="group flex items-center gap-2 text-slate-500 hover:text-slate-300 text-sm border border-slate-800 hover:border-slate-600 px-5 py-2.5 rounded-full transition-all fade-in">
+    class="group flex items-center gap-2 text-slate-500 hover:text-slate-700 text-sm border border-slate-300 hover:border-slate-500 px-5 py-2.5 rounded-full transition-all fade-in bg-white shadow-sm">
     <span class="grid grid-cols-2 gap-0.5 opacity-60 group-hover:opacity-100 transition-opacity">
       <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
       <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
@@ -134,39 +123,35 @@
 <div id="v-welcome" class="hidden min-h-screen flex flex-col items-center justify-center px-4 py-12">
   <div class="max-w-sm w-full fade-in">
 
-    <!-- Card -->
-    <div class="glass rounded-2xl p-7 mb-4">
+    <div class="glass rounded-2xl p-7 mb-4 shadow-sm">
       <div class="flex items-center gap-4 mb-5">
         <div id="wc-av" class="av text-white font-bold" style="width:52px;height:52px;font-size:1rem;background:#0ea5e9">SC</div>
         <div>
-          <div class="text-slate-500 text-xs mb-0.5">Welcome back 👋</div>
-          <div id="wc-name" class="text-lg font-semibold text-white leading-tight">Dr. Sarah Chen</div>
+          <div class="text-slate-400 text-xs mb-0.5">Welcome back 👋</div>
+          <div id="wc-name" class="text-lg font-semibold text-slate-800 leading-tight">Dr. Sarah Chen</div>
           <div id="wc-org"  class="text-slate-500 text-xs mt-0.5">Gladstone Institutes</div>
         </div>
       </div>
 
-      <!-- Persona badge -->
-      <div class="bg-slate-900 rounded-xl px-4 py-3 mb-1 flex items-center gap-3 border border-slate-800">
+      <div class="bg-stone-50 rounded-xl px-4 py-3 mb-1 flex items-center gap-3 border border-slate-200">
         <span id="wc-emoji" class="text-xl">🧪</span>
         <div class="flex-1 min-w-0">
-          <div class="text-slate-600 text-[10px] uppercase tracking-widest mb-0.5">Assigned lens</div>
-          <div id="wc-label" class="text-sm font-semibold text-slate-100 truncate">Medicinal Chemist</div>
+          <div class="text-slate-400 text-[10px] uppercase tracking-widest mb-0.5">Assigned lens</div>
+          <div id="wc-label" class="text-sm font-semibold text-slate-700 truncate">Medicinal Chemist</div>
         </div>
         <button onclick="toggleSwitcher()"
-          class="text-slate-600 hover:text-slate-300 text-xs border border-slate-700 hover:border-slate-500 px-2 py-1 rounded-md transition-all">
+          class="text-slate-500 hover:text-slate-700 text-xs border border-slate-300 hover:border-slate-400 px-2 py-1 rounded-md transition-all">
           Switch
         </button>
       </div>
-      <p id="wc-note" class="text-slate-600 text-xs px-1 mb-5">
+      <p id="wc-note" class="text-slate-500 text-xs px-1 mb-5">
         Focused on potency data, co-crystal structures, and SAR insights.
       </p>
 
-      <!-- Persona switcher -->
       <div id="persona-switcher" class="hidden grid grid-cols-2 gap-2 mb-5">
         <!-- filled by JS -->
       </div>
 
-      <!-- CTA -->
       <button onclick="proceedToQuery()"
         class="w-full bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white py-3 rounded-xl font-semibold text-sm transition-colors">
         Start Researching →
@@ -174,7 +159,7 @@
     </div>
 
     <button onclick="showLogin()"
-      class="w-full text-slate-600 hover:text-slate-400 text-xs text-center py-2 transition-colors">
+      class="w-full text-slate-500 hover:text-slate-700 text-xs text-center py-2 transition-colors">
       ← Back to profiles
     </button>
   </div>
@@ -186,78 +171,70 @@
 ═══════════════════════════════════════════════════════════════════ -->
 <div id="v-research" class="hidden h-screen flex flex-col overflow-hidden">
 
-  <!-- ── Top bar ────────────────────────────────────────────── -->
+  <!-- Top bar -->
   <header class="flex-shrink-0 flex items-center justify-between px-5 py-3
-                 border-b border-slate-800/80 bg-slate-950/90 backdrop-blur">
+                 border-b border-slate-200 bg-white/90 backdrop-blur">
     <div class="flex items-center gap-3">
       <span class="text-lg font-bold gradient-text tracking-tight">PRISM</span>
-      <span class="text-slate-800">|</span>
+      <span class="text-slate-300">|</span>
       <div id="hdr-user" class="hidden items-center gap-2">
         <div id="hdr-av" class="av text-white" style="width:24px;height:24px;font-size:0.6rem;background:#0ea5e9"></div>
-        <span id="hdr-name" class="text-slate-400 text-xs font-medium"></span>
-        <span class="text-slate-700 text-xs">·</span>
+        <span id="hdr-name" class="text-slate-600 text-xs font-medium"></span>
+        <span class="text-slate-300 text-xs">·</span>
       </div>
       <span id="hdr-view" class="text-slate-500 text-xs"></span>
     </div>
     <div class="flex items-center gap-3">
-      <div id="status-wrap" class="hidden items-center gap-2">
-        <span id="status-dot" class="dot bg-blue-400 pulse"></span>
-        <span id="status-text" class="text-slate-500 text-xs mono max-w-xs truncate"></span>
-      </div>
-      <!-- "Back to my view" — only visible when in compare mode with a logged-in user -->
       <button id="back-to-persona-btn" onclick="backToPersona()"
-        class="hidden items-center gap-1.5 text-xs border border-slate-700 hover:border-blue-500/50
-               text-slate-400 hover:text-blue-300 px-3 py-1.5 rounded-lg transition-all">
+        class="hidden items-center gap-1.5 text-xs border border-slate-300 hover:border-blue-400/60
+               text-slate-600 hover:text-blue-500 px-3 py-1.5 rounded-lg transition-all bg-white">
         ← Back to my view
       </button>
       <button id="compare-btn" onclick="toggleCompare()"
-        class="hidden text-slate-500 hover:text-slate-300 text-xs border border-slate-800 hover:border-slate-600 px-3 py-1.5 rounded-lg transition-all">
+        class="hidden text-slate-600 hover:text-slate-800 text-xs border border-slate-300 hover:border-slate-500 px-3 py-1.5 rounded-lg transition-all bg-white">
         Compare all 4
       </button>
       <button onclick="showLogin()"
-        class="text-slate-600 hover:text-slate-300 text-xs transition-colors">
+        class="text-slate-500 hover:text-slate-800 text-xs transition-colors">
         Switch user ↗
       </button>
     </div>
   </header>
 
-  <!-- ── Guardrail rejection banner ───────────────────────── -->
-  <div id="guardrail-banner" class="hidden flex-shrink-0 px-5 py-3 bg-amber-950/50 border-b border-amber-900/40
+  <!-- Guardrail rejection banner -->
+  <div id="guardrail-banner" class="hidden flex-shrink-0 px-5 py-3 bg-amber-50 border-b border-amber-200
        flex items-center gap-3">
     <span class="text-amber-500 text-base">⚠️</span>
     <div class="flex-1 min-w-0">
-      <span class="text-amber-300 text-xs font-medium">PRISM is a biomedical research tool. </span>
-      <span id="guardrail-reason" class="text-amber-500/80 text-xs"></span>
-      <span id="guardrail-suggestion" class="text-slate-500 text-xs block mt-0.5"></span>
+      <span class="text-amber-700 text-xs font-medium">PRISM is a biomedical research tool. </span>
+      <span id="guardrail-reason" class="text-amber-600 text-xs"></span>
+      <span id="guardrail-suggestion" class="text-slate-600 text-xs block mt-0.5"></span>
     </div>
     <button onclick="document.getElementById('guardrail-banner').classList.add('hidden')"
-      class="text-amber-800 hover:text-amber-500 text-sm leading-none flex-shrink-0 transition-colors">✕</button>
+      class="text-amber-400 hover:text-amber-600 text-sm leading-none flex-shrink-0 transition-colors">✕</button>
   </div>
 
-  <!-- ── Body: sidebar + main ──────────────────────────────── -->
+  <!-- Body: sidebar + main -->
   <div class="flex flex-1 overflow-hidden">
 
     <!-- SIDEBAR -->
-    <aside id="sidebar" class="flex flex-col border-r border-slate-800/60 overflow-hidden bg-slate-950/60">
+    <aside id="sidebar" class="flex flex-col border-r border-slate-200/80 overflow-hidden bg-stone-50/80">
 
-      <!-- Persona indicator -->
-      <div id="sb-persona" class="flex items-center gap-2.5 px-4 py-3 border-b border-slate-800/60">
+      <div id="sb-persona" class="flex items-center gap-2.5 px-4 py-3 border-b border-slate-200/60">
         <span id="sb-emoji" class="text-base">🧪</span>
         <div class="flex-1 min-w-0">
-          <div class="text-slate-600 text-[9px] uppercase tracking-widest">Current lens</div>
-          <div id="sb-label" class="text-slate-300 text-xs font-semibold truncate">Medicinal Chemist</div>
+          <div class="text-slate-400 text-[9px] uppercase tracking-widest">Current lens</div>
+          <div id="sb-label" class="text-slate-700 text-xs font-semibold truncate">Medicinal Chemist</div>
         </div>
       </div>
 
-      <!-- Suggested questions -->
       <div class="flex-1 overflow-y-auto px-3 py-3 space-y-4">
         <div id="suggested-qs"></div>
       </div>
 
-      <!-- Footer: only show "compare" link when in single-persona mode -->
-      <div id="sb-footer" class="hidden px-3 pb-3 pt-2 border-t border-slate-800/60">
+      <div id="sb-footer" class="hidden px-3 pb-3 pt-2 border-t border-slate-200/60">
         <button onclick="switchToCompare()"
-          class="w-full flex items-center justify-center gap-2 text-slate-600 hover:text-slate-400
+          class="w-full flex items-center justify-center gap-2 text-slate-500 hover:text-slate-700
                  text-[10px] py-2 rounded-lg transition-all">
           See all 4 expert views →
         </button>
@@ -265,46 +242,41 @@
     </aside>
 
     <!-- MAIN CONTENT -->
-    <main class="flex-1 flex flex-col overflow-hidden">
+    <main class="flex-1 flex flex-col overflow-hidden bg-white">
 
-      <!-- Chat history — scrollable, entries accumulate here -->
       <div id="chat-history" class="flex-1 overflow-y-auto px-5 py-5 flex flex-col gap-6">
 
-        <!-- Empty state — hidden once first query fires -->
         <div id="empty-state" class="flex-1 flex flex-col items-center justify-center text-center fade-in">
-          <div class="text-4xl mb-4 opacity-30">🔬</div>
-          <p class="text-slate-600 text-sm font-medium mb-1">Ask a biomedical question</p>
-          <p class="text-slate-700 text-xs max-w-xs">
+          <div class="text-4xl mb-4 opacity-20">🔬</div>
+          <p class="text-slate-500 text-sm font-medium mb-1">Ask a biomedical question</p>
+          <p class="text-slate-400 text-xs max-w-xs">
             Try one of the suggested questions on the left, or type your own below.
           </p>
         </div>
 
-        <!-- History entries injected here by JS -->
       </div>
 
-      <!-- ── Chat input bar ──────────────────────────────── -->
-      <div class="flex-shrink-0 px-4 pb-4 pt-2 border-t border-slate-800/60 bg-slate-950/80">
-        <div id="query-hint" class="hidden text-amber-400 text-xs mb-2 px-1 flex items-center gap-1.5">
+      <!-- Chat input bar -->
+      <div class="flex-shrink-0 px-4 pb-4 pt-2 border-t border-slate-200/60 bg-white">
+        <div id="query-hint" class="hidden text-amber-600 text-xs mb-2 px-1 flex items-center gap-1.5">
           <span>⚠️</span><span id="query-hint-text"></span>
         </div>
         <div class="flex gap-2 items-end">
           <div class="flex-1 relative">
             <textarea id="query-input"
               rows="1"
-              class="w-full bg-slate-900 border border-slate-700/80 focus:border-blue-500/60
-                     rounded-xl px-4 py-3 pr-12 text-sm text-slate-100 placeholder-slate-600
-                     outline-none transition-all resize-none leading-relaxed"
+              class="w-full bg-white border border-slate-200 focus:border-blue-400
+                     rounded-xl px-4 py-3 pr-12 text-sm text-slate-800 placeholder-slate-400
+                     outline-none transition-all resize-none leading-relaxed shadow-sm"
               placeholder="Ask a biomedical question…"
               onkeydown="handleKey(event)"
               oninput="autoResize(this)"></textarea>
             <button id="send-btn" onclick="runQuery()"
               class="absolute right-2 bottom-2 w-8 h-8 bg-blue-600 hover:bg-blue-500 active:bg-blue-700
                      rounded-lg flex items-center justify-center transition-colors">
-              <!-- Arrow icon (default) -->
               <svg id="send-icon" class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/>
               </svg>
-              <!-- Spinner icon (loading) -->
               <svg id="send-spinner" class="hidden w-3.5 h-3.5 text-white animate-spin" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
                 <path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"/>
@@ -312,7 +284,7 @@
             </button>
           </div>
         </div>
-        <p class="text-slate-800 text-[10px] text-center mt-2">
+        <p class="text-slate-400 text-[10px] text-center mt-2">
           PRISM answers biomedical questions only · Powered by Claude + 8 open databases
         </p>
       </div>
@@ -325,16 +297,13 @@
      JAVASCRIPT
 ═══════════════════════════════════════════════════════════════════ -->
 <script>
-// ── Constants ─────────────────────────────────────────────────────
-
 const PERSONAS = {
-  medicinal_chemist: { name:'Medicinal Chemist',         emoji:'🧪', color:'#0ea5e9' },
-  pathologist:       { name:'Pathologist',                emoji:'🔬', color:'#f59e0b' },
+  medicinal_chemist:        { name:'Medicinal Chemist',          emoji:'🧪', color:'#0ea5e9' },
+  pathologist:              { name:'Pathologist',                 emoji:'🔬', color:'#f59e0b' },
   cell_molecular_biologist: { name:'Cell & Molecular Biologist', emoji:'🧬', color:'#10b981' },
-  computational_biologist:  { name:'Computational Biologist',   emoji:'💻', color:'#8b5cf6' },
+  computational_biologist:  { name:'Computational Biologist',    emoji:'💻', color:'#8b5cf6' },
 };
 
-// Recommended questions per persona — shown in sidebar
 const QUESTIONS = {
   medicinal_chemist: {
     label: '🧪 Chemistry & SAR',
@@ -378,14 +347,13 @@ const QUESTIONS = {
   },
 };
 
-// Cross-persona questions (shown regardless of role)
 const GENERAL_QUESTIONS = {
   label: '🌐 Compare All Experts',
   color: '#64748b',
   items: [
-    { short:'Imatinib & ABL1 — all views',   q:'What do I need to know about imatinib and its target ABL1?' },
-    { short:'Gefitinib & EGFR — all views',  q:'What do I need to know about gefitinib and its target EGFR?' },
-    { short:'Vemurafenib & BRAF — all views',q:'What do I need to know about vemurafenib and its target BRAF?' },
+    { short:'Imatinib & ABL1 — all views',    q:'What do I need to know about imatinib and its target ABL1?' },
+    { short:'Gefitinib & EGFR — all views',   q:'What do I need to know about gefitinib and its target EGFR?' },
+    { short:'Vemurafenib & BRAF — all views', q:'What do I need to know about vemurafenib and its target BRAF?' },
   ],
 };
 
@@ -395,7 +363,7 @@ let currentUser    = null;
 let currentPersona = null;
 let isCompareMode  = false;
 let rawTokens      = {};
-let chatHistory    = [];   // [{id, query, persona, isCompare}]
+let chatHistory    = [];
 let currentEntryId = null;
 
 // ── View helpers ───────────────────────────────────────────────────
@@ -428,13 +396,13 @@ async function loadUsers() {
     renderLoginCards(users);
   } catch {
     el('login-cards').innerHTML =
-      '<div class="col-span-3 text-center text-red-500/70 text-xs py-10">Could not load profiles — is the server running?</div>';
+      '<div class="text-red-400 text-xs py-10 mono">Could not load profiles — is the server running?</div>';
   }
 }
 
 function renderLoginCards(users) {
   el('login-cards').innerHTML = users.map(u => `
-    <button class="user-card glass rounded-xl p-4 text-left"
+    <button class="user-card rounded-xl p-4 text-left w-52"
       style="--uc:${u.color}"
       onclick='selectUser(${JSON.stringify(u).replace(/'/g,"&#39;")})'>
       <div class="flex items-center gap-3 mb-2.5">
@@ -442,8 +410,8 @@ function renderLoginCards(users) {
           ${u.initials}
         </div>
         <div class="min-w-0">
-          <div class="text-slate-200 text-xs font-semibold leading-tight truncate">${u.name}</div>
-          <div class="text-slate-600 text-[10px] truncate">${u.org}</div>
+          <div class="text-slate-800 text-xs font-semibold leading-tight truncate">${u.name}</div>
+          <div class="text-slate-500 text-[10px] truncate">${u.org}</div>
         </div>
       </div>
       <div class="flex items-center gap-1.5 mt-1">
@@ -461,21 +429,20 @@ function selectUser(user) {
   currentPersona = user.persona;
   sessionStorage.setItem('prism_user', JSON.stringify(user));
 
-  el('wc-av').textContent    = user.initials;
+  el('wc-av').textContent      = user.initials;
   el('wc-av').style.background = user.color;
-  el('wc-name').textContent  = user.name;
-  el('wc-org').textContent   = `${user.title} · ${user.org}`;
-  el('wc-emoji').textContent = user.persona_emoji;
-  el('wc-label').textContent = user.persona_label;
-  el('wc-note').textContent  = user.welcome_note;
+  el('wc-name').textContent    = user.name;
+  el('wc-org').textContent     = `${user.title} · ${user.org}`;
+  el('wc-emoji').textContent   = user.persona_emoji;
+  el('wc-label').textContent   = user.persona_label;
+  el('wc-note').textContent    = user.welcome_note;
 
-  // Build switcher buttons
   el('persona-switcher').innerHTML = Object.entries(PERSONAS).map(([id, p]) => `
     <button onclick="switchPersona('${id}')"
       class="switch-btn rounded-lg px-3 py-2 text-left flex items-center gap-2 ${id === user.persona ? 'active-sw' : ''}"
       style="--sw:${p.color}" id="sw-${id}">
       <span class="text-base">${p.emoji}</span>
-      <span class="text-xs text-slate-400">${p.name}</span>
+      <span class="text-xs text-slate-700">${p.name}</span>
     </button>
   `).join('');
   hide('persona-switcher');
@@ -521,11 +488,11 @@ function enterResearch() {
 
 function setupHeader() {
   if (currentUser) {
-    el('hdr-av').textContent     = currentUser.initials;
+    el('hdr-av').textContent      = currentUser.initials;
     el('hdr-av').style.background = currentUser.color;
-    el('hdr-name').textContent   = currentUser.name;
+    el('hdr-name').textContent    = currentUser.name;
     el('hdr-user').classList.remove('hidden');
-    el('hdr-user').style.display = 'flex';
+    el('hdr-user').style.display  = 'flex';
   } else {
     el('hdr-user').classList.add('hidden');
   }
@@ -533,7 +500,6 @@ function setupHeader() {
   if (isCompareMode || !currentPersona) {
     el('hdr-view').textContent = '4-Expert Compare';
     hide('compare-btn');
-    // Show "Back to my view" only when user is logged in
     if (currentUser) {
       const p = PERSONAS[currentUser.persona];
       el('back-to-persona-btn').textContent = `← Back to ${p.emoji} ${currentUser.name.split(' ')[1] || currentUser.name}'s view`;
@@ -545,7 +511,6 @@ function setupHeader() {
   } else {
     const p = PERSONAS[currentPersona];
     el('hdr-view').textContent = `${p.emoji} ${p.name}`;
-    // Clear inline style too — otherwise 'hidden' class can't override style.display='flex'
     const backBtn = el('back-to-persona-btn');
     backBtn.classList.add('hidden');
     backBtn.style.display = '';
@@ -557,7 +522,6 @@ function setupHeader() {
 function buildSidebar() {
   const persona = currentPersona;
 
-  // Persona indicator strip at top of sidebar
   if (persona && PERSONAS[persona]) {
     const p = PERSONAS[persona];
     el('sb-emoji').textContent = p.emoji;
@@ -570,24 +534,20 @@ function buildSidebar() {
   let html = '';
 
   if (persona && QUESTIONS[persona]) {
-    // ── Single persona mode: show ONLY this persona's questions ──
-    // No compare grid, no other persona sections — keep it clean and focused
     const section = QUESTIONS[persona];
-    html += `<div class="text-[9px] font-semibold text-slate-700 uppercase tracking-widest px-3 mb-2 mt-1">
+    html += `<div class="text-[9px] font-semibold text-slate-400 uppercase tracking-widest px-3 mb-2 mt-1">
                Suggested questions
              </div>`;
     html += section.items.map(item => `
       <button
-        class="q-pill w-full text-left px-3 py-2.5 rounded-lg text-[11px] text-slate-500 hover:text-slate-300 leading-snug mb-1"
+        class="q-pill w-full text-left px-3 py-2.5 rounded-lg text-[11px] text-slate-600 hover:text-slate-800 leading-snug mb-1"
         style="--pill-color:${section.color}"
         onclick="askQuestion(${JSON.stringify(item.q).replace(/"/g,'&quot;')})">
         ${item.short}
       </button>
     `).join('');
-
   } else {
-    // ── Compare mode: show all 4 persona sections ──
-    html += `<div class="text-[9px] font-semibold text-slate-700 uppercase tracking-widest px-3 mb-2 mt-1">
+    html += `<div class="text-[9px] font-semibold text-slate-400 uppercase tracking-widest px-3 mb-2 mt-1">
                Sample queries
              </div>`;
     Object.entries(QUESTIONS).forEach(([id, section]) => {
@@ -597,7 +557,6 @@ function buildSidebar() {
 
   el('suggested-qs').innerHTML = html;
 
-  // Show "See all 4 views" footer link only in single-persona mode
   if (persona) {
     el('sb-footer').classList.remove('hidden');
   } else {
@@ -605,10 +564,10 @@ function buildSidebar() {
   }
 }
 
-function renderQSection(section, primary) {
+function renderQSection(section) {
   const pills = section.items.map(item => `
     <button
-      class="q-pill w-full text-left px-3 py-2 rounded-lg text-[11px] text-slate-500 hover:text-slate-300 leading-snug"
+      class="q-pill w-full text-left px-3 py-2 rounded-lg text-[11px] text-slate-600 hover:text-slate-800 leading-snug"
       style="--pill-color:${section.color}"
       onclick="askQuestion(${JSON.stringify(item.q).replace(/"/g,'&quot;')})">
       ${item.short}
@@ -617,7 +576,7 @@ function renderQSection(section, primary) {
 
   return `
     <div class="mb-3">
-      <div class="text-[9px] font-semibold text-slate-700 uppercase tracking-widest px-3 mb-1 mt-1">
+      <div class="text-[9px] font-semibold text-slate-400 uppercase tracking-widest px-3 mb-1 mt-1">
         ${section.label}
       </div>
       ${pills}
@@ -632,7 +591,7 @@ function askQuestion(query) {
 }
 
 function switchToCompare() {
-  isCompareMode = true;
+  isCompareMode  = true;
   currentPersona = null;
   setupHeader();
   buildSidebar();
@@ -652,8 +611,6 @@ function backToPersona() {
   clearHistory();
 }
 
-// ── Response area ──────────────────────────────────────────────────
-
 // ── History helpers ────────────────────────────────────────────────
 
 function clearHistory() {
@@ -664,7 +621,6 @@ function clearHistory() {
   [...hist.querySelectorAll('.history-entry')].forEach(n => n.remove());
   show('empty-state');
   hide('guardrail-banner');
-  hide('status-wrap');
 }
 
 function createHistoryEntry(query) {
@@ -689,49 +645,51 @@ function _buildSingleHTML(id, query) {
   const p = PERSONAS[currentPersona];
   return `
     <div class="flex justify-end mb-3">
-      <div class="max-w-xl bg-blue-600/15 border border-blue-500/25 rounded-2xl rounded-tr-sm px-4 py-2.5">
-        <p class="text-slate-200 text-sm leading-relaxed">${_esc(query)}</p>
+      <div class="max-w-xl bg-blue-50 border border-blue-200 rounded-2xl rounded-tr-sm px-4 py-2.5">
+        <p class="text-slate-700 text-sm leading-relaxed">${_esc(query)}</p>
       </div>
     </div>
-    <div class="glass rounded-2xl p-5 panel-accent" style="--panel-color:${p.color}">
+    <div id="hresolved-${id}" class="hidden items-center gap-1.5 text-[10px] mono text-slate-400 mb-3 px-1"></div>
+    <div class="glass rounded-2xl p-5 panel-accent shadow-sm" style="--panel-color:${p.color}">
       <div class="flex items-center gap-2 mb-4">
         <span class="text-xl">${p.emoji}</span>
-        <span class="text-sm font-semibold text-slate-200">${p.name}</span>
-        <span id="hcur-${id}-${currentPersona}" class="cursor text-blue-400 text-xs ml-1"></span>
+        <span class="text-sm font-semibold text-slate-700">${p.name}</span>
+        <span id="hcur-${id}-${currentPersona}" class="cursor text-blue-500 text-xs ml-1"></span>
       </div>
-      <div id="hquestion-${id}-${currentPersona}" class="hidden text-[11px] mono text-slate-500 italic border-l-2 border-slate-700 pl-2 mb-3"></div>
-      <div id="hpanel-${id}-${currentPersona}" class="prose text-slate-400 min-h-[80px]"></div>
+      <div id="hquestion-${id}-${currentPersona}" class="hidden text-[11px] mono text-slate-500 italic border-l-2 border-slate-200 pl-2 mb-3"></div>
+      <div id="hevidence-${id}-${currentPersona}" class="hidden mb-3"></div>
+      <div id="hpanel-${id}-${currentPersona}" class="prose min-h-[80px]"></div>
     </div>
-    <div id="hmeta-${id}" class="hidden mt-2 flex items-center gap-2 text-[10px] mono text-slate-700 px-1"></div>
   `;
 }
 
 function _buildCompareHTML(id, query) {
   const defs = [
-    { key:'medicinal_chemist', emoji:'🧪', name:'Medicinal Chemist',         color:'#0ea5e9', dbs:'ChEMBL · PDB · PubChem · PubMed', cur:'text-sky-400' },
-    { key:'pathologist',       emoji:'🔬', name:'Pathologist',                color:'#f59e0b', dbs:'ClinVar · PubMed',                cur:'text-amber-400' },
-    { key:'cell_molecular_biologist', emoji:'🧬', name:'Cell & Molecular Biologist', color:'#10b981', dbs:'UniProt · InterPro · STRING · Reactome · GTEx · AlphaFold · PDB · PubMed', cur:'text-emerald-400' },
-    { key:'computational_biologist',  emoji:'💻', name:'Computational Biologist',    color:'#8b5cf6', dbs:'UniProt · InterPro · AlphaFold · PDB · STRING · Reactome · Open Targets · PubMed', cur:'text-violet-400' },
+    { key:'medicinal_chemist',        emoji:'🧪', name:'Medicinal Chemist',          color:'#0ea5e9', dbs:'ChEMBL · PDB · PubChem · PubMed',                                                      cur:'text-sky-500' },
+    { key:'pathologist',              emoji:'🔬', name:'Pathologist',                 color:'#f59e0b', dbs:'ClinVar · PubMed',                                                                      cur:'text-amber-500' },
+    { key:'cell_molecular_biologist', emoji:'🧬', name:'Cell & Molecular Biologist', color:'#10b981', dbs:'UniProt · InterPro · STRING · Reactome · GTEx · AlphaFold · PDB · PubMed',              cur:'text-emerald-500' },
+    { key:'computational_biologist',  emoji:'💻', name:'Computational Biologist',    color:'#8b5cf6', dbs:'UniProt · InterPro · AlphaFold · PDB · STRING · Reactome · Open Targets · PubMed',      cur:'text-violet-500' },
   ];
   const panels = defs.map(p => `
-    <div class="glass rounded-2xl p-4 panel-accent" style="--panel-color:${p.color}">
+    <div class="glass rounded-2xl p-4 panel-accent shadow-sm" style="--panel-color:${p.color}">
       <div class="flex items-center gap-2 mb-2">
         <span class="text-base">${p.emoji}</span>
-        <span class="text-xs font-semibold text-slate-300">${p.name}</span>
+        <span class="text-xs font-semibold text-slate-700">${p.name}</span>
         <span id="hcur-${id}-${p.key}" class="cursor ${p.cur} text-xs ml-auto"></span>
       </div>
-      <div class="text-[10px] mono text-slate-700 mb-2">${p.dbs}</div>
-      <div id="hquestion-${id}-${p.key}" class="hidden text-[11px] mono text-slate-500 italic border-l-2 border-slate-700 pl-2 mb-2"></div>
-      <div id="hpanel-${id}-${p.key}" class="prose text-slate-400 min-h-[120px]"></div>
+      <div class="text-[10px] mono text-slate-400 mb-2">${p.dbs}</div>
+      <div id="hquestion-${id}-${p.key}" class="hidden text-[11px] mono text-slate-500 italic border-l-2 border-slate-200 pl-2 mb-2"></div>
+      <div id="hevidence-${id}-${p.key}" class="hidden mb-2"></div>
+      <div id="hpanel-${id}-${p.key}" class="prose min-h-[120px]"></div>
     </div>`).join('');
   return `
     <div class="flex justify-end mb-3">
-      <div class="max-w-xl bg-blue-600/15 border border-blue-500/25 rounded-2xl rounded-tr-sm px-4 py-2.5">
-        <p class="text-slate-200 text-sm leading-relaxed">${_esc(query)}</p>
+      <div class="max-w-xl bg-blue-50 border border-blue-200 rounded-2xl rounded-tr-sm px-4 py-2.5">
+        <p class="text-slate-700 text-sm leading-relaxed">${_esc(query)}</p>
       </div>
     </div>
+    <div id="hresolved-${id}" class="hidden items-center gap-1.5 text-[10px] mono text-slate-400 mb-3 px-1"></div>
     <div class="grid grid-cols-2 gap-3">${panels}</div>
-    <div id="hmeta-${id}" class="hidden mt-2 flex items-center gap-2 text-[10px] mono text-slate-700 px-1"></div>
   `;
 }
 
@@ -747,10 +705,14 @@ function scrollToBottom() {
 // ── Status + token helpers ─────────────────────────────────────────
 
 function setStatus(msg, running = true) {
-  el('status-wrap').classList.remove('hidden');
-  el('status-wrap').style.display = 'flex';
-  el('status-text').textContent   = msg;
-  el('status-dot').className      = running ? 'dot bg-blue-400 pulse' : 'dot bg-green-400';
+  if (!currentEntryId) return;
+  const r = document.getElementById(`hresolved-${currentEntryId}`);
+  if (!r) return;
+  if (!running) return; // 'Complete' is a no-op — done event handles the final label
+  r.style.display = 'flex';
+  r.classList.remove('hidden');
+  r.innerHTML = `<span class="dot bg-blue-500 pulse flex-shrink-0"></span>
+                 <span class="text-slate-500">${_esc(msg)}</span>`;
 }
 
 function appendToken(personaId, text) {
@@ -779,14 +741,14 @@ function setSendLoading(loading) {
   const spinner = el('send-spinner');
   if (loading) {
     btn.disabled = true;
-    btn.classList.replace('bg-blue-600', 'bg-slate-700');
+    btn.classList.replace('bg-blue-600', 'bg-slate-300');
     btn.classList.remove('hover:bg-blue-500', 'active:bg-blue-700');
     icon.classList.add('hidden');
     spinner.classList.remove('hidden');
     el('query-input').disabled = true;
   } else {
     btn.disabled = false;
-    btn.classList.replace('bg-slate-700', 'bg-blue-600');
+    btn.classList.replace('bg-slate-300', 'bg-blue-600');
     btn.classList.add('hover:bg-blue-500', 'active:bg-blue-700');
     icon.classList.remove('hidden');
     spinner.classList.add('hidden');
@@ -825,12 +787,10 @@ async function runQuery() {
   const validErr = validateQuery(query);
   if (validErr) { showQueryHint(validErr); return; }
 
-  // Clear input and show spinner immediately — don't wait for streaming to finish
   el('query-input').value = '';
   el('query-input').style.height = 'auto';
   setSendLoading(true);
 
-  // Create a new history entry for this query — old entries stay visible
   createHistoryEntry(query);
   setStatus('Checking query…');
 
@@ -873,11 +833,9 @@ function handleSSEEvent(event, activePersonas) {
       break;
 
     case 'guardrail_rejected': {
-      // Remove the pending history entry since no response was generated
       const pending = document.getElementById(`he-${currentEntryId}`);
       if (pending) pending.remove();
       if (chatHistory.length === 0) show('empty-state');
-      hide('status-wrap');
       el('guardrail-banner').classList.remove('hidden');
       el('guardrail-banner').style.display = 'flex';
       el('guardrail-reason').textContent = event.reason || '';
@@ -896,6 +854,37 @@ function handleSSEEvent(event, activePersonas) {
       break;
     }
 
+    case 'evidence': {
+      const container = document.getElementById(`hevidence-${currentEntryId}-${event.persona}`);
+      if (!container) break;
+      const connectors = event.connectors || [];
+      const ok    = connectors.filter(c => c.status === 'ok').length;
+      const total = connectors.length;
+      const rows  = connectors.map(c => {
+        const icon      = c.status === 'ok' ? '✓' : c.status === 'error' ? '✗' : '–';
+        const iconColor = c.status === 'ok' ? 'text-emerald-500' : c.status === 'error' ? 'text-red-400' : 'text-slate-400';
+        return `<div class="flex items-start gap-2 py-0.5">
+          <span class="mono ${iconColor} text-[10px] flex-shrink-0 w-3">${icon}</span>
+          <span class="text-[10px] text-slate-500 leading-snug">
+            <span class="font-medium text-slate-600">${c.name}</span> — ${_esc(c.detail)}
+          </span>
+        </div>`;
+      }).join('');
+      container.innerHTML = `
+        <details class="evidence-panel group">
+          <summary class="flex items-center gap-1.5 cursor-pointer list-none select-none
+                          text-[10px] text-slate-400 hover:text-slate-600 transition-colors py-1">
+            <span class="ev-arrow">▸</span>
+            <span>Data sources — ${ok} of ${total} returned results</span>
+          </summary>
+          <div class="mt-1.5 pl-3 border-l-2 border-slate-100 space-y-0.5 pb-1">
+            ${rows}
+          </div>
+        </details>`;
+      container.classList.remove('hidden');
+      break;
+    }
+
     case 'token':
       if (!activePersonas.has(event.persona)) {
         activePersonas.add(event.persona);
@@ -905,15 +894,16 @@ function handleSSEEvent(event, activePersonas) {
       break;
 
     case 'done': {
-      const m  = event.metadata || {};
-      const fm = document.getElementById(`hmeta-${currentEntryId}`);
-      if (fm) {
-        fm.classList.remove('hidden');
-        fm.style.display = 'flex';
-        fm.innerHTML = `
-          <span>${m.entity||'?'} → ${m.target||'?'}</span>
-          <span>·</span><span>DBs: ${(m.databases_queried||[]).join(' · ')}</span>
-          <span>·</span><span>${m.llm_calls||'?'} LLM calls</span>`;
+      const m   = event.metadata || {};
+      const n   = (m.databases_queried || []).length;
+      const resolved = document.getElementById(`hresolved-${currentEntryId}`);
+      if (resolved) {
+        resolved.innerHTML = `
+          <span class="text-slate-600 font-medium">${m.entity||'?'} → ${m.target||'?'}</span>
+          <span class="text-slate-300">·</span>
+          <span>${n} database${n !== 1 ? 's' : ''} queried</span>`;
+        resolved.classList.remove('hidden');
+        resolved.style.display = 'flex';
       }
       break;
     }

@@ -28,4 +28,4 @@ RUN mkdir -p cache
 EXPOSE 8000
 
 # Run with uvicorn — host 0.0.0.0 so Docker port mapping works
-CMD ["uv", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD [".venv/bin/uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -177,6 +177,91 @@ async def _validated_citation_stream(
         yield buf
 
 
+def _connector_detail(name: str, data: dict) -> str:
+    """One-line human-readable summary of what a connector returned."""
+    try:
+        if name == "pubmed":
+            n = len(data.get("abstracts", []))
+            return f"{n} abstract{'s' if n != 1 else ''}"
+        if name == "chembl":
+            n = len(data.get("activities", []))
+            count = data.get("count", n)
+            pref = data.get("pref_name", "")
+            label = f"{pref} — " if pref else ""
+            return f"{label}{count} bioactivit{'ies' if count != 1 else 'y'}"
+        if name == "admet":
+            pref = data.get("pref_name", "")
+            mw = data.get("molecular_weight")
+            alogp = data.get("alogp")
+            parts = []
+            if pref:
+                parts.append(pref)
+            if mw:
+                parts.append(f"MW {mw}")
+            if alogp is not None:
+                parts.append(f"logP {alogp}")
+            return " · ".join(parts) if parts else "properties retrieved"
+        if name == "uniprot":
+            acc = data.get("accession", "")
+            gene = data.get("gene_name", "")
+            return f"{acc}{' · ' + gene if gene else ''}"
+        if name == "clinvar":
+            n = len(data.get("variants", []))
+            gene = data.get("gene", "")
+            return f"{n} variant{'s' if n != 1 else ''}{' for ' + gene if gene else ''}"
+        if name == "pdb":
+            n = len(data.get("structures", []))
+            return f"{n} structure{'s' if n != 1 else ''}"
+        if name == "alphafold":
+            acc = data.get("accession", "")
+            plddt = data.get("plddt_global")
+            avail = data.get("available", True)
+            if not avail:
+                return f"{acc} — no model available"
+            return f"{acc}{f' · pLDDT {plddt:.0f}' if plddt else ''}"
+        if name == "interpro":
+            n = data.get("entry_count", len(data.get("entries", [])))
+            return f"{n} domain entr{'ies' if n != 1 else 'y'}"
+        if name == "string":
+            n = len(data.get("partners", []))
+            return f"{n} PPI partner{'s' if n != 1 else ''}"
+        if name == "reactome":
+            n = len(data.get("pathways", []))
+            return f"{n} pathway{'s' if n != 1 else ''}"
+        if name == "gtex":
+            n = len(data.get("top_tissues", []))
+            unit = data.get("unit", "TPM")
+            return f"top {n} tissues by expression ({unit})"
+        if name == "opentargets":
+            n = len(data.get("associated_diseases", []))
+            drugs = data.get("drug_candidate_count", 0)
+            return f"{n} disease association{'s' if n != 1 else ''}{f' · {drugs} drug candidates' if drugs else ''}"
+        if name == "proteinatlas":
+            pathology = data.get("pathology_total", 0)
+            micro = data.get("microscopy_total", 0)
+            return f"{pathology} pathology · {micro} microscopy image{'s' if micro != 1 else ''}"
+        if name == "pubchem":
+            cid = data.get("CID") or data.get("cid", "")
+            return f"CID {cid}" if cid else "compound data"
+        keys = [k for k in data if k != "error"]
+        return f"{len(keys)} field{'s' if len(keys) != 1 else ''}"
+    except Exception:
+        return "data retrieved"
+
+
+def _summarize_evidence(evidence: dict) -> list[dict]:
+    """Connector-level summary list for the observability panel."""
+    summaries = []
+    for name, data in evidence.items():
+        if not data:
+            summaries.append({"name": name, "status": "empty", "detail": "no data returned"})
+        elif "error" in data:
+            summaries.append({"name": name, "status": "error", "detail": str(data["error"])[:80]})
+        else:
+            summaries.append({"name": name, "status": "ok", "detail": _connector_detail(name, data)})
+    return summaries
+
+
 async def synthesize_stream(
     persona_id: str,
     persona_cfg: dict,
@@ -302,6 +387,11 @@ async def stream_pipeline(
             "persona": persona_id,
             "question": _build_persona_question(persona_id, entity_ids, query),
             "original_query": query,
+        })
+        await token_queue.put({
+            "type": "evidence",
+            "persona": persona_id,
+            "connectors": _summarize_evidence(evidence),
         })
         async for token in synthesize_stream(persona_id, cfg, entity_ids, evidence):
             await token_queue.put({"type": "token", "persona": persona_id, "text": token})
