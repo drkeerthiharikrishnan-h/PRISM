@@ -115,7 +115,7 @@ async def list_personas():
             "name": cfg["name"],
             "emoji": cfg["emoji"],
             "sections": cfg["sections"],
-            "connectors": [c["name"] for c in cfg["connectors"]],
+            "connectors": [c if isinstance(c, str) else c["name"] for c in cfg["connectors"]],
         })
     return {"personas": personas}
 

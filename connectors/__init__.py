@@ -12,6 +12,7 @@ from .opentargets import fetch as opentargets_fetch
 from .gtex import fetch as gtex_fetch
 from .admet import fetch as admet_fetch
 from .proteinatlas import fetch as proteinatlas_fetch
+from .rdkit_descriptors import fetch as rdkit_descriptors_fetch
 
 REGISTRY = {
     "pubmed": pubmed_fetch,
@@ -28,4 +29,5 @@ REGISTRY = {
     "gtex": gtex_fetch,
     "admet": admet_fetch,
     "proteinatlas": proteinatlas_fetch,
+    "rdkit_descriptors": rdkit_descriptors_fetch,
 }

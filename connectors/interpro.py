@@ -1,33 +1,42 @@
-"""InterPro connector — protein family & domain architecture. EBI InterPro API."""
+"""InterPro connector — protein family and domain architecture."""
 import httpx
+
 from connectors.utils import retryable_get
 
 BASE = "https://www.ebi.ac.uk/interpro/api"
 
 
 async def fetch(entity_ids: dict, params: dict) -> dict:
+    """Return curated InterPro entries for the target UniProt accession."""
     accession = entity_ids.get("target_uniprot")
     if not accession:
-        return {}
-    limit = min(params.get("limit", 12), 12)
+        return {"entries": []}
+    limit = int(params.get("limit", 12))
+
     try:
         async with httpx.AsyncClient(follow_redirects=True) as client:
-            r = await retryable_get(
-                client, f"{BASE}/entry/interpro/protein/UniProt/{accession}/",
-                params={"page_size": limit, "format": "json"},
-                timeout=10,
+            response = await retryable_get(
+                client,
+                f"{BASE}/entry/interpro/protein/uniprot/{accession}/",
+                timeout=12,
             )
-            if r.status_code != 200:
-                return {}
-            data = r.json()
+            if response.status_code != 200:
+                return {"accession": accession, "entries": []}
+            data = response.json()
             entries = []
-            for item in data.get("results", []):
-                meta = item.get("metadata", {})
-                entries.append({
-                    "interpro_id": meta.get("accession", ""),
-                    "name": meta.get("name", {}).get("name", ""),
-                    "type": meta.get("type", ""),
-                })
-            return {"entry_count": data.get("count", len(entries)), "entries": entries}
-    except Exception as e:
-        return {"error": str(e)}
+            for row in data.get("results", [])[:limit]:
+                metadata = row.get("metadata", {})
+                entries.append(
+                    {
+                        "interpro_id": metadata.get("accession", ""),
+                        "name": metadata.get("name", ""),
+                        "type": metadata.get("type", ""),
+                    }
+                )
+            return {
+                "accession": accession,
+                "entry_count": data.get("count", len(entries)),
+                "entries": entries,
+            }
+    except Exception as exc:
+        return {"accession": accession, "entries": [], "error": str(exc)}
