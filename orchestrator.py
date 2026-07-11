@@ -111,7 +111,7 @@ def _build_synthesis_prompt(persona_cfg: dict, entity_ids: dict, evidence: dict)
     for connector_name, data in evidence.items():
         if not data or "error" in data:
             continue
-        evidence_lines.append(f"[E{idx}] {connector_name.upper()}: {json.dumps(data, indent=2)[:800]}")
+        evidence_lines.append(f"[E{idx}] {connector_name.upper()}: {json.dumps(data, indent=2)}")
         idx += 1
 
     # PubMed abstracts as numbered evidence
@@ -273,7 +273,7 @@ async def synthesize_stream(
 
     async with _client.messages.stream(
         model="claude-sonnet-4-6",
-        max_tokens=1200,
+        max_tokens=4096,
         system=system,
         messages=[{"role": "user", "content": user}],
     ) as stream:
