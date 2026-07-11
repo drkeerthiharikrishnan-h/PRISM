@@ -1,5 +1,5 @@
 """
-orchestrator.py — Steps 3, 4, 5 of the PRISM pipeline.
+orchestrator.py — Steps 3, 4, 5 of the Facet pipeline.
 
 Step 3 (get_persona_plan):  Load YAML config → connector call list.
 Step 4 (retrieve_all):      Call all connectors in parallel.
@@ -33,6 +33,109 @@ _FORMATTER_PATH = Path(__file__).parent / "prompts" / "response_formatter.txt"
 _RESPONSE_FORMATTER = _FORMATTER_PATH.read_text(encoding="utf-8") if _FORMATTER_PATH.exists() else "{persona_prompt}"
 
 PERSONA_ORDER = ["medicinal_chemist", "pathologist", "cell_molecular_biologist", "computational_biologist"]
+_LOOKUP_SCOPE = "lookup"
+_BROAD_SCOPE = "broad"
+_QUESTION_TYPE_FACTUAL = "factual"
+_QUESTION_TYPE_DETAIL = "detail"
+_QUESTION_TYPE_COMPARISON = "comparison"
+_QUESTION_TYPE_HYPOTHESIS = "hypothesis"
+_QUESTION_TYPE_EXPLORATORY = "exploratory"
+_QUESTION_TYPE_SYNTHESIS = "synthesis"
+_QUESTION_TYPE_DOSSIER = "dossier"
+
+_QUESTION_TYPE_TOKEN_BUDGETS = {
+    _QUESTION_TYPE_FACTUAL: 512,
+    _QUESTION_TYPE_DETAIL: 1536,
+    _QUESTION_TYPE_COMPARISON: 2048,
+    _QUESTION_TYPE_HYPOTHESIS: 2048,
+    _QUESTION_TYPE_EXPLORATORY: 3072,
+    _QUESTION_TYPE_SYNTHESIS: 4096,
+    _QUESTION_TYPE_DOSSIER: 12288,
+}
+
+_QUESTION_TYPE_EVIDENCE_MODE = {
+    _QUESTION_TYPE_FACTUAL: "compact",
+    _QUESTION_TYPE_DETAIL: "compact",
+    _QUESTION_TYPE_COMPARISON: "focused",
+    _QUESTION_TYPE_HYPOTHESIS: "focused",
+    _QUESTION_TYPE_EXPLORATORY: "rich",
+    _QUESTION_TYPE_SYNTHESIS: "rich",
+    _QUESTION_TYPE_DOSSIER: "full",
+}
+
+_DOSSIER_TRIGGERS = (
+    "profile",
+    "reference",
+    "dossier",
+    "mechanism dossier",
+    "reference profile",
+    "full profile",
+    "complete profile",
+    "standing reference",
+    "daily use",
+)
+
+_COMPARISON_TRIGGERS = (
+    "compare",
+    "comparison",
+    "versus",
+    "vs",
+    "difference between",
+    "relative to",
+)
+
+_HYPOTHESIS_TRIGGERS = (
+    "could",
+    "might",
+    "may",
+    "hypothesis",
+    "hypothesize",
+    "plausible",
+    "drive",
+    "cause",
+    "mediate",
+)
+
+_SYNTHESIS_TRIGGERS = (
+    "synthesis",
+    "integrative",
+    "integrate",
+    "connect the findings",
+    "connect these findings",
+    "cross-source",
+    "unify",
+)
+
+_EXPLORATORY_TRIGGERS = (
+    "what is known about",
+    "what is known",
+    "overview",
+    "landscape",
+    "summarize",
+)
+
+_DETAIL_TRIGGERS = (
+    "explain",
+    "how does",
+    "mechanism",
+    "pathway",
+    "downstream",
+    "elaborate",
+)
+
+
+def _looks_like_true_comparison(normalized: str) -> bool:
+    """Return True when the query compares two or more distinct entities."""
+    if not any(trigger in normalized for trigger in _COMPARISON_TRIGGERS):
+        return False
+
+    # Accept common binary comparison phrasing without requiring a literal "and".
+    explicit_binary_forms = (
+        r"\bcompare\b.*\b(vs|versus|and|to|with)\b",
+        r"\b(comparison|versus|vs)\b.*\b(and|to|with)\b",
+        r"\b(difference between|relative to)\b.*\band\b",
+    )
+    return any(re.search(pattern, normalized) for pattern in explicit_binary_forms)
 
 
 # ── Load persona configs ──────────────────────────────────────────────────────
@@ -44,6 +147,73 @@ def _load_persona(persona_id: str) -> dict:
 
 def _load_all_personas() -> dict[str, dict]:
     return {p: _load_persona(p) for p in PERSONA_ORDER}
+
+
+def _question_scope_from_type(question_type: str) -> str:
+    """Backwards-compatible scope mapping from the richer question type."""
+    if question_type == _QUESTION_TYPE_FACTUAL:
+        return _LOOKUP_SCOPE
+    return _BROAD_SCOPE
+
+
+def _classify_question_type(query: str) -> str:
+    """Classify query intent into a depth tier used by synthesis."""
+    normalized = re.sub(r"\s+", " ", query.lower()).strip()
+    if not normalized:
+        return _QUESTION_TYPE_DETAIL
+
+    if any(trigger in normalized for trigger in _DOSSIER_TRIGGERS):
+        return _QUESTION_TYPE_DOSSIER
+    if _looks_like_true_comparison(normalized):
+        return _QUESTION_TYPE_COMPARISON
+    if any(trigger in normalized for trigger in _HYPOTHESIS_TRIGGERS):
+        return _QUESTION_TYPE_HYPOTHESIS
+    if any(trigger in normalized for trigger in _SYNTHESIS_TRIGGERS):
+        return _QUESTION_TYPE_SYNTHESIS
+    if any(trigger in normalized for trigger in _EXPLORATORY_TRIGGERS):
+        return _QUESTION_TYPE_EXPLORATORY
+    if any(trigger in normalized for trigger in _DETAIL_TRIGGERS):
+        return _QUESTION_TYPE_DETAIL
+
+    # Keep narrow direct asks concise; default ambiguous asks to detail depth.
+    if normalized.endswith("?") and len(normalized.split()) <= 12:
+        leading = normalized.split()[0]
+        if leading in {"what", "which", "who", "when", "where", "is", "are", "does", "did", "can"}:
+            return _QUESTION_TYPE_FACTUAL
+
+    return _QUESTION_TYPE_DETAIL
+
+
+def _classify_question_type_with_reason(query: str) -> tuple[str, str]:
+    """Return question type plus a lightweight reason for observability."""
+    normalized = re.sub(r"\s+", " ", query.lower()).strip()
+    if not normalized:
+        return _QUESTION_TYPE_DETAIL, "empty-query->detail"
+
+    if any(trigger in normalized for trigger in _DOSSIER_TRIGGERS):
+        return _QUESTION_TYPE_DOSSIER, "matched-dossier-trigger"
+    if _looks_like_true_comparison(normalized):
+        return _QUESTION_TYPE_COMPARISON, "matched-comparison-trigger"
+    if any(trigger in normalized for trigger in _HYPOTHESIS_TRIGGERS):
+        return _QUESTION_TYPE_HYPOTHESIS, "matched-hypothesis-trigger"
+    if any(trigger in normalized for trigger in _SYNTHESIS_TRIGGERS):
+        return _QUESTION_TYPE_SYNTHESIS, "matched-synthesis-trigger"
+    if any(trigger in normalized for trigger in _EXPLORATORY_TRIGGERS):
+        return _QUESTION_TYPE_EXPLORATORY, "matched-exploratory-trigger"
+    if any(trigger in normalized for trigger in _DETAIL_TRIGGERS):
+        return _QUESTION_TYPE_DETAIL, "matched-detail-trigger"
+
+    if normalized.endswith("?") and len(normalized.split()) <= 12:
+        leading = normalized.split()[0]
+        if leading in {"what", "which", "who", "when", "where", "is", "are", "does", "did", "can"}:
+            return _QUESTION_TYPE_FACTUAL, "short-question-pattern"
+
+    return _QUESTION_TYPE_DETAIL, "fallback-detail"
+
+
+def _classify_query_scope(query: str) -> str:
+    """Compatibility shim used by existing tests and metadata expectations."""
+    return _question_scope_from_type(_classify_question_type(query))
 
 
 # ── Step 3: Persona plan ──────────────────────────────────────────────────────
@@ -82,44 +252,75 @@ async def retrieve_for_persona(persona_id: str, persona_cfg: dict, entity_ids: d
     return evidence
 
 
-# ── Step 5: Synthesize (streaming) ───────────────────────────────────────────
-
-_PERSONA_QUESTION_TEMPLATES = {
-    "medicinal_chemist": "What are the IC50/Ki/Kd binding affinities, co-crystal PDB structures, and SAR trends for {entity} at {target}?",
-    "pathologist":       "Which {target} resistance mutations emerge under {entity} treatment, and what is their clinical significance?",
-    "cell_molecular_biologist":  "How does {entity} disrupt {target} signaling pathways, and what are the downstream cellular consequences?",
-    "computational_biologist":   "What experimental PDB structures, AlphaFold predictions, and ML-ready bioactivity datasets exist for {entity}–{target}?",
-}
-
-def _build_persona_question(persona_id: str, entity_ids: dict, original_query: str) -> str:
-    """Rephrase the original query through the persona's professional lens."""
-    entity = entity_ids.get("entity", "")
-    target = entity_ids.get("target", "")
-    template = _PERSONA_QUESTION_TEMPLATES.get(persona_id)
-    if template and entity and target:
-        return template.format(entity=entity, target=target)
-    return original_query
-
-def _build_synthesis_prompt(persona_cfg: dict, entity_ids: dict, evidence: dict) -> tuple[str, str, int]:
+def _build_synthesis_prompt(
+    persona_cfg: dict,
+    entity_ids: dict,
+    evidence: dict,
+    original_query: str,
+    question_type: str,
+    query_scope: str = _LOOKUP_SCOPE,
+) -> tuple[str, str, int]:
     """Build system + user messages for synthesis LLM call. Returns (system, user, max_citation_idx)."""
     persona_prompt = (persona_cfg.get("system_prompt") or persona_cfg.get("synthesis_prompt", "")).strip()
-    system = _RESPONSE_FORMATTER.replace("{persona_prompt}", persona_prompt)
+    system = (
+        _RESPONSE_FORMATTER.replace("{persona_prompt}", persona_prompt)
+        .replace("{query_scope}", query_scope)
+        .replace("{question_type}", question_type)
+    )
 
     # Number evidence pieces as [E1], [E2], ...
     evidence_lines = []
     idx = 1
+    evidence_mode = _QUESTION_TYPE_EVIDENCE_MODE.get(question_type, "rich")
     for connector_name, data in evidence.items():
         if not data or "error" in data:
             continue
-        evidence_lines.append(f"[E{idx}] {connector_name.upper()}: {json.dumps(data, indent=2)}")
-        idx += 1
 
-    # PubMed abstracts as numbered evidence
-    pubmed = evidence.get("pubmed", {})
-    for abstract in pubmed.get("abstracts", []):
-        title = abstract.get("title", "")
-        text = abstract.get("abstract", "")
-        evidence_lines.append(f"[E{idx}] PUBMED PMID:{abstract.get('pmid', '')}: {title}. {text[:400]}")
+        if evidence_mode == "compact":
+            if connector_name == "pubmed":
+                for abstract in data.get("abstracts", []):
+                    title = abstract.get("title", "")
+                    text = abstract.get("abstract", "")
+                    evidence_lines.append(
+                        f"[E{idx}] PUBMED PMID:{abstract.get('pmid', '')}: {title}. {text[:300]}"
+                    )
+                    idx += 1
+            else:
+                evidence_lines.append(f"[E{idx}] {connector_name.upper()}: {_connector_detail(connector_name, data)}")
+                idx += 1
+            continue
+
+        if evidence_mode == "focused":
+            if connector_name == "pubmed":
+                for abstract in data.get("abstracts", []):
+                    title = abstract.get("title", "")
+                    text = abstract.get("abstract", "")
+                    evidence_lines.append(
+                        f"[E{idx}] PUBMED PMID:{abstract.get('pmid', '')}: {title}. {text[:500]}"
+                    )
+                    idx += 1
+            else:
+                evidence_lines.append(
+                    f"[E{idx}] {connector_name.upper()}: summary={_connector_detail(connector_name, data)}; payload={json.dumps(data, indent=2)[:1200]}"
+                )
+                idx += 1
+            continue
+
+        if evidence_mode == "rich":
+            if connector_name == "pubmed":
+                for abstract in data.get("abstracts", []):
+                    title = abstract.get("title", "")
+                    text = abstract.get("abstract", "")
+                    evidence_lines.append(
+                        f"[E{idx}] PUBMED PMID:{abstract.get('pmid', '')}: {title}. {text[:700]}"
+                    )
+                    idx += 1
+            else:
+                evidence_lines.append(f"[E{idx}] {connector_name.upper()}: {json.dumps(data, indent=2)}")
+                idx += 1
+            continue
+
+        evidence_lines.append(f"[E{idx}] {connector_name.upper()}: {json.dumps(data, indent=2)}")
         idx += 1
 
     max_idx = idx - 1
@@ -131,7 +332,9 @@ def _build_synthesis_prompt(persona_cfg: dict, entity_ids: dict, evidence: dict)
         )
 
     user_payload = {
-        "question": f"What do I need to know about {entity_ids['entity']} and its target {entity_ids['target']}?",
+        "question": original_query,
+        "question_type": question_type,
+        "question_scope": query_scope,
         "structured_evidence": "\n\n".join(evidence_lines) if evidence_lines else "No evidence retrieved.",
     }
     return system, json.dumps(user_payload), max_idx
@@ -170,7 +373,7 @@ async def _validated_citation_stream(
                 if 1 <= n <= max_idx:
                     yield candidate  # valid citation
                 else:
-                    logger.warning("PRISM: stripped hallucinated citation %r (valid E1–E%d)", candidate, max_idx)
+                    logger.warning("Facet: stripped hallucinated citation %r (valid E1–E%d)", candidate, max_idx)
             else:
                 yield candidate  # not a citation marker — pass through unchanged
     if buf:
@@ -267,13 +470,24 @@ async def synthesize_stream(
     persona_cfg: dict,
     entity_ids: dict,
     evidence: dict,
+    original_query: str,
+    question_type: str,
+    query_scope: str = _LOOKUP_SCOPE,
 ) -> AsyncIterator[str]:
     """Yield markdown text tokens for one persona via Claude streaming."""
-    system, user, max_idx = _build_synthesis_prompt(persona_cfg, entity_ids, evidence)
+    system, user, max_idx = _build_synthesis_prompt(
+        persona_cfg,
+        entity_ids,
+        evidence,
+        original_query=original_query,
+        question_type=question_type,
+        query_scope=query_scope,
+    )
+    max_tokens = _QUESTION_TYPE_TOKEN_BUDGETS.get(question_type, 1024)
 
     async with _client.messages.stream(
         model="claude-sonnet-4-6",
-        max_tokens=4096,
+        max_tokens=max_tokens,
         system=system,
         messages=[{"role": "user", "content": user}],
     ) as stream:
@@ -331,6 +545,8 @@ async def stream_pipeline(
     parsed = await parse_query(query)
     entity = parsed.get("entity", "")
     target = parsed.get("target", "")
+    question_type, question_type_reason = _classify_question_type_with_reason(query)
+    query_scope = _question_scope_from_type(question_type)
     yield {"type": "status", "stage": "parsed", "message": f"Identified: {entity} → {target}"}
 
     # ── Stage: resolve or demo cache ──
@@ -383,17 +599,19 @@ async def stream_pipeline(
         cfg = all_personas_cfg[persona_id]
         evidence = all_evidence.get(persona_id, {}) if not demo_mode else all_evidence.get(persona_id, {})
         await token_queue.put({
-            "type": "persona_question",
-            "persona": persona_id,
-            "question": _build_persona_question(persona_id, entity_ids, query),
-            "original_query": query,
-        })
-        await token_queue.put({
             "type": "evidence",
             "persona": persona_id,
             "connectors": _summarize_evidence(evidence),
         })
-        async for token in synthesize_stream(persona_id, cfg, entity_ids, evidence):
+        async for token in synthesize_stream(
+            persona_id,
+            cfg,
+            entity_ids,
+            evidence,
+            original_query=query,
+            question_type=question_type,
+            query_scope=query_scope,
+        ):
             await token_queue.put({"type": "token", "persona": persona_id, "text": token})
         await token_queue.put({"type": "_done_persona", "persona": persona_id})
 
@@ -423,6 +641,9 @@ async def stream_pipeline(
             "entity": entity,
             "target": target,
             "entity_ids": entity_ids if not demo_mode else {},
+            "question_type": question_type,
+            "question_type_reason": question_type_reason,
+            "question_scope": query_scope,
             "personas_run": personas_to_run,
             "databases_queried": sorted(dbs_queried),
             "llm_calls": 1 + len(personas_to_run),
@@ -437,6 +658,8 @@ async def run_pipeline(query: str, personas: list[str] = PERSONA_ORDER) -> dict:
     parsed = await parse_query(query)
     entity = parsed.get("entity", "")
     target = parsed.get("target", "")
+    question_type, _ = _classify_question_type_with_reason(query)
+    query_scope = _question_scope_from_type(question_type)
     entity_ids = await resolve_ids(entity, target)
 
     all_personas_cfg = _load_all_personas()
@@ -452,7 +675,15 @@ async def run_pipeline(query: str, personas: list[str] = PERSONA_ORDER) -> dict:
         cfg = all_personas_cfg[persona_id]
         evidence = all_evidence.get(persona_id, {})
         tokens = []
-        async for token in synthesize_stream(persona_id, cfg, entity_ids, evidence):
+        async for token in synthesize_stream(
+            persona_id,
+            cfg,
+            entity_ids,
+            evidence,
+            original_query=query,
+            question_type=question_type,
+            query_scope=query_scope,
+        ):
             tokens.append(token)
         results[persona_id] = "".join(tokens)
 

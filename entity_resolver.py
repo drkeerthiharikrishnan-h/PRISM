@@ -1,5 +1,5 @@
 """
-entity_resolver.py — Steps 1 & 2 of the PRISM pipeline + guardrails.
+entity_resolver.py — Steps 1 & 2 of the Facet pipeline + guardrails.
 
 guardrail_check:        1 Haiku call → is query biomedical? Reject early if not.
 Step 1 (parse_query):   1 LLM call → extract entity + target from free text.
@@ -19,7 +19,7 @@ _client = AsyncAnthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 _CACHE_DIR = Path(__file__).parent / "cache"
 _CACHE_DIR.mkdir(exist_ok=True)
 
-PERSONA_IDS = ["medicinal_chemist", "pathologist", "cell_biologist", "comp_biologist"]
+PERSONA_IDS = ["medicinal_chemist", "pathologist", "cell_molecular_biologist", "computational_biologist"]
 
 # ── Step 1: Parse query ───────────────────────────────────────────────────────
 
@@ -161,7 +161,7 @@ async def resolve_ids(entity: str, target: str) -> dict:
     Falls back gracefully — missing IDs become None.
     """
     async with httpx.AsyncClient(
-        headers={"User-Agent": "PRISM-HackathonBot/1.0"},
+        headers={"User-Agent": "Facet-HackathonBot/1.0"},
         follow_redirects=True,
     ) as client:
         import asyncio
@@ -197,8 +197,8 @@ async def detect_persona(query: str) -> tuple[str, float]:
         "The four roles are:\n"
         "- medicinal_chemist: asks about potency, SAR, IC50, scaffolds, co-crystals, analogues\n"
         "- pathologist: asks about mutations, resistance, clinical significance, patient outcomes, variants\n"
-        "- cell_biologist: asks about pathways, signaling, mechanism of action, downstream effects, phosphorylation\n"
-        "- comp_biologist: asks about structures, sequences, docking, datasets, pLDDT, modeling, simulation\n\n"
+        "- cell_molecular_biologist: asks about pathways, signaling, mechanism of action, downstream effects, phosphorylation\n"
+        "- computational_biologist: asks about structures, sequences, docking, datasets, pLDDT, modeling, simulation\n\n"
         "Return ONLY valid JSON: {\"persona_id\": \"<one of the four>\", \"confidence\": <0.0-1.0>}\n"
         "No explanation."
     )
@@ -240,9 +240,9 @@ async def guardrail_check(query: str) -> GuardrailResult:
 
     Returns GuardrailResult with is_biomedical flag + helpful message if rejected.
     """
-    system = """You are a guardrail for a biomedical research tool called PRISM.
+    system = """You are a guardrail for a biomedical research tool called Facet.
 
-PRISM can only answer questions about:
+Facet can only answer questions about:
 - Drugs, compounds, small molecules (e.g. imatinib, aspirin, gefitinib)
 - Genes, proteins, enzymes, kinases (e.g. ABL1, EGFR, BRCA1, TP53)
 - Diseases and their molecular basis (e.g. CML, lung cancer, Alzheimer's)
@@ -252,7 +252,7 @@ PRISM can only answer questions about:
 - Protein structures, sequences, docking, molecular modeling
 - Anything in biomedical research, pharmacology, biochemistry, or molecular biology
 
-PRISM cannot answer:
+Facet cannot answer:
 - General knowledge questions (weather, history, politics, sports, math)
 - Greetings or casual conversation (hello, hi, how are you)
 - Coding or software questions
@@ -263,7 +263,7 @@ Classify the query. Return ONLY valid JSON:
 {
   "is_biomedical": true or false,
   "reason": "one short sentence why",
-  "suggestion": "if false — one example of a valid PRISM query the user could try instead; if true — empty string"
+  "suggestion": "if false — one example of a valid Facet query the user could try instead; if true — empty string"
 }
 No explanation outside the JSON."""
 

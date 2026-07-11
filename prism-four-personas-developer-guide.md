@@ -1,8 +1,8 @@
-# Prism — Four Personas, One Query (Developer Guide)
+# Facet — Four Personas, One Query (Developer Guide)
 
 **Audience: developers, no biology background needed.** This explains the domain in plain English, then shows how the *same* question produces four different answers depending on the user's role. Scope is **MVP, not production**: open databases only, no heavy middleware, and LLM calls bundled to the minimum.
 
-Companion: `prism-e2e-worked-example-medicinal-chemist.md` has the full code for one persona. This doc is the wider map across all four.
+Companion: `facet-e2e-worked-example-medicinal-chemist.md` has the full code for one persona. This doc is the wider map across all four.
 
 ---
 
@@ -10,7 +10,7 @@ Companion: `prism-e2e-worked-example-medicinal-chemist.md` has the full code for
 
 ## A1. The problem in one paragraph
 
-A scientist searches for a drug (say **imatinib**, a cancer drug) or a gene. Generic search gives everyone the same averaged answer. But a chemist, a pathologist, a cell biologist, and a computational biologist each need *different evidence* about the same thing. Prism makes the user's **role** (the "persona") change **which databases we query, what we pull out, and how we structure the answer** — not just the wording.
+A scientist searches for a drug (say **imatinib**, a cancer drug) or a gene. Generic search gives everyone the same averaged answer. But a chemist, a pathologist, a cell biologist, and a computational biologist each need *different evidence* about the same thing. Facet makes the user's **role** (the "persona") change **which databases we query, what we pull out, and how we structure the answer** — not just the wording.
 
 ## A2. Plain-English glossary
 

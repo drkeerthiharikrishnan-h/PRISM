@@ -286,7 +286,7 @@ def test_compare_mode_all_panels(page: Page, query: str, label: str):
     for pid, text in texts.items():
         assert len(text) > 100, f"[{label}] Panel {pid} too short: {len(text)} chars"
 
-    # All 4 panels must be DIFFERENT (the whole point of PRISM)
+    # All 4 panels must be DIFFERENT (the whole point of Facet)
     assert len(set(texts.values())) == 4, \
         f"[{label}] Some panels have identical responses — persona routing may be broken"
 

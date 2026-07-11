@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-PRISM (Persona-Driven Research Intelligence System) is a FastAPI biomedical research assistant that routes queries through four professional personas (medicinal chemist, pathologist, cell biologist, computational biologist). Each persona pulls data from open biomedical databases (PubMed, ChEMBL, PDB, UniProt, etc.) and synthesizes role-appropriate responses via Claude.
+Facet (Persona-Driven Research Intelligence System) is a FastAPI biomedical research assistant that routes queries through four professional personas (medicinal chemist, pathologist, cell biologist, computational biologist). Each persona pulls data from open biomedical databases (PubMed, ChEMBL, PDB, UniProt, etc.) and synthesizes role-appropriate responses via Claude.
 
 ## Development Commands
 

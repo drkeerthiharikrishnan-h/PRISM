@@ -1,4 +1,4 @@
-# PRISM — Persona-Driven Research Intelligence System
+# Facet — Persona-Driven Research Intelligence System
 # Multi-stage build using uv for fast, reproducible installs
 
 FROM python:3.11-slim AS base

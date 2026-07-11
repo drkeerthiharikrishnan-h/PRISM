@@ -1,4 +1,4 @@
-"""PRISM — Persona-Driven Research Intelligence System
+"""Facet — Persona-Driven Research Intelligence System
 FastAPI backend with SSE streaming for 4-panel biomedical query responses.
 """
 import json
@@ -19,7 +19,7 @@ from orchestrator import run_pipeline, stream_pipeline
 from entity_resolver import detect_persona
 from users import list_users, get_user, PERSONA_LABELS, PERSONA_EMOJIS
 
-app = FastAPI(title="PRISM", version="1.0.0")
+app = FastAPI(title="Facet", version="1.0.0")
 
 FRONTEND_DIR = Path(__file__).parent / "frontend"
 PERSONAS_DIR = Path(__file__).parent / "personas"
@@ -51,7 +51,7 @@ async def serve_ui():
 
 @app.get("/api/health")
 async def health():
-    return {"status": "ok", "service": "PRISM"}
+    return {"status": "ok", "service": "Facet"}
 
 
 # ── User endpoints ────────────────────────────────────────────────────────────

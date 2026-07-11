@@ -1,5 +1,5 @@
 [project]
-name = "prism"
+name = "facet"
 version = "1.0.0"
 description = "Persona-Driven Research Intelligence System — Gladstone Hackathon 2026"
 requires-python = ">=3.10"

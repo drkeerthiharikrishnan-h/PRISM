@@ -1,4 +1,4 @@
-# PRISM — Architecture & System Design
+# Facet — Architecture & System Design
 
 > **Persona-Driven Research Intelligence System**  
 > Gladstone Institute × Cerebral Valley Built with Claude: Life Sciences Hackathon 2026
@@ -42,7 +42,7 @@ They receive identical generic text. But their actual needs are completely diffe
 
 ### The Solution — Persona-Driven Orchestration
 
-PRISM intercepts every query and routes it through **four professional lenses simultaneously**. The user's role determines:
+Facet intercepts every query and routes it through **four professional lenses simultaneously**. The user's role determines:
 - Which databases are queried
 - Which fields are extracted
 - How the answer is structured and synthesised
@@ -481,7 +481,7 @@ GET /prediction/P00519
 
 ## 6. Streaming Architecture (SSE)
 
-PRISM uses **Server-Sent Events (SSE)** to push Claude's tokens to the browser in real time. All 4 personas stream concurrently — the browser receives an interleaved stream of events tagged by `persona`.
+Facet uses **Server-Sent Events (SSE)** to push Claude's tokens to the browser in real time. All 4 personas stream concurrently — the browser receives an interleaved stream of events tagged by `persona`.
 
 ### Event Format
 
@@ -557,7 +557,7 @@ while (true) {
 
 ## 7. User Identity & Persona Detection
 
-PRISM uses a **two-layer approach** to know who the user is. No passwords, no database — just session storage and AI inference.
+Facet uses a **two-layer approach** to know who the user is. No passwords, no database — just session storage and AI inference.
 
 ### Layer 1 — Profile Card Selection (Primary)
 
@@ -571,7 +571,7 @@ This persists for the browser session. The query screen shows their role in the 
 
 ### Layer 2 — LLM Auto-Detection (Fallback)
 
-If the user skips role selection, PRISM analyses their query language with a lightweight Claude Haiku call:
+If the user skips role selection, Facet analyses their query language with a lightweight Claude Haiku call:
 
 ```
 File: entity_resolver.py::detect_persona()
@@ -605,7 +605,7 @@ All 4 persona detection tests pass with 100% accuracy on domain-specific queries
 
 ## 8. Caching Strategy
 
-PRISM has two levels of caching:
+Facet has two levels of caching:
 
 ### Level 1 — Query Parse Cache
 **Location:** `cache/parse_<md5>.json`  
@@ -663,7 +663,7 @@ print('Cache ready!')
 ## 9. File & Module Reference
 
 ```
-PRISM/
+Facet/
 │
 ├── main.py                     FastAPI app — HTTP routes + SSE endpoint
 │                               Routes: GET /, GET /api/health,
@@ -833,8 +833,8 @@ All 4 panels write simultaneously
 brew install uv
 
 # 2. Clone and install
-git clone git@github.com:drkeerthiharikrishnan-h/PRISM.git
-cd PRISM
+git clone git@github.com:drkeerthiharikrishnan-h/Facet.git
+cd Facet
 uv sync
 
 # 3. Configure API keys
@@ -887,4 +887,4 @@ Then click the **Demo** button in the UI for instant, zero-latency demo response
 
 ---
 
-*PRISM v1.0 — Built at the Gladstone Institute × Cerebral Valley Hackathon, July 2026*
+*Facet v1.0 — Built at the Gladstone Institute × Cerebral Valley Hackathon, July 2026*

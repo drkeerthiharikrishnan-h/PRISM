@@ -76,9 +76,9 @@ async def test_resolve_ids_graceful_on_unknown():
      "I'm optimizing imatinib analogues against ABL1 — what's the SAR and IC50 for co-crystal structures?"),
     ("pathologist",
      "This CML patient stopped responding to imatinib — is there a T315I ABL1 mutation causing resistance?"),
-    ("cell_biologist",
+    ("cell_molecular_biologist",
      "How does imatinib blocking ABL1 affect BCR-ABL downstream signaling and STAT5 phosphorylation?"),
-    ("comp_biologist",
+    ("computational_biologist",
      "I need PDB structures, AlphaFold predictions, and bioactivity datasets to train a docking model for ABL1."),
 ])
 async def test_detect_persona_accuracy(persona_id, query):

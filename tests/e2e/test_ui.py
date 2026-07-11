@@ -17,11 +17,11 @@ SHORT_TIMEOUT  = 10_000   # 10s for UI interactions
 # ── Landing page ──────────────────────────────────────────────────────────────
 
 def test_landing_page_loads(page: Page):
-    """Landing page shows PRISM branding and all 4 role cards."""
+    """Landing page shows Facet branding and all 4 role cards."""
     page.goto(BASE_URL)
     landing = page.locator("#landing")
 
-    expect(page.get_by_role("heading", name="PRISM")).to_be_visible(timeout=SHORT_TIMEOUT)
+    expect(page.get_by_role("heading", name="Facet")).to_be_visible(timeout=SHORT_TIMEOUT)
     expect(landing.get_by_text("Medicinal Chemist")).to_be_visible()
     expect(landing.get_by_text("Pathologist")).to_be_visible()
     expect(landing.get_by_text("Cell / Molecular Biologist")).to_be_visible()
@@ -187,7 +187,7 @@ def test_compare_mode_all_panels_populate(page: Page):
     # Status should finish
     expect(page.locator("#status-bar")).to_contain_text("Complete", timeout=STREAM_TIMEOUT)
 
-    # Verify panels have DIFFERENT content (the core PRISM value prop)
+    # Verify panels have DIFFERENT content (the core Facet value prop)
     texts = {
         pid: page.locator(f"#panel-{pid}").inner_text()
         for pid in ["medicinal_chemist", "pathologist", "cell_biologist", "comp_biologist"]

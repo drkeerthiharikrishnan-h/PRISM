@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PRISM — Biomedical Research Intelligence</title>
+  <title>Facet — Biomedical Research Intelligence</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
@@ -40,7 +40,13 @@
     @keyframes fadeIn  { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
     @keyframes slideUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
 
-    .prose h2 { font-size: 0.75rem; font-weight: 600; color: #64748b; text-transform: uppercase;
+    .prose h1,
+    .prose h2,
+    .prose h3,
+    .prose h4,
+    .prose h5,
+    .prose h6 { color: #000000; }
+    .prose h2 { font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
                 letter-spacing: 0.07em; margin: 1.1rem 0 0.45rem; padding-bottom: 0.3rem;
                 border-bottom: 1px solid #e2e8f0; }
     .prose p  { font-size: 0.825rem; line-height: 1.65; color: #475569; margin-bottom: 0.5rem; }
@@ -48,6 +54,33 @@
     .prose li { margin-bottom: 0.2rem; }
     .prose strong { color: #1e293b; font-weight: 600; }
     .prose em { color: #0ea5e9; font-style: normal; }
+    .prose table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.75rem auto 1rem;
+      font-size: 0.78rem;
+      color: #334155;
+      overflow: hidden;
+      border: 1px solid #cbd5e1;
+      border-radius: 0.75rem;
+    }
+    .prose thead { background: #f8fafc; }
+    .prose th,
+    .prose td {
+      border: 1px solid #cbd5e1;
+      padding: 0.45rem 0.6rem;
+      text-align: center;
+      vertical-align: middle;
+      word-break: break-word;
+    }
+    .prose th {
+      font-weight: 600;
+      color: #1e293b;
+      background: #f8fafc;
+    }
+    .prose tr:nth-child(even) td { background: #fcfcfd; }
+    .prose tr:hover td { background: #f8fbff; }
+    .prose table p { margin: 0; }
 
     .user-card { transition: all 0.18s ease; border: 1.5px solid #e8e5df; cursor: pointer; background: #ffffff; }
     .user-card:hover { border-color: var(--uc); transform: translateY(-2px);
@@ -91,7 +124,7 @@
       Persona-Driven Research Intelligence
     </div>
     <h1 class="text-6xl font-bold mb-3 tracking-tight">
-      <span class="gradient-text">PRISM</span>
+      <span class="gradient-text">Facet</span>
     </h1>
     <p class="text-slate-500 text-sm max-w-md mx-auto leading-relaxed">
       One biomedical query. Four expert lenses.<br>
@@ -99,8 +132,8 @@
     </p>
   </div>
 
-  <!-- Researcher cards — flex-wrap so odd counts stay centered -->
-  <div id="login-cards" class="flex flex-wrap justify-center gap-4 max-w-3xl w-full mb-8 fade-in">
+  <!-- Researcher cards — evenly aligned 2x2 grid -->
+  <div id="login-cards" class="grid grid-cols-2 gap-x-2 gap-y-4 max-w-2xl w-full mb-8 fade-in justify-items-stretch">
     <div class="text-slate-400 text-xs py-10 mono">Loading profiles…</div>
   </div>
 
@@ -175,7 +208,7 @@
   <header class="flex-shrink-0 flex items-center justify-between px-5 py-3
                  border-b border-slate-200 bg-white/90 backdrop-blur">
     <div class="flex items-center gap-3">
-      <span class="text-lg font-bold gradient-text tracking-tight">PRISM</span>
+      <span class="text-lg font-bold gradient-text tracking-tight">Facet</span>
       <span class="text-slate-300">|</span>
       <div id="hdr-user" class="hidden items-center gap-2">
         <div id="hdr-av" class="av text-white" style="width:24px;height:24px;font-size:0.6rem;background:#0ea5e9"></div>
@@ -206,7 +239,7 @@
        flex items-center gap-3">
     <span class="text-amber-500 text-base">⚠️</span>
     <div class="flex-1 min-w-0">
-      <span class="text-amber-700 text-xs font-medium">PRISM is a biomedical research tool. </span>
+      <span class="text-amber-700 text-xs font-medium">Facet is a biomedical research tool. </span>
       <span id="guardrail-reason" class="text-amber-600 text-xs"></span>
       <span id="guardrail-suggestion" class="text-slate-600 text-xs block mt-0.5"></span>
     </div>
@@ -285,7 +318,7 @@
           </div>
         </div>
         <p class="text-slate-400 text-[10px] text-center mt-2">
-          PRISM answers biomedical questions only · Powered by Claude + 8 open databases
+          Facet answers biomedical questions only · Powered by Claude
         </p>
       </div>
     </main>
@@ -402,7 +435,7 @@ async function loadUsers() {
 
 function renderLoginCards(users) {
   el('login-cards').innerHTML = users.map(u => `
-    <button class="user-card rounded-xl p-4 text-left w-52"
+    <button class="user-card rounded-xl p-4 text-left w-full"
       style="--uc:${u.color}"
       onclick='selectUser(${JSON.stringify(u).replace(/'/g,"&#39;")})'>
       <div class="flex items-center gap-3 mb-2.5">
@@ -427,7 +460,7 @@ function renderLoginCards(users) {
 function selectUser(user) {
   currentUser    = user;
   currentPersona = user.persona;
-  sessionStorage.setItem('prism_user', JSON.stringify(user));
+  sessionStorage.setItem('facet_user', JSON.stringify(user));
 
   el('wc-av').textContent      = user.initials;
   el('wc-av').style.background = user.color;
@@ -656,7 +689,6 @@ function _buildSingleHTML(id, query) {
         <span class="text-sm font-semibold text-slate-700">${p.name}</span>
         <span id="hcur-${id}-${currentPersona}" class="cursor text-blue-500 text-xs ml-1"></span>
       </div>
-      <div id="hquestion-${id}-${currentPersona}" class="hidden text-[11px] mono text-slate-500 italic border-l-2 border-slate-200 pl-2 mb-3"></div>
       <div id="hevidence-${id}-${currentPersona}" class="hidden mb-3"></div>
       <div id="hpanel-${id}-${currentPersona}" class="prose min-h-[80px]"></div>
     </div>
@@ -678,7 +710,6 @@ function _buildCompareHTML(id, query) {
         <span id="hcur-${id}-${p.key}" class="cursor ${p.cur} text-xs ml-auto"></span>
       </div>
       <div class="text-[10px] mono text-slate-400 mb-2">${p.dbs}</div>
-      <div id="hquestion-${id}-${p.key}" class="hidden text-[11px] mono text-slate-500 italic border-l-2 border-slate-200 pl-2 mb-2"></div>
       <div id="hevidence-${id}-${p.key}" class="hidden mb-2"></div>
       <div id="hpanel-${id}-${p.key}" class="prose min-h-[120px]"></div>
     </div>`).join('');
@@ -766,7 +797,7 @@ function validateQuery(query) {
     return 'Too short — try something like "imatinib ABL1 binding affinity"';
   const greet = /^(hello|hi|hey|test|ok|yes|no|thanks|bye|sup)\W*$/i;
   if (greet.test(query))
-    return 'PRISM answers biomedical questions — e.g. "What is the SAR of imatinib against ABL1?"';
+    return 'Facet answers biomedical questions — e.g. "What is the SAR of imatinib against ABL1?"';
   return null;
 }
 
@@ -845,15 +876,6 @@ function handleSSEEvent(event, activePersonas) {
       break;
     }
 
-    case 'persona_question': {
-      const qEl = document.getElementById(`hquestion-${currentEntryId}-${event.persona}`);
-      if (qEl) {
-        qEl.textContent = event.question;
-        qEl.classList.remove('hidden');
-      }
-      break;
-    }
-
     case 'evidence': {
       const container = document.getElementById(`hevidence-${currentEntryId}-${event.persona}`);
       if (!container) break;
@@ -913,7 +935,7 @@ function handleSSEEvent(event, activePersonas) {
 // ── Session restore ────────────────────────────────────────────────
 
 (function() {
-  const saved = sessionStorage.getItem('prism_user');
+  const saved = sessionStorage.getItem('facet_user');
   if (saved) try { currentUser = JSON.parse(saved); } catch {}
 })();
 

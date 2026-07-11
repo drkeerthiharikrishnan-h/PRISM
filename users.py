@@ -1,5 +1,5 @@
 """
-users.py — Hardcoded demo researcher profiles for PRISM.
+users.py — Hardcoded demo researcher profiles for Facet.
 
 Each user has a pre-assigned persona. No passwords, no database.
 Session is stored in the browser (sessionStorage) via the frontend.

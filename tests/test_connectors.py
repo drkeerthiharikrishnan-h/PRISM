@@ -157,7 +157,7 @@ async def test_reactome_returns_abl1_pathways():
 @pytest.mark.asyncio
 async def test_alphafold_returns_abl1_prediction():
     from connectors.alphafold import fetch
-    result = await fetch(DEMO_IDS, {"query_type": "prediction"})
+    result = await fetch(DEMO_IDS, {"query_type": "prediction", "include_images": True})
 
     assert result.get("accession") == "P00519"
     assert result.get("available") is True, "AlphaFold entry should be available for P00519"

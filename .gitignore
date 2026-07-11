@@ -14,8 +14,8 @@ cache/
 
 # Test recordings (large binaries — share via zip, not git)
 test-recordings/
-prism-test-recordings/
-prism-test-recordings*/
+facet-test-recordings/
+facet-test-recordings*/
 *.zip
 *.webm
 

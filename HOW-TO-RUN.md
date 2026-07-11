@@ -1,6 +1,6 @@
-# How to Run PRISM on Your Computer
+# How to Run Facet on Your Computer
 
-Hi Keerthi! Follow these steps and PRISM will be running on your laptop in about 5 minutes.
+Hi Keerthi! Follow these steps and Facet will be running on your laptop in about 5 minutes.
 
 ---
 
@@ -20,19 +20,19 @@ Docker is a free tool that runs the app inside a safe container. You only instal
 
 ### Step 2 — Get the Project Files
 
-Balaji will share the project folder with you. It should be called **PRISM** and contain files like `main.py`, `docker-compose.yml`, etc.
+Balaji will share the project folder with you. It should be called **Facet** and contain files like `main.py`, `docker-compose.yml`, etc.
 
-Put the PRISM folder somewhere easy to find — like your Desktop or Documents.
+Put the Facet folder somewhere easy to find — like your Desktop or Documents.
 
 ---
 
 ### Step 3 — Add the API Keys
 
-Inside the PRISM folder, find the file called **`.env`**
+Inside the Facet folder, find the file called **`.env`**
 
 > Note: Files starting with `.` are hidden on Mac. If you can't see `.env`, open Terminal and type:
 > ```
-> open -a TextEdit /path/to/PRISM/.env
+> open -a TextEdit /path/to/Facet/.env
 > ```
 > Or ask Balaji to set this up for you — it only needs to be done once.
 
@@ -54,12 +54,12 @@ On your Mac: press **Command + Space**, type **Terminal**, press Enter.
 
 ---
 
-### Step 5 — Navigate to the PRISM folder
+### Step 5 — Navigate to the Facet folder
 
-In Terminal, type (replace the path with where your PRISM folder is):
+In Terminal, type (replace the path with where your Facet folder is):
 
 ```bash
-cd ~/Desktop/PRISM
+cd ~/Desktop/Facet
 ```
 
 ---
@@ -82,7 +82,7 @@ When you see this line, the app is ready:
 
 ---
 
-### Step 7 — Open PRISM in Your Browser
+### Step 7 — Open Facet in Your Browser
 
 Open **Safari** or **Chrome** and go to:
 
@@ -90,7 +90,7 @@ Open **Safari** or **Chrome** and go to:
 http://localhost:8000
 ```
 
-You should see the PRISM login screen with the researcher profiles! 🎉
+You should see the Facet login screen with the researcher profiles! 🎉
 
 ---
 

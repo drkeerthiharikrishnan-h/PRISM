@@ -31,11 +31,11 @@ PERSONA_QUERIES = {
         "This CML patient stopped responding to imatinib — "
         "is there an ABL1 mutation that explains resistance, and what's its clinical significance?"
     ),
-    "cell_biologist": (
+    "cell_molecular_biologist": (
         "How does imatinib blocking ABL1 change downstream signaling — "
         "which pathways and partner proteins are involved?"
     ),
-    "comp_biologist": (
+    "computational_biologist": (
         "I need structural and sequence inputs to model imatinib–ABL1 binding — "
         "what experimental/predicted structures, sequences, and bioactivity datasets exist?"
     ),
