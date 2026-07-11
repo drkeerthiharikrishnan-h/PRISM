@@ -216,30 +216,72 @@ def _classify_query_scope(query: str) -> str:
     return _question_scope_from_type(_classify_question_type(query))
 
 
+# Explicit visual-asset intent. Bare "structure" is intentionally excluded — it is
+# far too common in non-visual med-chem/comp-bio asks. We require an explicit visual
+# verb/noun (or a qualified "…structure" phrase) so images stay opt-in.
+_IMAGE_INTENT_TRIGGERS = (
+    "show me",
+    "show the",
+    "image",
+    "picture",
+    "depict",
+    "depiction",
+    "render",
+    "draw",
+    "visualize",
+    "visualise",
+    "diagram",
+    "3d structure",
+    "3-d structure",
+    "3d view",
+    "crystal structure",
+    "structure view",
+    "view the structure",
+    "see the structure",
+    "microscopy image",
+    "pathology image",
+    "network image",
+)
+
+
+def _wants_images(query: str) -> bool:
+    """True when the user explicitly asks to see a visual asset (image/3D/diagram)."""
+    normalized = re.sub(r"\s+", " ", query.lower()).strip()
+    if not normalized:
+        return False
+    return any(trigger in normalized for trigger in _IMAGE_INTENT_TRIGGERS)
+
+
 # ── Step 3: Persona plan ──────────────────────────────────────────────────────
 
-def get_persona_plan(persona_cfg: dict, entity_ids: dict) -> list[dict]:
+def get_persona_plan(persona_cfg: dict, entity_ids: dict, want_images: bool = False) -> list[dict]:
     """Return list of {name, entity_ids, params} calls.
 
     Supports both old dict format [{name, params}] and new string list format.
     Params for string-format connectors are sourced from connector_bindings if present.
+    When want_images is True, include_images is enabled for every connector so
+    image/3D/diagram URLs are surfaced to synthesis.
     """
     raw = persona_cfg.get("connectors", [])
     bindings = persona_cfg.get("connector_bindings", {})
     plan = []
     for c in raw:
         if isinstance(c, str):
-            plan.append({"name": c, "entity_ids": entity_ids, "params": {}})
+            params = {}
         else:
-            plan.append({"name": c["name"], "entity_ids": entity_ids, "params": c.get("params", {})})
+            params = dict(c.get("params", {}))
+        if want_images:
+            params["include_images"] = True
+        name = c if isinstance(c, str) else c["name"]
+        plan.append({"name": name, "entity_ids": entity_ids, "params": params})
     return plan
 
 
 # ── Step 4: Retrieve ──────────────────────────────────────────────────────────
 
-async def retrieve_for_persona(persona_id: str, persona_cfg: dict, entity_ids: dict) -> dict:
+async def retrieve_for_persona(persona_id: str, persona_cfg: dict, entity_ids: dict, want_images: bool = False) -> dict:
     """Call all connectors for one persona in parallel."""
-    plan = get_persona_plan(persona_cfg, entity_ids)
+    plan = get_persona_plan(persona_cfg, entity_ids, want_images=want_images)
     tasks = [REGISTRY[step["name"]](step["entity_ids"], step["params"]) for step in plan]
     results = await asyncio.gather(*tasks, return_exceptions=True)
 
@@ -259,6 +301,7 @@ def _build_synthesis_prompt(
     original_query: str,
     question_type: str,
     query_scope: str = _LOOKUP_SCOPE,
+    want_images: bool = False,
 ) -> tuple[str, str, int]:
     """Build system + user messages for synthesis LLM call. Returns (system, user, max_citation_idx)."""
     persona_prompt = (persona_cfg.get("system_prompt") or persona_cfg.get("synthesis_prompt", "")).strip()
@@ -267,6 +310,27 @@ def _build_synthesis_prompt(
         .replace("{query_scope}", query_scope)
         .replace("{question_type}", question_type)
     )
+
+    if want_images:
+        system += (
+            "\n\nIMAGE RENDERING (the user explicitly asked to see a visual — this OVERRIDES "
+            "the persona's default 'images are opt-in / never default' rendering policy):\n"
+            "- The connector evidence was fetched with images enabled, so image/diagram/viewer "
+            "URL fields (image_url, *_images[].url, pae_image_url, depiction_url, diagram_url, "
+            "network_image_url) are present where the source offers them.\n"
+            "- You MUST embed every relevant renderable image inline using markdown image syntax "
+            "so the picture appears in the UI, e.g. `![PDB 1IVO assembly](https://cdn.rcsb.org/images/structures/1ivo_assembly-1.jpeg)`. "
+            "Use the exact URL from the evidence — never invent, guess, or alter a URL.\n"
+            "- For 3D coordinate sources (pdb, alphafold): embed the still image_url/pae_image_url "
+            "inline AND add the viewer_url as a plain markdown link for interactivity.\n"
+            "- Do NOT wrap a renderable image URL in backticks or a code span (that stops it from "
+            "rendering). Backticks are only for identifiers, not for image URLs you intend to display.\n"
+            "- Do NOT defer with phrases like 'just ask and I will render it' — the user already "
+            "asked. Render now. Only if a needed image field is genuinely absent from the evidence, "
+            "write 'no image available' for that item.\n"
+            "- Show the most relevant images (e.g. the best-resolution structure or the tissue asked "
+            "about); if many exist, embed the top few and state how many more are available."
+        )
 
     # Number evidence pieces as [E1], [E2], ...
     evidence_lines = []
@@ -473,6 +537,7 @@ async def synthesize_stream(
     original_query: str,
     question_type: str,
     query_scope: str = _LOOKUP_SCOPE,
+    want_images: bool = False,
 ) -> AsyncIterator[str]:
     """Yield markdown text tokens for one persona via Claude streaming."""
     system, user, max_idx = _build_synthesis_prompt(
@@ -482,6 +547,7 @@ async def synthesize_stream(
         original_query=original_query,
         question_type=question_type,
         query_scope=query_scope,
+        want_images=want_images,
     )
     max_tokens = _QUESTION_TYPE_TOKEN_BUDGETS.get(question_type, 1024)
 
@@ -547,6 +613,7 @@ async def stream_pipeline(
     target = parsed.get("target", "")
     question_type, question_type_reason = _classify_question_type_with_reason(query)
     query_scope = _question_scope_from_type(question_type)
+    want_images = _wants_images(query)
     yield {"type": "status", "stage": "parsed", "message": f"Identified: {entity} → {target}"}
 
     # ── Stage: resolve or demo cache ──
@@ -575,7 +642,7 @@ async def stream_pipeline(
         yield {"type": "status", "stage": "retrieving", "message": "Querying biomedical databases…"}
         all_personas_cfg = _load_all_personas()
         retrieve_tasks = {
-            p: retrieve_for_persona(p, all_personas_cfg[p], entity_ids)
+            p: retrieve_for_persona(p, all_personas_cfg[p], entity_ids, want_images=want_images)
             for p in personas_to_run
         }
         gathered = await asyncio.gather(*retrieve_tasks.values(), return_exceptions=True)
@@ -611,6 +678,7 @@ async def stream_pipeline(
             original_query=query,
             question_type=question_type,
             query_scope=query_scope,
+            want_images=want_images,
         ):
             await token_queue.put({"type": "token", "persona": persona_id, "text": token})
         await token_queue.put({"type": "_done_persona", "persona": persona_id})
@@ -660,11 +728,12 @@ async def run_pipeline(query: str, personas: list[str] = PERSONA_ORDER) -> dict:
     target = parsed.get("target", "")
     question_type, _ = _classify_question_type_with_reason(query)
     query_scope = _question_scope_from_type(question_type)
+    want_images = _wants_images(query)
     entity_ids = await resolve_ids(entity, target)
 
     all_personas_cfg = _load_all_personas()
     retrieve_tasks = {
-        p: retrieve_for_persona(p, all_personas_cfg[p], entity_ids)
+        p: retrieve_for_persona(p, all_personas_cfg[p], entity_ids, want_images=want_images)
         for p in personas
     }
     gathered = await asyncio.gather(*retrieve_tasks.values(), return_exceptions=True)
@@ -683,6 +752,7 @@ async def run_pipeline(query: str, personas: list[str] = PERSONA_ORDER) -> dict:
             original_query=query,
             question_type=question_type,
             query_scope=query_scope,
+            want_images=want_images,
         ):
             tokens.append(token)
         results[persona_id] = "".join(tokens)

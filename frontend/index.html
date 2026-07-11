@@ -54,6 +54,23 @@
     .prose li { margin-bottom: 0.2rem; }
     .prose strong { color: #1e293b; font-weight: 600; }
     .prose em { color: #0ea5e9; font-style: normal; }
+    .prose a {
+      color: #0284c7;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      font-weight: 500;
+      word-break: break-word;
+    }
+    .prose a:hover { color: #0369a1; background: #f0f9ff; }
+    .prose img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0.75rem 0;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      background: #fff;
+    }
     .prose table {
       width: 100%;
       border-collapse: collapse;
@@ -746,10 +763,17 @@ function setStatus(msg, running = true) {
                  <span class="text-slate-500">${_esc(msg)}</span>`;
 }
 
+function _renderMarkdown(src) {
+  // Force every link to open in a new tab with safe rel attributes so users can
+  // navigate to the source (PubMed, ChEMBL, PDB, etc.) without losing the app.
+  const html = marked.parse(src);
+  return html.replace(/<a /g, '<a target="_blank" rel="noopener noreferrer" ');
+}
+
 function appendToken(personaId, text) {
   rawTokens[personaId] = (rawTokens[personaId] || '') + text;
   const panel = document.getElementById(`hpanel-${currentEntryId}-${personaId}`);
-  if (panel) { panel.innerHTML = marked.parse(rawTokens[personaId]); scrollToBottom(); }
+  if (panel) { panel.innerHTML = _renderMarkdown(rawTokens[personaId]); scrollToBottom(); }
 }
 
 function setCursorActive(personaId, active) {

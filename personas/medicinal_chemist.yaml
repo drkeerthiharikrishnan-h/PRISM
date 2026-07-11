@@ -12,6 +12,7 @@ connectors:
   - admet
   - opentargets
   - pdb
+  - uniprot
   - pubmed
 sections:
   - Compound identity

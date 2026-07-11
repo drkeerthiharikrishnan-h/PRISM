@@ -7,6 +7,8 @@ description: Integrative sequence-to-structure-to-pathway-to-disease analysis. R
   pathways, target-disease links, and literature.
 connectors:
   - rdkit_descriptors
+  - pubchem
+  - chembl
   - uniprot
   - interpro
   - alphafold
@@ -14,6 +16,7 @@ connectors:
   - string_ppi
   - reactome
   - opentargets
+  - gtex
   - pubmed
 sections:
   - Molecular constitution

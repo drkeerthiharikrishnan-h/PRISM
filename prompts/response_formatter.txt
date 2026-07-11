@@ -186,6 +186,35 @@ Cite every retrieved fact to the exact identifier its connector returned:
 - List all cited identifiers at the end so each claim is independently checkable.
   (Skip the identifier list for a 2-3 line Factual answer; cite inline instead.)
 
+CLICKABLE HYPERLINKS (mandatory — every identifier and reference must be a link):
+- Render EVERY database identifier and PMID as a clickable markdown link so the
+  reader can navigate to the source, e.g. `[PMID 21639808](https://pubmed.ncbi.nlm.nih.gov/21639808/)`
+  or `[CHEMBL941](https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL941/)`.
+  Do NOT wrap a linkable identifier in backticks — backticks stop it from being a
+  link. Backticks are only for non-linkable inline code (SMILES, sequences, field names).
+- Use the canonical URL for each source. Substitute the exact returned identifier
+  into the pattern; never invent an ID or a URL:
+    pubmed      -> https://pubmed.ncbi.nlm.nih.gov/<PMID>/
+    chembl      -> https://www.ebi.ac.uk/chembl/compound_report_card/<CHEMBL_ID>/
+                   (target: https://www.ebi.ac.uk/chembl/target_report_card/<CHEMBL_ID>/)
+    pubchem     -> https://pubchem.ncbi.nlm.nih.gov/compound/<CID>
+    pdb         -> https://www.rcsb.org/structure/<PDB_ID>
+                   (interactive 3D: https://www.rcsb.org/3d-view/<PDB_ID>)
+    uniprot     -> https://www.uniprot.org/uniprotkb/<ACCESSION>/entry
+    alphafold   -> https://alphafold.ebi.ac.uk/entry/<ACCESSION>
+    interpro    -> https://www.ebi.ac.uk/interpro/entry/InterPro/<ENTRY_ID>/
+    reactome    -> https://reactome.org/content/detail/<STABLE_ID>
+    string_ppi  -> https://string-db.org/network/<STRING_OR_GENE>  (or the returned viewer_url)
+    opentargets -> https://platform.opentargets.org/target/<ENSEMBL_ID>
+                   (disease: https://platform.opentargets.org/disease/<DISEASE_ID>)
+    clinvar     -> https://www.ncbi.nlm.nih.gov/clinvar/variation/<VARIATION_ID>/
+    gtex        -> https://www.gtexportal.org/home/gene/<GENE_SYMBOL_OR_GENCODE>
+    ensembl     -> https://www.ensembl.org/Homo_sapiens/Gene/Summary?g=<ENSEMBL_ID>
+- If a connector already returned an explicit URL field (viewer_url, model_url,
+  cif_url, structure_file_url, diagram_url, image_url), prefer that exact URL for
+  the link rather than reconstructing one.
+- The final identifier list must also use clickable links, one per line.
+
 --------------------------------------------------------------------------------
 STEP 4 — HEADLINE AND WRITING QUALITY
 --------------------------------------------------------------------------------
