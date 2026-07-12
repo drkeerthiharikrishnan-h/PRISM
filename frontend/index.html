@@ -764,9 +764,14 @@ function setStatus(msg, running = true) {
 }
 
 function _renderMarkdown(src) {
+  // Scientific text uses a single tilde as an approximation sign (~2.1 Å, ~13%).
+  // GitHub-Flavored Markdown reads ~...~ / ~~...~~ as strikethrough, which wrongly
+  // strikes out the text between two approximations. Escape every tilde so it
+  // renders literally and strikethrough can never trigger.
+  const safe = src.replace(/~/g, '\\~');
   // Force every link to open in a new tab with safe rel attributes so users can
   // navigate to the source (PubMed, ChEMBL, PDB, etc.) without losing the app.
-  const html = marked.parse(src);
+  const html = marked.parse(safe);
   return html.replace(/<a /g, '<a target="_blank" rel="noopener noreferrer" ');
 }
 
