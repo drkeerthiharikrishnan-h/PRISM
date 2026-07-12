@@ -93,8 +93,9 @@ Persona naming note:
 - Some older docs/scripts may still use legacy aliases (`cell_biologist`,
   `comp_biologist`) as shorthand.
 
-Attribution: the Erlotinib ground-truth set, persona YAMLs, and connector
-configuration in this workflow were generated with help from Claude Science.
+Attribution: the Erlotinib ground-truth set, persona YAMLs, connector
+configuration, and marker fixtures in this workflow were generated with help
+from Claude Science.
 
 ## Design rules (why it generalizes)
 
