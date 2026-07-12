@@ -21,6 +21,11 @@ drug name (+optional target)
    generated_<persona>.md      ← the dossier
 ```
 
+## Claude Science Attribution
+
+The Erlotinib ground-truth set, persona YAMLs, connector configuration, and
+marker fixtures in this workflow were generated with help from Claude Science.
+
 ## Layout
 
 | File / dir | Role |
@@ -92,10 +97,6 @@ Persona naming note:
   `cell_molecular_biologist`, and `computational_biologist`.
 - Some older docs/scripts may still use legacy aliases (`cell_biologist`,
   `comp_biologist`) as shorthand.
-
-Attribution: the Erlotinib ground-truth set, persona YAMLs, connector
-configuration, and marker fixtures in this workflow were generated with help
-from Claude Science.
 
 ## Design rules (why it generalizes)
 
