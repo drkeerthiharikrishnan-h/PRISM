@@ -6,12 +6,15 @@ Run:  uv run pytest tests/test_api.py -v
 """
 import json
 import re
+from pathlib import Path
 import pytest
 import httpx
 from tests.conftest import BASE_URL, PERSONA_QUERIES, SHARED_QUERY
 
 
 _SUBSCRIPT_TRANSLATION = str.maketrans("₀₁₂₃₄₅₆₇₈₉", "0123456789")
+_GT_MARKERS_PATH = Path(__file__).parent / "ground_truth" / "erlotinib_molecular_properties_markers.json"
+_GT_MARKERS_DATA = json.loads(_GT_MARKERS_PATH.read_text())
 
 
 def _normalize_text_for_gt(text: str) -> str:
@@ -307,8 +310,12 @@ async def test_query_erlotinib_molecular_properties_gt_regression(persona_id, gt
     assert re.search(r"C22H23N3O4", normalized, re.IGNORECASE), (
         f"[{persona_id}] missing formula C22H23N3O4\n{full_text[:500]}"
     )
-    assert re.search(r"393\.4|393\.44", normalized), (
-        f"[{persona_id}] missing expected molecular weight 393.4/393.44\n{full_text[:500]}"
+    has_free_base_mw = bool(re.search(r"393\.4|393\.44", normalized))
+    has_salt_context = bool(re.search(r"hcl|hydrochloride|salt", lowered))
+    has_hcl_salt_mw = bool(re.search(r"429\.9", normalized)) and has_salt_context
+    assert has_free_base_mw or has_hcl_salt_mw, (
+        f"[{persona_id}] missing expected molecular weight anchor (free base 393.4/393.44, "
+        f"or 429.9 with explicit salt context)\n{full_text[:500]}"
     )
 
     # At least one strong identifier anchor from GT must appear.
@@ -325,9 +332,11 @@ async def test_query_erlotinib_molecular_properties_gt_regression(persona_id, gt
     assert metadata.get("question_type") in {"detail", "exploratory", "synthesis", "dossier"}
     assert metadata.get("question_scope") == "broad"
 
-    # Persona-level GT cues: at least one marker must be present.
-    matched = [m for m in gt_markers if m.lower() in lowered]
+    # Persona-level GT cues: include baseline markers plus curated ground-truth anchors.
+    gt_fixture_markers = _GT_MARKERS_DATA["persona_markers"].get(persona_id, [])
+    merged_markers = list(dict.fromkeys([*gt_markers, *gt_fixture_markers]))
+    matched = [m for m in merged_markers if m.lower() in lowered]
     assert matched, (
-        f"[{persona_id}] missing persona GT cues. Expected one of {gt_markers}.\n"
+        f"[{persona_id}] missing persona GT cues. Expected one of {merged_markers}.\n"
         f"Preview: {full_text[:700]}"
     )

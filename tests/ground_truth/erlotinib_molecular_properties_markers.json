@@ -1,0 +1,35 @@
+{
+  "query": "what are the molecular properties of erlotinib",
+  "persona_markers": {
+    "medicinal_chemist": [
+      "cLogP",
+      "TPSA",
+      "QED",
+      "Lipinski",
+      "InChIKey",
+      "AAKJLRGGTJKAMG"
+    ],
+    "pathologist": [
+      "EGFR",
+      "ATP-competitive",
+      "non-small cell lung carcinoma",
+      "T790M",
+      "L858R"
+    ],
+    "cell_molecular_biologist": [
+      "EGFR",
+      "kinase",
+      "ATP-binding",
+      "L858R",
+      "R-HSA-177929"
+    ],
+    "computational_biologist": [
+      "Crippen",
+      "TPSA",
+      "HBD",
+      "HBA",
+      "InChIKey",
+      "PDB 1M17"
+    ]
+  }
+}

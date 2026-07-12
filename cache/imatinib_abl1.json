@@ -273,6 +273,48 @@
           }
         ]
       },
+      "uniprot": {
+        "accession": "P00519",
+        "gene": "ABL1",
+        "function": "Non-receptor tyrosine-protein kinase that plays a role in many key processes linked to cell growth and survival such as cytoskeleton remodeling in response to extracellular stimuli, cell motility and adhesion, receptor endocytosis, autophagy, DNA damage response and apoptosis. Coordinates actin remodeling through tyrosine phosphorylation of proteins controlling cytoskeleton dynamics like WASF3 (involved in branch formation); ANXA1 (involved in membrane anchoring); DBN1, DBNL, CTTN, RAPH1 and ENAH (involved in signaling); or MAPT and PXN (microtubule-binding proteins). Phosphorylation of WASF3 ",
+        "go_terms": [
+          {
+            "id": "GO:0015629",
+            "term": "C:actin cytoskeleton"
+          },
+          {
+            "id": "GO:0005737",
+            "term": "C:cytoplasm"
+          },
+          {
+            "id": "GO:0005829",
+            "term": "C:cytosol"
+          },
+          {
+            "id": "GO:0030425",
+            "term": "C:dendrite"
+          },
+          {
+            "id": "GO:0098978",
+            "term": "C:glutamatergic synapse"
+          },
+          {
+            "id": "GO:0030426",
+            "term": "C:growth cone"
+          },
+          {
+            "id": "GO:0005739",
+            "term": "C:mitochondrion"
+          },
+          {
+            "id": "GO:0043025",
+            "term": "C:neuronal cell body"
+          }
+        ],
+        "sequence_length": null,
+        "binding_sites": [],
+        "domains": []
+      },
       "pubmed": {
         "abstracts": [
           {
@@ -281,14 +323,14 @@
             "abstract": "In newly diagnosed Philadelphia chromosome-positive (Ph+) acute lymphoblastic leukemia (ALL), disease progression due to acquired resistance to first- or second-generation BCR::ABL1 tyrosine kinase inhibitors is common. Ponatinib inhibits BCR::ABL1 and all single-mutation variants, including T315I."
           },
           {
-            "pmid": "27217448",
-            "title": "Final 5-Year Study Results of DASISION: The Dasatinib Versus Imatinib Study in Treatment-Na&#xef;ve Chronic Myeloid Leukemia Patients Trial.",
-            "abstract": "We report the 5-year analysis from the phase III Dasatinib Versus Imatinib Study in Treatment-Na&#xef;ve Chronic Myeloid Leukemia Patients (DASISION) trial, evaluating long-term efficacy and safety outcomes of patients with chronic myeloid leukemia (CML) in chronic phase (CP) treated with dasatinib or imatinib."
-          },
-          {
             "pmid": "35751859",
             "title": "Chronic myeloid leukemia: 2022 update on diagnosis, therapy, and monitoring.",
             "abstract": "Chronic Myeloid Leukemia (CML) is a myeloproliferative neoplasm with an incidence of 1-2 cases per 100&#x2009;000 adults. It accounts for approximately 15% of newly diagnosed cases of leukemia in adults."
+          },
+          {
+            "pmid": "27217448",
+            "title": "Final 5-Year Study Results of DASISION: The Dasatinib Versus Imatinib Study in Treatment-Na&#xef;ve Chronic Myeloid Leukemia Patients Trial.",
+            "abstract": "We report the 5-year analysis from the phase III Dasatinib Versus Imatinib Study in Treatment-Na&#xef;ve Chronic Myeloid Leukemia Patients (DASISION) trial, evaluating long-term efficacy and safety outcomes of patients with chronic myeloid leukemia (CML) in chronic phase (CP) treated with dasatinib or imatinib."
           },
           {
             "pmid": "37088793",
@@ -830,14 +872,14 @@
             "abstract": "In newly diagnosed Philadelphia chromosome-positive (Ph+) acute lymphoblastic leukemia (ALL), disease progression due to acquired resistance to first- or second-generation BCR::ABL1 tyrosine kinase inhibitors is common. Ponatinib inhibits BCR::ABL1 and all single-mutation variants, including T315I."
           },
           {
-            "pmid": "27217448",
-            "title": "Final 5-Year Study Results of DASISION: The Dasatinib Versus Imatinib Study in Treatment-Na&#xef;ve Chronic Myeloid Leukemia Patients Trial.",
-            "abstract": "We report the 5-year analysis from the phase III Dasatinib Versus Imatinib Study in Treatment-Na&#xef;ve Chronic Myeloid Leukemia Patients (DASISION) trial, evaluating long-term efficacy and safety outcomes of patients with chronic myeloid leukemia (CML) in chronic phase (CP) treated with dasatinib or imatinib."
-          },
-          {
             "pmid": "35751859",
             "title": "Chronic myeloid leukemia: 2022 update on diagnosis, therapy, and monitoring.",
             "abstract": "Chronic Myeloid Leukemia (CML) is a myeloproliferative neoplasm with an incidence of 1-2 cases per 100&#x2009;000 adults. It accounts for approximately 15% of newly diagnosed cases of leukemia in adults."
+          },
+          {
+            "pmid": "27217448",
+            "title": "Final 5-Year Study Results of DASISION: The Dasatinib Versus Imatinib Study in Treatment-Na&#xef;ve Chronic Myeloid Leukemia Patients Trial.",
+            "abstract": "We report the 5-year analysis from the phase III Dasatinib Versus Imatinib Study in Treatment-Na&#xef;ve Chronic Myeloid Leukemia Patients (DASISION) trial, evaluating long-term efficacy and safety outcomes of patients with chronic myeloid leukemia (CML) in chronic phase (CP) treated with dasatinib or imatinib."
           },
           {
             "pmid": "37088793",
@@ -1421,6 +1463,169 @@
           }
         ]
       },
+      "opentargets": {
+        "target": "ABL1",
+        "ensembl_id": "ENSG00000097007",
+        "associated_diseases": [
+          {
+            "disease_id": "MONDO_0011996",
+            "name": "chronic myelogenous leukemia, BCR-ABL1 positive",
+            "score": 0.8257
+          },
+          {
+            "disease_id": "MONDO_0060532",
+            "name": "congenital heart defects and skeletal malformations syndrome",
+            "score": 0.8012
+          },
+          {
+            "disease_id": "MONDO_0004967",
+            "name": "acute lymphoblastic leukemia",
+            "score": 0.7151
+          },
+          {
+            "disease_id": "MONDO_0005070",
+            "name": "neoplasm",
+            "score": 0.6239
+          },
+          {
+            "disease_id": "MONDO_0006115",
+            "name": "blast phase chronic myelogenous leukemia, BCR-ABL1 positive",
+            "score": 0.6196
+          }
+        ],
+        "drug_candidate_count": 27,
+        "drug_candidates": [
+          {
+            "drug": "XL-228",
+            "max_clinical_stage": "PHASE_1"
+          },
+          {
+            "drug": "RUSERONTINIB",
+            "max_clinical_stage": "PHASE_3"
+          },
+          {
+            "drug": "PONATINIB",
+            "max_clinical_stage": "APPROVAL"
+          },
+          {
+            "drug": "KW-2449",
+            "max_clinical_stage": "PHASE_1"
+          },
+          {
+            "drug": "UMBRALISIB",
+            "max_clinical_stage": "APPROVAL"
+          },
+          {
+            "drug": "SARACATINIB",
+            "max_clinical_stage": "PHASE_2_3"
+          },
+          {
+            "drug": "PONATINIB HYDROCHLORIDE",
+            "max_clinical_stage": "APPROVAL"
+          },
+          {
+            "drug": "NILOTINIB",
+            "max_clinical_stage": "APPROVAL"
+          },
+          {
+            "drug": "ASCIMINIB",
+            "max_clinical_stage": "APPROVAL"
+          },
+          {
+            "drug": "AZD-0424",
+            "max_clinical_stage": "PHASE_1"
+          },
+          {
+            "drug": "DASATINIB",
+            "max_clinical_stage": "APPROVAL"
+          },
+          {
+            "drug": "ASCIMINIB HYDROCHLORIDE",
+            "max_clinical_stage": "APPROVAL"
+          },
+          {
+            "drug": "VODOBATINIB",
+            "max_clinical_stage": "PHASE_2"
+          },
+          {
+            "drug": "IMATINIB",
+            "max_clinical_stage": "APPROVAL"
+          },
+          {
+            "drug": "REGORAFENIB",
+            "max_clinical_stage": "APPROVAL"
+          },
+          {
+            "drug": "UMBRALISIB TOSYLATE",
+            "max_clinical_stage": "APPROVAL"
+          },
+          {
+            "drug": "BOSUTINIB MONOHYDRATE",
+            "max_clinical_stage": "APPROVAL"
+          },
+          {
+            "drug": "NILOTINIB HYDROCHLORIDE MONOHYDRATE",
+            "max_clinical_stage": "APPROVAL"
+          },
+          {
+            "drug": "RADOTINIB",
+            "max_clinical_stage": "PHASE_3"
+          },
+          {
+            "drug": "BOSUTINIB",
+            "max_clinical_stage": "APPROVAL"
+          },
+          {
+            "drug": "IMATINIB MESYLATE",
+            "max_clinical_stage": "APPROVAL"
+          },
+          {
+            "drug": "OLVEREMBATINIB",
+            "max_clinical_stage": "PHASE_3"
+          },
+          {
+            "drug": "BAFETINIB",
+            "max_clinical_stage": "PHASE_2"
+          },
+          {
+            "drug": "FLUMATINIB",
+            "max_clinical_stage": "PHASE_3"
+          },
+          {
+            "drug": "REBASTINIB",
+            "max_clinical_stage": "PHASE_1_2"
+          },
+          {
+            "drug": "AT-9283",
+            "max_clinical_stage": "PHASE_3"
+          },
+          {
+            "drug": "DASATINIB ANHYDROUS",
+            "max_clinical_stage": "APPROVAL"
+          }
+        ]
+      },
+      "proteinatlas": {
+        "gene": "ABL1",
+        "ensembl_id": "ENSG00000097007",
+        "pathology_total": 2061,
+        "microscopy_total": 1,
+        "pathology_images": [],
+        "microscopy_images": [],
+        "pathology_tissues": [
+          "Adipose tissue",
+          "Adrenal gland",
+          "Appendix",
+          "Bone marrow",
+          "Breast",
+          "Breast cancer"
+        ],
+        "microscopy_locations": [
+          "nuclear bodies",
+          "nucleoplasm"
+        ],
+        "note": "image URLs withheld (include_images=false); set include_images=true to render"
+      },
       "pubmed": {
         "abstracts": [
           {
@@ -1429,14 +1634,14 @@
             "abstract": "In newly diagnosed Philadelphia chromosome-positive (Ph+) acute lymphoblastic leukemia (ALL), disease progression due to acquired resistance to first- or second-generation BCR::ABL1 tyrosine kinase inhibitors is common. Ponatinib inhibits BCR::ABL1 and all single-mutation variants, including T315I."
           },
           {
-            "pmid": "27217448",
-            "title": "Final 5-Year Study Results of DASISION: The Dasatinib Versus Imatinib Study in Treatment-Na&#xef;ve Chronic Myeloid Leukemia Patients Trial.",
-            "abstract": "We report the 5-year analysis from the phase III Dasatinib Versus Imatinib Study in Treatment-Na&#xef;ve Chronic Myeloid Leukemia Patients (DASISION) trial, evaluating long-term efficacy and safety outcomes of patients with chronic myeloid leukemia (CML) in chronic phase (CP) treated with dasatinib or imatinib."
-          },
-          {
             "pmid": "35751859",
             "title": "Chronic myeloid leukemia: 2022 update on diagnosis, therapy, and monitoring.",
             "abstract": "Chronic Myeloid Leukemia (CML) is a myeloproliferative neoplasm with an incidence of 1-2 cases per 100&#x2009;000 adults. It accounts for approximately 15% of newly diagnosed cases of leukemia in adults."
+          },
+          {
+            "pmid": "27217448",
+            "title": "Final 5-Year Study Results of DASISION: The Dasatinib Versus Imatinib Study in Treatment-Na&#xef;ve Chronic Myeloid Leukemia Patients Trial.",
+            "abstract": "We report the 5-year analysis from the phase III Dasatinib Versus Imatinib Study in Treatment-Na&#xef;ve Chronic Myeloid Leukemia Patients (DASISION) trial, evaluating long-term efficacy and safety outcomes of patients with chronic myeloid leukemia (CML) in chronic phase (CP) treated with dasatinib or imatinib."
           },
           {
             "pmid": "37088793",
@@ -1478,6 +1683,49 @@
         },
         "name": "imatinib",
         "cid": "5291"
+      },
+      "pubchem": {
+        "cid": "5291",
+        "canonical_smiles": "CC1=C(C=C(C=C1)NC(=O)C2=CC=C(C=C2)CN3CCN(CC3)C)NC4=NC=CC(=N4)C5=CN=CC=C5",
+        "molecular_formula": "C29H31N7O",
+        "molecular_weight": "493.6",
+        "iupac_name": "4-[(4-methylpiperazin-1-yl)methyl]-N-[4-methyl-3-[(4-pyridin-3-ylpyrimidin-2-yl)amino]phenyl]benzamide"
+      },
+      "chembl": {
+        "activities": [
+          {
+            "molecule_chembl_id": "CHEMBL941",
+            "target_chembl_id": "CHEMBL3099",
+            "target_pref_name": "Tyrosine-protein kinase ABL1",
+            "standard_type": "IC50",
+            "standard_value": "10.8",
+            "standard_units": "nM",
+            "pchembl_value": "7.97",
+            "assay_description": "Inhibition of mouse recombinant N-terminal His6-tagged Abl by radiometric kinase assay"
+          },
+          {
+            "molecule_chembl_id": "CHEMBL941",
+            "target_chembl_id": "CHEMBL3099",
+            "target_pref_name": "Tyrosine-protein kinase ABL1",
+            "standard_type": "IC50",
+            "standard_value": "730.0",
+            "standard_units": "nM",
+            "pchembl_value": "6.14",
+            "assay_description": "Inhibition of ABL in mouse BAF3 cells assessed as reduction in cell viability after 72 hrs by MTT assay"
+          },
+          {
+            "molecule_chembl_id": "CHEMBL941",
+            "target_chembl_id": "CHEMBL3099",
+            "target_pref_name": "Tyrosine-protein kinase ABL1",
+            "standard_type": "IC50",
+            "standard_value": "20030.0",
+            "standard_units": "nM",
+            "pchembl_value": "4.70",
+            "assay_description": "Inhibition of ABL T315I mutant in mouse BAF3 cells assessed as reduction in cell viability after 72 hrs by MTT assay"
+          }
+        ],
+        "count": 3,
+        "molecule_chembl_id": "CHEMBL941"
       },
       "uniprot": {
         "accession": "P00519",
@@ -1901,6 +2149,251 @@
           }
         ]
       },
+      "gtex": {
+        "gene": "ABL1",
+        "gencode_id": "ENSG00000097007.17",
+        "unit": "TPM",
+        "top_tissues": [
+          {
+            "tissue": "Colon_Sigmoid",
+            "median": 166.084
+          },
+          {
+            "tissue": "Uterus",
+            "median": 138.14600000000002
+          },
+          {
+            "tissue": "Cervix_Endocervix",
+            "median": 135.025
+          },
+          {
+            "tissue": "Cervix_Ectocervix",
+            "median": 127.49700000000001
+          },
+          {
+            "tissue": "Esophagus_Gastroesophageal_Junction",
+            "median": 126.285
+          }
+        ],
+        "expression": [
+          {
+            "tissue": "Adipose_Subcutaneous",
+            "median": 77.3988
+          },
+          {
+            "tissue": "Adipose_Visceral_Omentum",
+            "median": 72.7505
+          },
+          {
+            "tissue": "Adrenal_Gland",
+            "median": 31.416999999999998
+          },
+          {
+            "tissue": "Artery_Aorta",
+            "median": 88.3378
+          },
+          {
+            "tissue": "Artery_Coronary",
+            "median": 76.2859
+          },
+          {
+            "tissue": "Artery_Tibial",
+            "median": 113.056
+          },
+          {
+            "tissue": "Bladder",
+            "median": 120.82600000000001
+          },
+          {
+            "tissue": "Brain_Amygdala",
+            "median": 16.2534
+          },
+          {
+            "tissue": "Brain_Anterior_cingulate_cortex_BA24",
+            "median": 15.6748
+          },
+          {
+            "tissue": "Brain_Caudate_basal_ganglia",
+            "median": 18.0812
+          },
+          {
+            "tissue": "Brain_Cerebellar_Hemisphere",
+            "median": 21.0993
+          },
+          {
+            "tissue": "Brain_Cerebellum",
+            "median": 26.0539
+          },
+          {
+            "tissue": "Brain_Cortex",
+            "median": 19.9606
+          },
+          {
+            "tissue": "Brain_Frontal_Cortex_BA9",
+            "median": 16.5818
+          },
+          {
+            "tissue": "Brain_Hippocampus",
+            "median": 18.409000000000002
+          },
+          {
+            "tissue": "Brain_Hypothalamus",
+            "median": 20.979
+          },
+          {
+            "tissue": "Brain_Nucleus_accumbens_basal_ganglia",
+            "median": 17.7714
+          },
+          {
+            "tissue": "Brain_Putamen_basal_ganglia",
+            "median": 16.6594
+          },
+          {
+            "tissue": "Brain_Spinal_cord_cervical_c-1",
+            "median": 40.6609
+          },
+          {
+            "tissue": "Brain_Substantia_nigra",
+            "median": 21.3751
+          },
+          {
+            "tissue": "Breast_Mammary_Tissue",
+            "median": 73.2543
+          },
+          {
+            "tissue": "Cells_Cultured_fibroblasts",
+            "median": 91.4055
+          },
+          {
+            "tissue": "Cells_EBV-transformed_lymphocytes",
+            "median": 30.6017
+          },
+          {
+            "tissue": "Cervix_Ectocervix",
+            "median": 127.49700000000001
+          },
+          {
+            "tissue": "Cervix_Endocervix",
+            "median": 135.025
+          },
+          {
+            "tissue": "Colon_Sigmoid",
+            "median": 166.084
+          },
+          {
+            "tissue": "Colon_Transverse",
+            "median": 76.63
+          },
+          {
+            "tissue": "Esophagus_Gastroesophageal_Junction",
+            "median": 126.285
+          },
+          {
+            "tissue": "Esophagus_Mucosa",
+            "median": 37.4568
+          },
+          {
+            "tissue": "Esophagus_Muscularis",
+            "median": 119.663
+          },
+          {
+            "tissue": "Fallopian_Tube",
+            "median": 124.413
+          },
+          {
+            "tissue": "Heart_Atrial_Appendage",
+            "median": 27.0681
+          },
+          {
+            "tissue": "Heart_Left_Ventricle",
+            "median": 15.812999999999999
+          },
+          {
+            "tissue": "Kidney_Cortex",
+            "median": 18.2601
+          },
+          {
+            "tissue": "Kidney_Medulla",
+            "median": 26.7002
+          },
+          {
+            "tissue": "Liver",
+            "median": 9.22794
+          },
+          {
+            "tissue": "Lung",
+            "median": 59.1749
+          },
+          {
+            "tissue": "Minor_Salivary_Gland",
+            "median": 43.5295
+          },
+          {
+            "tissue": "Muscle_Skeletal",
+            "median": 18.7464
+          },
+          {
+            "tissue": "Nerve_Tibial",
+            "median": 74.0904
+          },
+          {
+            "tissue": "Ovary",
+            "median": 105.051
+          },
+          {
+            "tissue": "Pancreas",
+            "median": 13.3292
+          },
+          {
+            "tissue": "Pituitary",
+            "median": 56.8331
+          },
+          {
+            "tissue": "Prostate",
+            "median": 70.22
+          },
+          {
+            "tissue": "Skin_Not_Sun_Exposed_Suprapubic",
+            "median": 43.4367
+          },
+          {
+            "tissue": "Skin_Sun_Exposed_Lower_leg",
+            "median": 51.2822
+          },
+          {
+            "tissue": "Small_Intestine_Terminal_Ileum",
+            "median": 53.9468
+          },
+          {
+            "tissue": "Spleen",
+            "median": 33.8442
+          },
+          {
+            "tissue": "Stomach",
+            "median": 41.3974
+          },
+          {
+            "tissue": "Testis",
+            "median": 31.4648
+          },
+          {
+            "tissue": "Thyroid",
+            "median": 92.7892
+          },
+          {
+            "tissue": "Uterus",
+            "median": 138.14600000000002
+          },
+          {
+            "tissue": "Vagina",
+            "median": 71.3419
+          },
+          {
+            "tissue": "Whole_Blood",
+            "median": 4.05744
+          }
+        ]
+      },
       "pubmed": {
         "abstracts": [
           {
@@ -1909,14 +2402,14 @@
             "abstract": "In newly diagnosed Philadelphia chromosome-positive (Ph+) acute lymphoblastic leukemia (ALL), disease progression due to acquired resistance to first- or second-generation BCR::ABL1 tyrosine kinase inhibitors is common. Ponatinib inhibits BCR::ABL1 and all single-mutation variants, including T315I."
           },
           {
-            "pmid": "35751859",
-            "title": "Chronic myeloid leukemia: 2022 update on diagnosis, therapy, and monitoring.",
-            "abstract": "Chronic Myeloid Leukemia (CML) is a myeloproliferative neoplasm with an incidence of 1-2 cases per 100&#x2009;000 adults. It accounts for approximately 15% of newly diagnosed cases of leukemia in adults."
-          },
-          {
             "pmid": "27217448",
             "title": "Final 5-Year Study Results of DASISION: The Dasatinib Versus Imatinib Study in Treatment-Na&#xef;ve Chronic Myeloid Leukemia Patients Trial.",
             "abstract": "We report the 5-year analysis from the phase III Dasatinib Versus Imatinib Study in Treatment-Na&#xef;ve Chronic Myeloid Leukemia Patients (DASISION) trial, evaluating long-term efficacy and safety outcomes of patients with chronic myeloid leukemia (CML) in chronic phase (CP) treated with dasatinib or imatinib."
+          },
+          {
+            "pmid": "35751859",
+            "title": "Chronic myeloid leukemia: 2022 update on diagnosis, therapy, and monitoring.",
+            "abstract": "Chronic Myeloid Leukemia (CML) is a myeloproliferative neoplasm with an incidence of 1-2 cases per 100&#x2009;000 adults. It accounts for approximately 15% of newly diagnosed cases of leukemia in adults."
           },
           {
             "pmid": "37088793",

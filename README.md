@@ -55,6 +55,47 @@ out = orchestrator.run_from_names("medicinal_chemist.yaml", "vemurafenib")
 Synthesis itself is done by whatever LLM you wire in; in Claude Science this was
 `host.llm(prompt, model=host.reasoning_model())`.
 
+## Ground Truth Regression (Developers)
+
+Use this exact regression query when validating new backend or prompt changes:
+
+`what are the molecular properties of erlotinib`
+
+Run this query against all 4 personas and compare outputs against the ground-truth
+references in `tests/ground_truth/`:
+
+- `medicinal_chemist` -> `tests/ground_truth/GT_medicinal_chemist.md`
+- `pathologist` -> `tests/ground_truth/GT_pathologist.md`
+- `cell_molecular_biologist` -> `tests/ground_truth/GT_molecular_biologist.md`
+- `computational_biologist` -> `tests/ground_truth/GT_comp_biologist.md`
+
+Marker-based assertions for automated regression live in:
+
+- `tests/ground_truth/erlotinib_molecular_properties_markers.json`
+- `tests/test_api.py` (`test_query_erlotinib_molecular_properties_gt_regression`)
+
+Run the focused regression test:
+
+```bash
+uv run pytest tests/test_api.py -k erlotinib_molecular_properties_gt_regression -v
+```
+
+Optional broader backend confidence pass:
+
+```bash
+uv run pytest tests/test_api.py tests/test_entity_resolver.py tests/test_connectors.py -v
+```
+
+Persona naming note:
+
+- Canonical IDs used by backend/tests are `medicinal_chemist`, `pathologist`,
+  `cell_molecular_biologist`, and `computational_biologist`.
+- Some older docs/scripts may still use legacy aliases (`cell_biologist`,
+  `comp_biologist`) as shorthand.
+
+Attribution: the Erlotinib ground-truth set, persona YAMLs, and connector
+configuration in this workflow were generated with help from Claude Science.
+
 ## Design rules (why it generalizes)
 
 - **No drug facts in the YAMLs.** Persona files hold only the connector list,

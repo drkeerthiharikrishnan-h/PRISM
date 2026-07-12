@@ -28,6 +28,30 @@ def _query_cache_key(query: str) -> Path:
     return _CACHE_DIR / f"parse_{h}.json"
 
 
+def _strip_code_fences(raw: str) -> str:
+    """Remove optional markdown code fences from model output."""
+    raw = raw.strip()
+    if raw.startswith("```"):
+        raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
+    return raw
+
+
+def _extract_first_json_object(raw: str) -> dict:
+    """
+    Parse the first valid JSON object from model text.
+    Handles outputs like: JSON + trailing notes.
+    """
+    cleaned = _strip_code_fences(raw)
+    try:
+        return json.loads(cleaned)
+    except json.JSONDecodeError:
+        decoder = json.JSONDecoder()
+        obj, _idx = decoder.raw_decode(cleaned)
+        if not isinstance(obj, dict):
+            raise ValueError("Parsed JSON is not an object")
+        return obj
+
+
 async def parse_query(query: str) -> dict:
     """
     Extract entity + target from a free-text biomedical query.
@@ -55,10 +79,7 @@ async def parse_query(query: str) -> dict:
         messages=[{"role": "user", "content": user}],
     )
     raw = msg.content[0].text.strip()
-    # Strip markdown fences if present
-    if raw.startswith("```"):
-        raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
-    result = json.loads(raw)
+    result = _extract_first_json_object(raw)
     cache_file.write_text(json.dumps(result))
     return result
 
@@ -210,9 +231,7 @@ async def detect_persona(query: str) -> tuple[str, float]:
         messages=[{"role": "user", "content": f"Query: {query}"}],
     )
     raw = msg.content[0].text.strip()
-    if raw.startswith("```"):
-        raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
-    result = json.loads(raw)
+    result = _extract_first_json_object(raw)
     persona_id = result.get("persona_id", "medicinal_chemist")
     confidence = float(result.get("confidence", 0.5))
     if persona_id not in PERSONA_IDS:
